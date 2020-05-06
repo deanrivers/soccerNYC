@@ -1,0 +1,36 @@
+{
+  "name": "soccernyc",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "react": "16.11.0",
+    "react-native": "0.62.2",
+    "react-native-gesture-handler": "^1.6.1",
+    "react-native-get-location": "^1.4.2",
+    "react-native-image-gradient": "^2.2.5",
+    "react-native-image-overlay": "^0.1.2",
+    "react-native-reanimated": "^1.8.0",
+    "react-native-router-flux": "^4.2.0",
+    "react-native-screens": "^2.7.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.6",
+    "@babel/runtime": "^7.9.6",
+    "@react-native-community/eslint-config": "^1.1.0",
+    "babel-jest": "^26.0.0",
+    "eslint": "^6.8.0",
+    "jest": "^26.0.0",
+    "metro-react-native-babel-preset": "^0.59.0",
+    "react-test-renderer": "16.11.0"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
