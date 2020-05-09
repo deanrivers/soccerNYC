@@ -16,9 +16,13 @@
     "react-native-get-location": "^1.4.2",
     "react-native-image-gradient": "^2.2.5",
     "react-native-image-overlay": "^0.1.2",
+    "react-native-maps": "^0.27.1",
     "react-native-reanimated": "^1.8.0",
     "react-native-router-flux": "^4.2.0",
-    "react-native-screens": "^2.7.0"
+    "react-native-screens": "^2.7.0",
+    "react-native-snap-carousel": "^3.9.0",
+    "react-native-splash-screen": "^3.2.0",
+    "react-native-textinput-effects": "^0.6.1"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",

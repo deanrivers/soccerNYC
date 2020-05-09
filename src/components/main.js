@@ -1,8 +1,12 @@
 import React, {Component} from 'react'
 import { Text,View,TextInput,StyleSheet,TouchableOpacity,Keyboard, ScrollView, SafeAreaView }from 'react-native'
-import GetLocation from 'react-native-get-location'
-import Card from './card'
+
 import {Actions} from 'react-native-router-flux'
+
+import {Hoshi} from 'react-native-textinput-effects'
+
+
+
 
 class Main extends Component{
     constructor(props){
@@ -10,136 +14,123 @@ class Main extends Component{
         this.state = {
             zipCode:'',
             zipValid:false,
-            zipFilled:true,
-            location: null,
-            
+            zipFilled:false,
+            textValue:''
         }
 
     }
 
-    _requestLocation = () => {
-        this.setState({ loading: true, location: null });
+    // componentDidMount(){
+    //     this.setState({zipCode:''})
+    // }
 
-        GetLocation.getCurrentPosition({
-            enableHighAccuracy: true,
-            timeout: 150000,
-        })
-            .then(location => {
-                this.setState({
-                    location,
-                    loading: false,
-                });
-            })
-            .catch(ex => {
-                const { code, message } = ex;
-                console.warn(code, message);
-                if (code === 'CANCELLED') {
-                    Alert.alert('Location cancelled by user or by another request');
-                }
-                if (code === 'UNAVAILABLE') {
-                    Alert.alert('Location service is disabled or unavailable');
-                }
-                if (code === 'TIMEOUT') {
-                    Alert.alert('Location request timed out');
-                }
-                if (code === 'UNAUTHORIZED') {
-                    Alert.alert('Authorization denied');
-                }
-                this.setState({
-                    location: null,
-                    loading: false,
-                });
-            });
-    }
+    
 
     inputUpdate(e){
         var zipCode = e
-        console.log(zipCode)
-        this.setState({zipCode,zipFilled:true})
+        
+        this.setState({zipCode},()=>{
+            if(zipCode.length == 5){
+                this.setState({zipFilled:true},()=>{
+                console.log(this.state.zipFilled)
+                })
+            } else{
+                this.setState({zipFilled:false},()=>{
+                console.log(this.state.zipFilled)
+                })
+            }
+        })
     }
 
     searchPressed(){
-        if(this.state.zipCode.length == 5){
-            console.log('valid')
-            this.setState({zipValid:true})
-            Actions.cards()
-
+        if(this.state.zipFilled){
+            this.props.setZip(this.state.zipCode)
         } else{
-            console.log('invalid')
-            this.setState({zipFilled:false})
+            alert('Please enter your zip code.')
         }
     }
 
+
+
     render(){
         return(
+            
             <SafeAreaView style={styles.main}>
-                <View>
-                    <Text style={styles.text}>Let's find some soccer.</Text>
-                    <View style={this.state.zipFilled? styles.textContainer:styles.textContainerInvalid}>                    
-                        <TextInput style={styles.textInput} placeholder="Zip Code?" selectionColor={'black'} keyboardType="number-pad" maxLength={5} onChangeText={(e)=>this.inputUpdate(e)}/>
-                    </View>
-
+                <View style={{marginTop:100}}>
+                    <Text style={styles.text}>Find some footy.</Text> 
                     <View style={styles.buttonView}>
-                        <TouchableOpacity style={styles.search} onPress={()=>this.searchPressed()}>
-                            <Text style={styles.searchText}>Search</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={styles.getLocation} onPress={()=>this._requestLocation()}>
+                        <TouchableOpacity style={styles.getLocation} onPress={()=>Actions.map()}>
                             <Text style={styles.locationText}>Use My Location</Text>
                         </TouchableOpacity>
                     </View>
-                    {this.state.location?(<Text>Location: {JSON.stringify(this.state.location,0,2)}</Text>):null}
                 </View>
             </SafeAreaView>
         )
     }
 }
 
+
+
 const styles = StyleSheet.create({
     main: {
         flex:1,
-        justifyContent:'center',
+        justifyContent:'flex-start',
         alignItems:'center',
-        backgroundColor:'#f4f4f3'
+        backgroundColor:'black',
+        paddingTop:1000
+        
       },
     textContainer: {
         borderWidth: 1,
-        borderColor: 'black',
+        // borderColor: 'black',
         width:300,
         height: 50,
         justifyContent:'center',
         borderTopColor:'#f4f4f3',
         borderRightColor:'#f4f4f3',
         borderLeftColor:'#f4f4f3',
+        // borderBottomColor:'white'
+        borderColor:'#f4f4f3'
         
     },
     textContainerInvalid:{
         borderWidth: 1,
-        borderColor: 'black',
+        // borderColor: 'black',
         width:300,
         height: 50,
         justifyContent:'center',
         // alignItems:'center',
-        borderEndColor:'white',
+        
         borderTopColor:'#f4f4f3',
         borderRightColor:'#f4f4f3',
         borderLeftColor:'#f4f4f3',
-        borderBottomColor:'red'
+        // borderBottomColor:'red'
     },
     textInput:{
         fontSize:40,
         fontFamily:'Didot',
+        
     },
 
     text:{
         justifyContent:'center',
         alignItems:'center',
-        fontSize:40,
-        fontFamily:'Didot',
+        fontSize:80,
+        fontFamily:'Avenir-BlackOblique',
+        fontFamily:'Optima-Bold',
+        // fontFamily:'Optima-BoldItalic',
+        // fontFamily:'Optima-BoldItalic',
+        
+        // fontFamily:'Helvetica Neue',
         width:300,
-        marginBottom:50
+        marginBottom:50,
+        color:'#E7ECEF'
+        
     },
-
+    locationText:{
+        color:'white',
+        fontFamily:'Arial',
+    },  
     search:{
         backgroundColor:'#ccc',
         justifyContent:'center',
@@ -150,19 +141,20 @@ const styles = StyleSheet.create({
         borderRadius:0,
     },
     getLocation:{
-        backgroundColor:'black',
-        color:'white',
+        // backgroundColor:'#E7ECEF',
+        borderWidth:1,
+        borderColor:'white',
+        color:'black',
         justifyContent:'center',
         alignItems:'center',
-        marginTop:20,
-        height:40,
-        width: 140,
-        borderRadius:0,
+        // marginTop:20,
+        height:60,
+        width: 300,
+        
+        // borderRadius:300,
+        
     },
-    locationText:{
-        color:'white',
-        fontFamily:'Arial',
-    },  
+    
     searchText:{
         fontFamily:'Arial'
     },
@@ -170,6 +162,25 @@ const styles = StyleSheet.create({
         flexDirection:"row",
         justifyContent:'space-between',
     },
+
+    hoshiView:{
+        width:300,
+        fontFamily:'Didot',
+        paddingBottom:60
+        
+    },  
+    hoshiInput:{
+        // backgroundColor:'red',
+        
+        padding:100,
+        fontFamily:'Didot',
+        
+        fontSize:30
+    },
+    hoshiLabel:{
+        fontFamily:'Didot',
+        // fontSize:30
+    }
 
 
 })

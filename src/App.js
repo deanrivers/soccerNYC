@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, { Component, useEffect } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -14,31 +14,66 @@ import {
   View,
   Text,
   StatusBar,
+  
 } from 'react-native';
 
 import {Router, Scene, Stack,Actions} from 'react-native-router-flux'
+import SplashScreen from 'react-native-splash-screen'
 
 
 
 import Main from './components/main'
 import CardView from './components/cardsView'
+import Map from './components/map'
 
 
-const App = () => {
-  
-  return (
+
+class App extends Component{
+
+  constructor(props){
+    super(props)
+    this.state = {
+      zipCode:'',
     
-      <Router>
-          <Stack key="root">
-            <Scene key="main" component={Main} initial title="Main" hideNavBar/>
-            <Scene key="cards" component={CardView} title="Cards" hideNavBar/>
 
-          </Stack>
-          
-        </Router>
-      
-  );
-};
+    }
+    this.setZip = this.setZip.bind(this)
+  }
+
+  componentDidMount(){
+    SplashScreen.hide()
+  }
+
+  setZip(zip){
+    this.setState({zipCode:zip},()=>{
+      console.log('Zip code state in App.js =>',this.state.zipCode)
+      if(this.state.zipCode.length===5){
+        Actions.cards({zipCode:this.state.zipCode})
+        
+      }
+    })
+  }
+
+
+
+
+
+  
+
+  render(){
+    console.disableYellowBox = true;
+  return ([
+    <StatusBar backgroundColor='blue' barStyle='dark-content'/>,
+        <Router>
+            <Stack key="root">
+              <Scene key="main" component={Main} initial title="Main" hideNavBar initial setZip={this.setZip} setCoordinates={this.setCoordinates}/>
+              <Scene key="cards" component={CardView} title="Cards" hideNavBar/>
+              <Scene key="map" component={Map} title="Map" hideNavBar/>
+            </Stack>
+          </Router>
+  ]);
+  };
+}
 
 const styles = StyleSheet.create({
   main: {

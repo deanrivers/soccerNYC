@@ -33,7 +33,6 @@ class CardView extends Component{
                 'image':imageWeehawken
             }]
         }
-
     }
 
     handleZipPress(){
@@ -44,14 +43,16 @@ class CardView extends Component{
     render(){
         return(
             <SafeAreaView style={styles.main}>
+                
                 <TouchableOpacity style={styles.zipContainer} onPress={()=>this.handleZipPress()}>  
                     <Image style={styles.leftArrow} source={imageLeft}/>    
-                    <Text style={styles.zipText}>Zip Code</Text>
+                    <Text style={styles.zipText}>Zip Code, {this.props.zipCode}</Text>
                 </TouchableOpacity>
+                
 
-                {/* <Text style={styles.soccerHeader}>Local Fields.</Text> */}
+                {/* <Text style={styles.soccerHeader}>Loal Fields.</Text> */}
 
-                <View></View>
+          
                 <ScrollView style={styles.scrollView} justifyContent showsVerticalScrollIndicator={false} contentContainerStyle={{flexGrow:1}}>
                     
                     {this.state.cardData.map( (item,index)=>{
@@ -76,8 +77,8 @@ const styles = StyleSheet.create({
         flexDirection:'column',
         backgroundColor:'#f4f4f3',
         paddingTop:700,
-        // marginTop:200
-        // paddingBottom:200
+        marginTop:0
+        //  
     },
     soccerHeader:{
         fontFamily:'Didot',
@@ -107,9 +108,9 @@ const styles = StyleSheet.create({
         // left:0
     },
     zipText:{
-        fontSize:20,
+        fontSize:15,
         paddingLeft:20,
-        fontFamily:'Didot'
+        
     }
 })
 

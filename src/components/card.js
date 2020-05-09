@@ -13,7 +13,7 @@ import imageLeague from '../assets/icons/web.png'
 let Card = (props) =>{
     return(
         <View style={styles.cardView}>
-            <View style={styles.locatioView}>
+            <View style={styles.locationView}>
 
                 <Text style={styles.locationText}>{props.location}</Text>
             </View>
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
 
     },
 
-    locatioView:{
+    locationView:{
 
         flex:1,
         position:'absolute',
