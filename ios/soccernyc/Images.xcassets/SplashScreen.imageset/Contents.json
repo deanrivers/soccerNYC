@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "SplashScreen.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
