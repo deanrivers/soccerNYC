@@ -45,7 +45,7 @@ class Map extends Component{
 
 
     hitPlaceAPI = async ()=>{
-        const API_KEY = 'AIzaSyDomtX8Thq69p7mTW2HwgV1NCzeMSOWKhE'
+        const API_KEY = ''
         const baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
         const parameters = "location=" + this.state.location.latitude + "," + this.state.location.longitude +
       "&radius=2000&keyword=soccer%20field" + "&key=" + API_KEY
