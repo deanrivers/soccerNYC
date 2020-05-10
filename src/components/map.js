@@ -24,45 +24,8 @@ class Map extends Component{
         this.state = {
             loading:true,
             location:{},
-            // location:{
-            //     latitude: 40.7563,
-            //     longitude: 74.0287,
-            //     latitudeDelta: 0.0922,
-            //     longitudeDelta: 0.0421,
-            // },
             slider1ActiveSlide: SLIDER_1_FIRST_ITEM,
-            coordinates:[
-
-                {
-                    title:'Sinatra Park',
-                    subtitle:'By the waterfront.',
-                    latitude: 40.7411,
-                    longitude: -74.0266,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                    illustration: 'https://patch.com/img/cdn/users/715072/2013/10/raw/363525cfae525597b52e1c6cac80a89.jpg'
-                },
-                {
-                    title:'Berry Lane Park',
-                    subtitle:'Located inner city.',
-                    latitude: 40.7118,
-                    longitude: -74.0678,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                    // illustration: 'https://i.imgur.com/UYiroysl.jpg'
-                    illustration: 'https://mastconstruction.com/wp-content/uploads/2016/06/Berry-feature.jpg'
-                },
-                {
-                    title:'Weehawken Waterfront',
-                    subtitle:'Footy right on the water',
-                    latitude: 40.7563,
-                    longitude: -74.0287,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                    // illustration: 'https://i.imgur.com/UYiroysl.jpg'
-                    illustration: 'https://www.google.com/maps/uv?hl=en&pb=!1s0x89c2582d8bf7baf9%3A0x91542a4356153bfd!3m1!7e115!4shttps%3A%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipP8Bbq1sjcqz3ge9fIRwAY5JFxqjxkn4CEHSSeT%3Dw213-h160-k-no!5sweehawken%20soccer%20field%20-%20Google%20Search!15sCAQ&imagekey=!1e10!2sAF1QipP8Bbq1sjcqz3ge9fIRwAY5JFxqjxkn4CEHSSeT&sa=X&ved=2ahUKEwiI29Pyq6XpAhVVmHIEHXqBAucQoiowE3oECBAQBg#'
-                }
-            ]
+            coordinates:[]
         };
         this._renderDarkItem = this._renderDarkItem.bind(this)
 
@@ -70,15 +33,67 @@ class Map extends Component{
     }
 
     componentDidMount(){
-        console.log('mounted')
         this._requestLocation()
-
-        setTimeout( ()=>{
-            this.setState({loading:false})
-        },10)
-        
     }
 
+    hitPhotoAPI = async (url) => {
+        console.log('url')
+        const response = await fetch(url);
+        const json = await response.json();
+        console.log(json);
+    }
+
+
+    hitPlaceAPI = async ()=>{
+        const API_KEY = 'AIzaSyDomtX8Thq69p7mTW2HwgV1NCzeMSOWKhE'
+        const baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
+        const parameters = "location=" + this.state.location.latitude + "," + this.state.location.longitude +
+      "&radius=2000&keyword=soccer%20field" + "&key=" + API_KEY
+        
+        const url = baseUrl + parameters
+
+        const response = await fetch(url)
+        const data = await response.json()
+        console.log(data.status)
+
+        var location
+        var coordinates = []
+        var obj = {}
+
+        if(data.status = 'OK'){
+            for(var i = 0;i<data.results.length-1;i++){
+                obj = {}
+                location = data.results[i]
+                obj['title'] = data.results[i].name
+                obj['subtitle'] = 'Soccer Field'
+                obj['latitude'] = data.results[i].geometry.location.lat
+                obj['longitude'] = data.results[i].geometry.location.lng
+                obj['latitudeDelta'] = 0.0922
+                obj['longitudeDelta'] = 0.0421
+                // console.log(i)
+                // console.log('photo',JSON.stringify(data.results[i].photos[0].photo_reference))
+
+                //hit photo API
+                //photo API
+                const photoRef = data.results[i].photos[0].photo_reference
+                const photo_url = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400'
+                const photoParams = '&photoreference='+photoRef+'&key='+API_KEY
+                const complete_photo_url = photo_url+photoParams
+                console.log(i)
+                // console.log(complete_photo_url)
+                
+                //this.request(complete_photo_url)
+
+                coordinates.push(obj)
+                console.log(coordinates)
+            }
+            this.setState({coordinates},()=>setTimeout( ()=>{
+                this.setState({loading:false})
+                console.log(this.state.coordinates)
+            },10))
+        }
+    }
+    
     _requestLocation = () => {
         
         GetLocation.getCurrentPosition({
@@ -89,7 +104,9 @@ class Map extends Component{
             this.setState({
                 location,
                 loading: false,
-            }, ()=>console.log(this.state.location));
+            },()=>{
+                this.hitPlaceAPI()
+            });
         })
         .catch(ex => {
             const { code, message } = ex;
@@ -152,7 +169,9 @@ class Map extends Component{
     render(){
 
         if(this.state.loading){
-            return null
+            // return null
+            return <View><Text>Test</Text></View>
+            
         }
 
         return([
