@@ -1,9 +1,14 @@
 import React, {Component} from 'react'
+
 import { Text,View,TextInput,StyleSheet,TouchableOpacity,Keyboard, ScrollView, SafeAreaView }from 'react-native'
 
 import {Actions} from 'react-native-router-flux'
 
 import {Hoshi} from 'react-native-textinput-effects'
+
+
+
+
 
 
 
@@ -57,7 +62,10 @@ class Main extends Component{
             
             <SafeAreaView style={styles.main}>
                 <View style={{marginTop:100}}>
+                    
                     <Text style={styles.text}>Find some footy.</Text> 
+                    
+                     
                     <View style={styles.buttonView}>
                         <TouchableOpacity style={styles.getLocation} onPress={()=>Actions.map()}>
                             <Text style={styles.locationText}>Use My Location</Text>
