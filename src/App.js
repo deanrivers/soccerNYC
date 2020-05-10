@@ -20,13 +20,9 @@ import {
 import {Router, Scene, Stack,Actions} from 'react-native-router-flux'
 import SplashScreen from 'react-native-splash-screen'
 
-
-
 import Main from './components/main'
 import CardView from './components/cardsView'
 import Map from './components/map'
-
-
 
 class App extends Component{
 
@@ -34,8 +30,6 @@ class App extends Component{
     super(props)
     this.state = {
       zipCode:'',
-    
-
     }
     this.setZip = this.setZip.bind(this)
   }
@@ -49,21 +43,14 @@ class App extends Component{
       console.log('Zip code state in App.js =>',this.state.zipCode)
       if(this.state.zipCode.length===5){
         Actions.cards({zipCode:this.state.zipCode})
-        
       }
     })
   }
 
-
-
-
-
-  
-
   render(){
     console.disableYellowBox = true;
   return ([
-    <StatusBar backgroundColor='blue' barStyle='dark-content'/>,
+    <StatusBar hidden/>,
         <Router>
             <Stack key="root">
               <Scene key="main" component={Main} initial title="Main" hideNavBar initial setZip={this.setZip} setCoordinates={this.setCoordinates}/>

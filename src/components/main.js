@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 
-import { Text,View,TextInput,StyleSheet,TouchableOpacity,Keyboard, ScrollView, SafeAreaView }from 'react-native'
+import { Text,View,TextInput,StyleSheet,TouchableOpacity,StatusBar, SafeAreaView }from 'react-native'
 
 import {Actions} from 'react-native-router-flux'
 
@@ -26,15 +26,8 @@ class Main extends Component{
 
     }
 
-    // componentDidMount(){
-    //     this.setState({zipCode:''})
-    // }
-
-    
-
     inputUpdate(e){
         var zipCode = e
-        
         this.setState({zipCode},()=>{
             if(zipCode.length == 5){
                 this.setState({zipFilled:true},()=>{
@@ -56,22 +49,22 @@ class Main extends Component{
         }
     }
 
-
-
     render(){
         return(
-            
             <SafeAreaView style={styles.main}>
-                <View style={{marginTop:0,flex:1,justifyContent:'space-evenly'}}>
-                    <Text style={styles.text}>Find some footy.</Text>
+                
+                <View style={{paddingTop:80,flex:1,justifyContent:'space-between',}}>
+                    <View style={{flex:0,backgroundColor:'',overflow:'visible'}}>
+                        <Text style={styles.text}>Find some footy.</Text>
+                    </View>
+                    
                     <View style={styles.buttonView}>
                         <TouchableOpacity style={styles.getLocation} onPress={()=>Actions.map()}>
                             <Text style={styles.locationText}>Use My Location</Text>
                         </TouchableOpacity>
                     </View>
-
-                    <View style={{felx:1,justifyContent:'center',alignItems:'center',backgroundColor:''}}>
-                        <Text style={{color:'white'}}>Developed by Decoded.Ninja</Text>
+                    <View style={{flex:3,justifyContent:'center',alignItems:'center',backgroundColor:''}}>
+                        <Text style={{color:'white',fontSize:10,fontFamily:'AppleSDGothicNeo-Light'}}>Developed by Decoded.Ninja 2020</Text>
                     </View>
                 </View>
             </SafeAreaView>
@@ -79,68 +72,54 @@ class Main extends Component{
     }
 }
 
-
-
 const styles = StyleSheet.create({
     main: {
         flex:1,
         justifyContent:'flex-start',
         alignItems:'center',
         backgroundColor:'black',
-        paddingTop:1000
-        
       },
     textContainer: {
         borderWidth: 1,
-        // borderColor: 'black',
         width:300,
         height: 50,
         justifyContent:'center',
         borderTopColor:'#f4f4f3',
         borderRightColor:'#f4f4f3',
         borderLeftColor:'#f4f4f3',
-        // borderBottomColor:'white'
         borderColor:'#f4f4f3'
-        
     },
     textContainerInvalid:{
         borderWidth: 1,
-        // borderColor: 'black',
         width:300,
         height: 50,
         justifyContent:'center',
-        // alignItems:'center',
-        
         borderTopColor:'#f4f4f3',
         borderRightColor:'#f4f4f3',
         borderLeftColor:'#f4f4f3',
-        // borderBottomColor:'red'
     },
     textInput:{
         fontSize:40,
         fontFamily:'Didot',
-        
     },
-
     text:{
         justifyContent:'center',
         alignItems:'center',
-        fontSize:80,
+        fontSize:100,
         fontFamily:'Avenir-BlackOblique',
         fontFamily:'Optima-Bold',
-        // fontFamily:'Optima-BoldItalic',
-        // fontFamily:'Optima-BoldItalic',
-        
-        // fontFamily:'Helvetica Neue',
         width:300,
-        marginBottom:50,
-        color:'#E7ECEF'
+        marginBottom:0,
+        color:'#E7ECEF',
+        lineHeight:90,
+        paddingTop:20,
+        textAlign:'left'
         
     },
     locationText:{
         color:'white',
         fontFamily:'Arial',
-    },  
+    },
     search:{
         backgroundColor:'#ccc',
         justifyContent:'center',
@@ -151,48 +130,36 @@ const styles = StyleSheet.create({
         borderRadius:0,
     },
     getLocation:{
-        // backgroundColor:'#E7ECEF',
         borderWidth:1,
         borderColor:'white',
         color:'black',
         justifyContent:'center',
         alignItems:'center',
-        // marginTop:20,
         height:60,
         width: 300,
-        
-        // borderRadius:300,
-        
+        marginTop:10
     },
-    
     searchText:{
         fontFamily:'Arial'
     },
     buttonView:{
+        flex:2,
         flexDirection:"row",
-        justifyContent:'space-between',
+        justifyContent:'flex-start',
     },
-
     hoshiView:{
         width:300,
         fontFamily:'Didot',
         paddingBottom:60
-        
-    },  
+    },
     hoshiInput:{
-        // backgroundColor:'red',
-        
         padding:100,
         fontFamily:'Didot',
-        
         fontSize:30
     },
     hoshiLabel:{
         fontFamily:'Didot',
-        // fontSize:30
     }
-
-
 })
 
 export default Main

@@ -4,21 +4,14 @@ import { SafeAreaView,StyleSheet,Text,View,Dimensions,Image } from 'react-native
 import MapView, {Marker} from 'react-native-maps'
 import GetLocation from 'react-native-get-location'
 
-import Carousel, { Pagination } from 'react-native-snap-carousel';
-import { sliderWidth, itemWidth } from './styles/SliderEntry.style';
+import Carousel from 'react-native-snap-carousel'
+import { sliderWidth, itemWidth } from './styles/SliderEntry.style'
 import SliderEntry from './SliderEntry';
 
 import leftButton from '../assets/icons/arrows.png'
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Actions } from 'react-native-router-flux';
-//import styles, { colors } from './styles/index.style';
-// import { ENTRIES1, ENTRIES2 } from './static/entries';
-// import { scrollInterpolators, animatedStyles } from './utils/animations';
-
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { Actions } from 'react-native-router-flux'
 import config from '../../config'
-
-
-const SLIDER_1_FIRST_ITEM = 1;
 
 class Map extends Component{
     constructor (props) {
@@ -26,19 +19,14 @@ class Map extends Component{
         this.state = {
             loading:true,
             location:{},
-            slider1ActiveSlide: SLIDER_1_FIRST_ITEM,
             coordinates:[]
         };
         this._renderDarkItem = this._renderDarkItem.bind(this)
-
         this._requestLocation = this._requestLocation.bind(this)
     }
 
     componentDidMount(){
-        console.log('mounted')
-        console.log(config.API_KEY)
         this._requestLocation()
-
     }
 
     hitPlaceAPI = async ()=>{
@@ -67,20 +55,22 @@ class Map extends Component{
                 obj['longitude'] = data.results[i].geometry.location.lng
                 obj['latitudeDelta'] = 0.0922
                 obj['longitudeDelta'] = 0.0421
-                // console.log(i)
-                // console.log('photo',JSON.stringify(data.results[i].photos[0].photo_reference))
-
-                //hit photo API
-                //photo API
-                const photoRef = data.results[i].photos[0].photo_reference
-                const photo_url = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400'
-                const photoParams = '&photoreference='+photoRef+'&key='+API_KEY
-                const complete_photo_url = photo_url+photoParams
-                //console.log(i)
-
+                obj['photo_reference'] = data.results[i].photos[0].photo_reference
+ 
                 coordinates.push(obj)
                 //console.log(coordinates)
             }
+
+            //loop for photos
+            for(var i=0; i<coordinates.length;i++){
+                const photoRef = coordinates[i].photo_reference
+                const photo_url = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400'
+                const photoParams = '&photoreference='+photoRef+'&key='+API_KEY
+                const complete_photo_url = photo_url+photoParams
+                console.log('URL:',complete_photo_url)
+                coordinates[i]['illustration'] = await this.hitPhotoAPI(complete_photo_url)
+            }
+            console.log('COORDINATES',coordinates)
             this.setState({coordinates},()=>setTimeout( ()=>{
                 this.setState({loading:false})
                 console.log(this.state.coordinates)
@@ -89,10 +79,11 @@ class Map extends Component{
     }
 
     hitPhotoAPI = async (url) => {
-        console.log('url')
+        console.log('hit photo API')
+        console.log('URL->>>>>',url)
         const response = await fetch(url);
-        const json = await response.json();
-        console.log(json);
+        console.log(response.url)
+        return response.url
     }
     
     _requestLocation = () => {
@@ -182,9 +173,6 @@ class Map extends Component{
             </View>
             ,
             <View style={styles.main}>
-
-               
-
 
                 <MapView                
                     ref={map=>this._map=map}
