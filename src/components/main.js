@@ -13,6 +13,7 @@ import {Hoshi} from 'react-native-textinput-effects'
 
 
 
+
 class Main extends Component{
     constructor(props){
         super(props)
@@ -61,15 +62,16 @@ class Main extends Component{
         return(
             
             <SafeAreaView style={styles.main}>
-                <View style={{marginTop:100}}>
-                    
-                    <Text style={styles.text}>Find some footy.</Text> 
-                    
-                     
+                <View style={{marginTop:0,flex:1,justifyContent:'space-evenly'}}>
+                    <Text style={styles.text}>Find some footy.</Text>
                     <View style={styles.buttonView}>
                         <TouchableOpacity style={styles.getLocation} onPress={()=>Actions.map()}>
                             <Text style={styles.locationText}>Use My Location</Text>
                         </TouchableOpacity>
+                    </View>
+
+                    <View style={{felx:1,justifyContent:'center',alignItems:'center',backgroundColor:''}}>
+                        <Text style={{color:'white'}}>Developed by Decoded.Ninja</Text>
                     </View>
                 </View>
             </SafeAreaView>

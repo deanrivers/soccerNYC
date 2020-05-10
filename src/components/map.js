@@ -15,6 +15,8 @@ import { Actions } from 'react-native-router-flux';
 // import { ENTRIES1, ENTRIES2 } from './static/entries';
 // import { scrollInterpolators, animatedStyles } from './utils/animations';
 
+import config from '../../config'
+
 
 const SLIDER_1_FIRST_ITEM = 1;
 
@@ -33,19 +35,14 @@ class Map extends Component{
     }
 
     componentDidMount(){
+        console.log('mounted')
+        console.log(config.API_KEY)
         this._requestLocation()
-    }
 
-    hitPhotoAPI = async (url) => {
-        console.log('url')
-        const response = await fetch(url);
-        const json = await response.json();
-        console.log(json);
     }
-
 
     hitPlaceAPI = async ()=>{
-        const API_KEY = 'AIzaSyDomtX8Thq69p7mTW2HwgV1NCzeMSOWKhE'
+        const API_KEY = config.API_KEY
         const baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
         const parameters = "location=" + this.state.location.latitude + "," + this.state.location.longitude +
       "&radius=2000&keyword=soccer%20field" + "&key=" + API_KEY
@@ -79,13 +76,10 @@ class Map extends Component{
                 const photo_url = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400'
                 const photoParams = '&photoreference='+photoRef+'&key='+API_KEY
                 const complete_photo_url = photo_url+photoParams
-                console.log(i)
-                // console.log(complete_photo_url)
-                
-                //this.request(complete_photo_url)
+                //console.log(i)
 
                 coordinates.push(obj)
-                console.log(coordinates)
+                //console.log(coordinates)
             }
             this.setState({coordinates},()=>setTimeout( ()=>{
                 this.setState({loading:false})
@@ -93,9 +87,15 @@ class Map extends Component{
             },10))
         }
     }
+
+    hitPhotoAPI = async (url) => {
+        console.log('url')
+        const response = await fetch(url);
+        const json = await response.json();
+        console.log(json);
+    }
     
     _requestLocation = () => {
-        
         GetLocation.getCurrentPosition({
             enableHighAccuracy: true,
             timeout: 150000,
