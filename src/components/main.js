@@ -1,10 +1,12 @@
 import React, {Component} from 'react'
 
-import { Text,View,TextInput,StyleSheet,TouchableOpacity,StatusBar, SafeAreaView }from 'react-native'
+import { Text,View,Image,StyleSheet,TouchableOpacity, SafeAreaView }from 'react-native'
 
 import {Actions} from 'react-native-router-flux'
 
 import {Hoshi} from 'react-native-textinput-effects'
+
+import logoImage from '../assets/icons/logo.png'
 
 
 
@@ -21,11 +23,12 @@ class Main extends Component{
             zipCode:'',
             zipValid:false,
             zipFilled:false,
-            textValue:''
+            textValue:'',
+            text:'footy.'
         }
 
     }
-
+    
     inputUpdate(e){
         var zipCode = e
         this.setState({zipCode},()=>{
@@ -50,12 +53,15 @@ class Main extends Component{
     }
 
     render(){
+
+        
         return(
             <SafeAreaView style={styles.main}>
                 
-                <View style={{paddingTop:80,flex:1,justifyContent:'space-between',}}>
+                <View style={{paddingTop:80,flex:1,justifyContent:'space-between',padding:50}}>
                     <View style={{flex:0,backgroundColor:'',overflow:'visible'}}>
-                        <Text style={styles.text}>Find some footy.</Text>
+                        <Text style={styles.text}>Find some</Text>
+                        <Text style={styles.text}>{this.state.text}</Text>
                     </View>
                     
                     <View style={styles.buttonView}>
@@ -63,25 +69,33 @@ class Main extends Component{
                             <Text style={styles.locationText}>Use My Location</Text>
                         </TouchableOpacity>
                     </View>
+                    
                     <View style={{flex:3,justifyContent:'center',alignItems:'center',backgroundColor:''}}>
-                        <Text style={{color:'white',fontSize:10,fontFamily:'AppleSDGothicNeo-Light'}}>Developed by Decoded.Ninja 2020</Text>
+                        <Image style={{width:40,height:40}} source={logoImage}/>
                     </View>
+
                 </View>
             </SafeAreaView>
         )
     }
+
 }
+
+
 
 const styles = StyleSheet.create({
     main: {
         flex:1,
-        justifyContent:'flex-start',
-        alignItems:'center',
+        // width:'100%',
+        // alignItems:'center',
         backgroundColor:'black',
+        
+
+        // margin:2
       },
     textContainer: {
         borderWidth: 1,
-        width:300,
+        // width:300,
         height: 50,
         justifyContent:'center',
         borderTopColor:'#f4f4f3',
@@ -91,27 +105,24 @@ const styles = StyleSheet.create({
     },
     textContainerInvalid:{
         borderWidth: 1,
-        width:300,
+        // width:300,
         height: 50,
         justifyContent:'center',
         borderTopColor:'#f4f4f3',
         borderRightColor:'#f4f4f3',
         borderLeftColor:'#f4f4f3',
     },
-    textInput:{
-        fontSize:40,
-        fontFamily:'Didot',
-    },
+
     text:{
         justifyContent:'center',
         alignItems:'center',
-        fontSize:100,
-        fontFamily:'Avenir-BlackOblique',
-        fontFamily:'Optima-Bold',
-        width:300,
+        fontSize:80,
+        fontFamily:'GillSans-SemiBoldItalic',
+        // width:300,
         marginBottom:0,
-        color:'#E7ECEF',
-        lineHeight:90,
+        color:'white',
+        
+        lineHeight:60,
         paddingTop:20,
         textAlign:'left'
         
@@ -120,32 +131,26 @@ const styles = StyleSheet.create({
         color:'white',
         fontFamily:'Arial',
     },
-    search:{
-        backgroundColor:'#ccc',
-        justifyContent:'center',
-        alignItems:'center',
-        marginTop:20,
-        height:40,
-        width: 140,
-        borderRadius:0,
-    },
+
     getLocation:{
         borderWidth:1,
         borderColor:'white',
         color:'black',
         justifyContent:'center',
         alignItems:'center',
-        height:60,
-        width: 300,
-        marginTop:10
+        height:70,
+        // width: 300,
+        // marginTop:10
     },
     searchText:{
         fontFamily:'Arial'
     },
     buttonView:{
         flex:2,
-        flexDirection:"row",
-        justifyContent:'flex-start',
+        // backgroundColor:'red',
+        justifyContent:'center'
+        // flexDirection:"row",
+        // justifyContent:'center',
     },
     hoshiView:{
         width:300,

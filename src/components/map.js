@@ -13,19 +13,50 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Actions } from 'react-native-router-flux'
 import config from '../../config'
 
+import markerIcon from '../assets/icons/marker.png'
+import defaultImage from '../assets/icons/logo.png'
+
 class Map extends Component{
     constructor (props) {
         super(props);
         this.state = {
             loading:true,
             location:{},
-            coordinates:[]
+            coordinates:[],
+            // coordinates: [{
+            //     title: 'Sinatra Park',
+            //     subtitle:'test',
+            //     illustration: 'https://i.imgur.com/UYiroysl.jpg',
+            //     latitude:40.7411,
+            //     longitude:-74.0266
+            // },
+            // {
+            //     title: 'Berry Lane Park',
+            //     subtitle:'test',
+            //     illustration: 'https://i.imgur.com/UYiroysl.jpg',
+            //     latitude:40.7118,
+            //     longitude:-74.0678
+            // },
+            // {
+            //     title: '1600 Park',
+            //     subtitle:'test',
+            //     illustration:'https://i.imgur.com/UYiroysl.jpg',
+            //     latitude:40.7574,
+            //     longitude:-74.0281
+            // }]
         };
         this._renderDarkItem = this._renderDarkItem.bind(this)
         this._requestLocation = this._requestLocation.bind(this)
     }
 
     componentDidMount(){
+        console.log('Component Mounted')
+        console.log('------------------')
+        console.log('------------------')
+        console.log('------------------')
+        console.log('------------------')
+        console.log('------------------')
+        console.log('------------------')
         this._requestLocation()
     }
 
@@ -40,6 +71,7 @@ class Map extends Component{
         const response = await fetch(url)
         const data = await response.json()
         console.log(data.status)
+        
 
         var location
         var coordinates = []
@@ -55,35 +87,64 @@ class Map extends Component{
                 obj['longitude'] = data.results[i].geometry.location.lng
                 obj['latitudeDelta'] = 0.0922
                 obj['longitudeDelta'] = 0.0421
-                obj['photo_reference'] = data.results[i].photos[0].photo_reference
- 
-                coordinates.push(obj)
-                //console.log(coordinates)
-            }
 
+                try{
+                    obj['photo_reference'] = data.results[i].photos[0].photo_reference
+                } catch(error){
+                    console.log('error',error)
+                    console.log('name',data.results[i]['name'])
+                    console.log('photos',data.results[i]['photos'])
+                    
+                }
+
+                if(data.results["business_status"] !=="OPERATIONAL"){
+                    coordinates.push(obj)
+                } else{
+                    console.log('Something is not right for this entry:')
+                    console.log(obj)
+                }
+            }
+            
             //loop for photos
             for(var i=0; i<coordinates.length;i++){
+
+                
+
                 const photoRef = coordinates[i].photo_reference
-                const photo_url = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400'
-                const photoParams = '&photoreference='+photoRef+'&key='+API_KEY
-                const complete_photo_url = photo_url+photoParams
-                console.log('URL:',complete_photo_url)
-                coordinates[i]['illustration'] = await this.hitPhotoAPI(complete_photo_url)
+                
+
+                if(photoRef!==undefined){
+                    const photo_url = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400'
+                    const photoParams = '&photoreference='+photoRef+'&key='+API_KEY
+                    const complete_photo_url = photo_url+photoParams
+                    // console.log('URL:',complete_photo_url)
+                    coordinates[i]['illustration'] = await this.hitPhotoAPI(complete_photo_url)
+                } else{
+                    coordinates[i]['illustration'] = 'https://images.unsplash.com/photo-1548192746-dd526f154ed9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80'
+                }
+                
             }
-            console.log('COORDINATES',coordinates)
+            console.log('STATE COORDINATES',coordinates)
             this.setState({coordinates},()=>setTimeout( ()=>{
                 this.setState({loading:false})
-                console.log(this.state.coordinates)
+                console.log('THE COMPLETE ARRAY OF OBJECTS',this.state.coordinates)
             },10))
         }
     }
 
     hitPhotoAPI = async (url) => {
-        console.log('hit photo API')
-        console.log('URL->>>>>',url)
-        const response = await fetch(url);
-        console.log(response.url)
-        return response.url
+        // console.log('hit photo API')
+        // console.log('URL->>>>>',url)
+
+        try{
+            const response = await fetch(url);
+            return response.url
+        } catch(error){
+            console.log(error)
+        }
+        
+        // console.log('Respsonse URL',response.url)
+        
     }
     
     _requestLocation = () => {
@@ -160,45 +221,56 @@ class Map extends Component{
     render(){
 
         if(this.state.loading){
-            // return null
             return <View><Text>Test</Text></View>
-            
         }
 
         return([
-            <View style={{position:'absolute',zIndex:10,top:40,left:40,backgroundColor:'white',borderRadius:100,padding:10,flex:1,justifyContent:'center',alignItems:'center'}}>
-                <TouchableOpacity onPress={()=>Actions.pop()}>
-                    <Image style={{width:20,height:20,color:'white'}} source={leftButton}></Image>
-                </TouchableOpacity>
-            </View>
+            // <View style={{position:'absolute',zIndex:10,top:40,left:40,backgroundColor:'white',borderRadius:0,padding:10,flex:1,justifyContent:'center',alignItems:'center'}}>
+            //     <TouchableOpacity onPress={()=>Actions.pop()}>
+            //         <Image style={{width:20,height:20,color:'white'}} source={leftButton}></Image>
+            //     </TouchableOpacity>
+            // </View>,
+            // <View style={{position:'absolute',zIndex:10,top:100,left:40,backgroundColor:'orange',borderRadius:0,padding:10,flex:1,justifyContent:'center',alignItems:'center'}}>
+            //     <TouchableOpacity onPress={()=>Actions.pop()}>
+            //         <Image style={{width:20,height:20,color:'white'}} source={leftButton}></Image>
+            //     </TouchableOpacity>
+            // </View>
+            
+            
             ,
             <View style={styles.main}>
+            
+            
+                <View style={{flex:1,borderWidth:0,borderColor:'orange',padding:1,backgroundColor:'white'}}>
+                    <MapView                
+                        ref={map=>this._map=map}
+                        showsUserLocation={true}
+                        style={styles.map}
+                        region={{
+                            latitude: this.state.location.latitude,
+                            longitude: this.state.location.longitude,
+                            latitudeDelta: 0.0922,
+                            longitudeDelta: 0.0421,
+                        }}
+                        min
+                    >
+                        
+                        {this.state.coordinates.map( marker=>
+                            (
+                                <Marker
+                                coordinate={{
+                                    latitude:marker.latitude,
+                                    longitude:marker.longitude
+                                }}
+                                title={marker.title}
+                                >
+                                    {/* <Image style={{width:20,height:50}} source={markerIcon}/> */}
 
-                <MapView                
-                    ref={map=>this._map=map}
-                    showsUserLocation={true}
-                    style={styles.map}
-                    region={{
-                        latitude: this.state.location.latitude,
-                        longitude: this.state.location.longitude,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
-                    }}
-                    min
-                >
-                    
-                    {this.state.coordinates.map( marker=>
-                        (
-                            <Marker
-                            coordinate={{
-                                latitude:marker.latitude,
-                                longitude:marker.longitude
-                            }}
-                            title={marker.title}
-                            />
-                        )
-                    )}
-                </MapView>
+                                </Marker>
+                            )
+                        )}
+                    </MapView>
+                </View>
                 
                 
                 <View style={styles.carouselContainer}>
@@ -223,7 +295,17 @@ class Map extends Component{
             </View>
                 
 
+            </View>,
+            <View style={styles.containerA}>
+                <TouchableOpacity style={styles.touchA} onPress={()=>Actions.pop()}>
+                    <Text style={{color:'white'}}>Back</Text>
+                </TouchableOpacity>
+                {/* <TouchableOpacity style={styles.touchB}>
+                    <Text>Back</Text>
+                </TouchableOpacity> */}
             </View>
+            
+        
 
                     ])
     }
@@ -250,7 +332,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     carouselContainer: {
-        paddingVertical: 60,
+        paddingVertical: 40,
         backgroundColor:'black',
         justifyContent:'center',
         alignItems:'center',
@@ -315,8 +397,6 @@ const styles = StyleSheet.create({
 ,        flex:1,
         flexDirection:'row',
         overflow:'hidden',
-        // width:'100%'
-        
     },
     cardView:{
         backgroundColor:'orange',
@@ -335,7 +415,31 @@ const styles = StyleSheet.create({
     },
     backText:{
         color:'white'
-    }
+    },
+    containerA:{
+        // flex: 1,
+        justifyContent: "center",
+        // flexDirection:'row'
+        // paddingHorizontal: 10
+    },
+    touchA: {
+        alignItems: "center",
+        justifyContent:'center',
+        backgroundColor: "black",
+        borderWidth:1,
+        borderColor:'white',
+        padding: 10,
+        height:100,
+        // width:200
+      },
+    touchB: {
+        alignItems: "center",
+        justifyContent:'center',
+        backgroundColor: "blue",
+        padding: 10,
+        height:80,
+        // width:200,
+      },
 })
 
 
