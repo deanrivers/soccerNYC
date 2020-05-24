@@ -9,13 +9,6 @@ import {Hoshi} from 'react-native-textinput-effects'
 import logoImage from '../assets/icons/logo.png'
 
 
-
-
-
-
-
-
-
 class Main extends Component{
     constructor(props){
         super(props)
@@ -24,11 +17,33 @@ class Main extends Component{
             zipValid:false,
             zipFilled:false,
             textValue:'',
-            text:'footy.'
+            textInserts:['Soccer','Fútbol','Calcio','Futebol','Football','Faußall'],
+            globalCounter:0
         }
-
     }
-    
+
+    componentDidMount() {
+        
+        // this.interval = setInterval(() => {
+        //     var globalCounter = this.state.globalCounter
+        //     var textInserts = this.state.textInserts
+
+        //     if(globalCounter==textInserts.length-1){
+        //         globalCounter = 0
+        //     } else{
+        //         globalCounter++
+        //     }
+        //     this.setState({globalCounter},()=>console.log(this.state.globalCounter),()=>console.log(this.state.globalCounter))
+            
+        // }, 1000);
+
+      }
+
+      componentWillUnmount() {
+
+        //clearInterval(this.interval);
+      }
+
     inputUpdate(e){
         var zipCode = e
         this.setState({zipCode},()=>{
@@ -53,35 +68,27 @@ class Main extends Component{
     }
 
     render(){
-
-        
         return(
             <SafeAreaView style={styles.main}>
-                
-                <View style={{paddingTop:80,flex:1,justifyContent:'space-between',padding:50}}>
-                    <View style={{flex:0,backgroundColor:'',overflow:'visible'}}>
-                        <Text style={styles.text}>Find some</Text>
-                        <Text style={styles.text}>{this.state.text}</Text>
-                    </View>
-                    
-                    <View style={styles.buttonView}>
-                        <TouchableOpacity style={styles.getLocation} onPress={()=>Actions.map()}>
-                            <Text style={styles.locationText}>Use My Location</Text>
-                        </TouchableOpacity>
-                    </View>
-                    
-                    <View style={{flex:3,justifyContent:'center',alignItems:'center',backgroundColor:''}}>
+                <View style={{flex:2,justifyContent:'center',alignItems:'center',backgroundColor:''}}>
                         <Image style={{width:40,height:40}} source={logoImage}/>
-                    </View>
-
                 </View>
+
+                
+                <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems:'center',backgroundColor:''}} onPress={()=>Actions.bio()}>
+                    <Text style={styles.subHeaderText}>What does this app do?</Text>
+                    {/* <Text style={styles.headerText}>{this.state.textInserts[this.state.globalCounter]}.</Text> */}
+                </TouchableOpacity>
+                
+
+                <TouchableOpacity style={{flex:2,justifyContent:'flex-end',alignItems:'flex-end',backgroundColor:''}} onPress={()=>Actions.map()}>
+                    <Text style={styles.headerText}>Find {this.state.textInserts[this.state.globalCounter]}.</Text>
+                    {/* <Text style={styles.headerText}>{this.state.textInserts[this.state.globalCounter]}.</Text> */}
+                </TouchableOpacity>
             </SafeAreaView>
         )
     }
-
 }
-
-
 
 const styles = StyleSheet.create({
     main: {
@@ -89,9 +96,8 @@ const styles = StyleSheet.create({
         // width:'100%',
         // alignItems:'center',
         backgroundColor:'black',
-        
-
-        // margin:2
+        // justifyContent:'center',
+        // alignItems:'center'
       },
     textContainer: {
         borderWidth: 1,
@@ -113,32 +119,54 @@ const styles = StyleSheet.create({
         borderLeftColor:'#f4f4f3',
     },
 
-    text:{
+    headerText:{
+        fontSize:130,
+        fontFamily:'GillSans-SemiBoldItalic',
+        fontFamily:'Avenir-Heavy',
+        fontFamily:'Avenir-HeavyOblique',
+        fontFamily:'GillSans-SemiBoldItalic',
+        
+        lineHeight:100,
+        width:'100%',
+        paddingTop:20,
+        bottom:0,
+
+        color:'white',
+
+        // backgroundColor:'black',
+    },
+    subHeaderText:{
+        fontSize:50,
+        fontFamily:'HelveticaNeue-UltraLight',
         justifyContent:'center',
         alignItems:'center',
-        fontSize:80,
-        fontFamily:'GillSans-SemiBoldItalic',
-        // width:300,
-        marginBottom:0,
+        // fontFamily:'Avenir-Heavy',
+        // fontFamily:'Avenir-HeavyOblique',
+        // fontFamily:'GillSans-SemiBoldItalic',
+        
+        // lineHeight:50,
+        width:'100%',
+        // paddingTop:10,
+        // bottom:0,
+
         color:'white',
-        
-        lineHeight:60,
-        paddingTop:20,
-        textAlign:'left'
-        
+
+        // backgroundColor:'black',
     },
+   
     locationText:{
         color:'white',
         fontFamily:'Arial',
     },
 
-    getLocation:{
+    getLocationButton:{
         borderWidth:1,
         borderColor:'white',
         color:'black',
         justifyContent:'center',
         alignItems:'center',
-        height:70,
+        height:50,
+        borderRadius:0
         // width: 300,
         // marginTop:10
     },
@@ -146,11 +174,9 @@ const styles = StyleSheet.create({
         fontFamily:'Arial'
     },
     buttonView:{
-        flex:2,
+        flex:3,
         // backgroundColor:'red',
-        justifyContent:'center'
-        // flexDirection:"row",
-        // justifyContent:'center',
+        justifyContent:'center',
     },
     hoshiView:{
         width:300,
@@ -164,6 +190,9 @@ const styles = StyleSheet.create({
     },
     hoshiLabel:{
         fontFamily:'Didot',
+    },
+    description:{
+        color:'white'
     }
 })
 

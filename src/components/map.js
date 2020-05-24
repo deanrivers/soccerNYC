@@ -50,6 +50,7 @@ class Map extends Component{
     }
 
     componentDidMount(){
+        
         console.log('Component Mounted')
         console.log('------------------')
         console.log('------------------')
@@ -107,12 +108,7 @@ class Map extends Component{
             
             //loop for photos
             for(var i=0; i<coordinates.length;i++){
-
-                
-
                 const photoRef = coordinates[i].photo_reference
-                
-
                 if(photoRef!==undefined){
                     const photo_url = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400'
                     const photoParams = '&photoreference='+photoRef+'&key='+API_KEY
@@ -120,9 +116,8 @@ class Map extends Component{
                     // console.log('URL:',complete_photo_url)
                     coordinates[i]['illustration'] = await this.hitPhotoAPI(complete_photo_url)
                 } else{
-                    coordinates[i]['illustration'] = 'https://images.unsplash.com/photo-1548192746-dd526f154ed9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80'
+                    coordinates[i]['illustration'] = 'https://sjsuspartans.com/images/2019/5/24/SJS21818.JPG'
                 }
-                
             }
             console.log('STATE COORDINATES',coordinates)
             this.setState({coordinates},()=>setTimeout( ()=>{
@@ -142,9 +137,6 @@ class Map extends Component{
         } catch(error){
             console.log(error)
         }
-        
-        // console.log('Respsonse URL',response.url)
-        
     }
     
     _requestLocation = () => {
@@ -225,23 +217,8 @@ class Map extends Component{
         }
 
         return([
-            // <View style={{position:'absolute',zIndex:10,top:40,left:40,backgroundColor:'white',borderRadius:0,padding:10,flex:1,justifyContent:'center',alignItems:'center'}}>
-            //     <TouchableOpacity onPress={()=>Actions.pop()}>
-            //         <Image style={{width:20,height:20,color:'white'}} source={leftButton}></Image>
-            //     </TouchableOpacity>
-            // </View>,
-            // <View style={{position:'absolute',zIndex:10,top:100,left:40,backgroundColor:'orange',borderRadius:0,padding:10,flex:1,justifyContent:'center',alignItems:'center'}}>
-            //     <TouchableOpacity onPress={()=>Actions.pop()}>
-            //         <Image style={{width:20,height:20,color:'white'}} source={leftButton}></Image>
-            //     </TouchableOpacity>
-            // </View>
-            
-            
-            ,
             <View style={styles.main}>
-            
-            
-                <View style={{flex:1,borderWidth:0,borderColor:'orange',padding:1,backgroundColor:'white'}}>
+                <View style={styles.mapContainer}>
                     <MapView                
                         ref={map=>this._map=map}
                         showsUserLocation={true}
@@ -254,7 +231,6 @@ class Map extends Component{
                         }}
                         min
                     >
-                        
                         {this.state.coordinates.map( marker=>
                             (
                                 <Marker
@@ -264,16 +240,14 @@ class Map extends Component{
                                 }}
                                 title={marker.title}
                                 >
-                                    {/* <Image style={{width:20,height:50}} source={markerIcon}/> */}
-
                                 </Marker>
                             )
                         )}
                     </MapView>
                 </View>
                 
-                
                 <View style={styles.carouselContainer}>
+                    {/* <Text style={styles.carouselHeader}>Local Soccer Fields</Text> */}
                     <Carousel
                         data={this.state.coordinates}
                         renderItem={this._renderLightItem}
@@ -292,22 +266,14 @@ class Map extends Component{
                         }}
                         onSnapToItem={(index)=>this.onCarouselItemChange(index)}
                     />
+                    {/* <View style={styles.containerA}>
+                        <TouchableOpacity style={styles.backButton} onPress={()=>Actions.pop()}>
+                            <Text style={{color:'white'}}>Back</Text>
+                        </TouchableOpacity>
+                    </View> */}
+                </View>
             </View>
-                
-
-            </View>,
-            <View style={styles.containerA}>
-                <TouchableOpacity style={styles.touchA} onPress={()=>Actions.pop()}>
-                    <Text style={{color:'white'}}>Back</Text>
-                </TouchableOpacity>
-                {/* <TouchableOpacity style={styles.touchB}>
-                    <Text>Back</Text>
-                </TouchableOpacity> */}
-            </View>
-            
-        
-
-                    ])
+            ])
     }
 }
 const colors = {
@@ -317,46 +283,16 @@ const colors = {
     background2: '#21D4FD'
 };
 const styles = StyleSheet.create({
-    safeArea: {
-        flex: 1,
-        backgroundColor: colors.black
-    },
-    container: {
-        // flex: 1,
-        backgroundColor: colors.background1
-    },
-    gradient: {
-        ...StyleSheet.absoluteFillObject
-    },
-    scrollview: {
-        flex: 1
-    },
     carouselContainer: {
-        paddingVertical: 40,
-        backgroundColor:'black',
+        backgroundColor:'grey',
+        // justifyContent:'space-evenly',
         justifyContent:'center',
         alignItems:'center',
         overflow:'hidden',
-        bottom:0,
         flex:1
     },
-    exampleContainerDark: {
-        backgroundColor: colors.black
-    },
-    exampleContainerLight: {
-        backgroundColor: 'white'
-    },
-    title: {
-        paddingHorizontal: 30,
-        backgroundColor: 'transparent',
-        color: 'rgba(255, 255, 255, 0.9)',
-        fontSize: 20,
-        fontWeight: 'bold',
-        textAlign: 'center'
-    },
-    titleDark: {
-        color: colors.black
-    },
+
+
     subtitle: {
         marginTop: 5,
         paddingHorizontal: 30,
@@ -382,63 +318,39 @@ const styles = StyleSheet.create({
         marginHorizontal: 8
     },
     main:{
-        flex:1
+        flex:1,
+        backgroundColor:'black',
+        justifyContent:'center',
     },
     map:{
-        // width:300,
-        // height:1000
         flex:1,
         alignItems:'center',
         justifyContent:'center',
-        // ...StyleSheet.absoluteFillObject,
+        // borderRadius:5
     },
-    soccerView:{
-        display:'flex'
-,        flex:1,
-        flexDirection:'row',
-        overflow:'hidden',
-    },
-    cardView:{
-        backgroundColor:'orange',
-        width:300,
-        margin:10
-    },
-    backButton:{
-        justifyContent:'center',
-        alignItems:'center',
-        // position:'absolute',
-        backgroundColor:'blue',
-
-        // top:0,
-        // left:0,
-        zIndex:100
+    mapContainer:{
+        // margin:50,
+        // marginBottom:20,
+        // marginTop:60,
+        flex:1,
     },
     backText:{
         color:'white'
     },
     containerA:{
-        // flex: 1,
-        justifyContent: "center",
-        // flexDirection:'row'
-        // paddingHorizontal: 10
+        width:'100%',
+        position:'relative'
     },
-    touchA: {
+    backButton: {
         alignItems: "center",
         justifyContent:'center',
         backgroundColor: "black",
         borderWidth:1,
         borderColor:'white',
         padding: 10,
-        height:100,
-        // width:200
-      },
-    touchB: {
-        alignItems: "center",
-        justifyContent:'center',
-        backgroundColor: "blue",
-        padding: 10,
-        height:80,
+        height:40,
         // width:200,
+        margin:50
       },
 })
 
