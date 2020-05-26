@@ -24,9 +24,9 @@ export default StyleSheet.create({
         height: slideHeight,
         paddingHorizontal: itemHorizontalMargin,
         paddingBottom: 0, // needed for shadow
-        
-        borderColor:'red'
-        
+        flex:1,
+        justifyContent:'center',
+        // alignItems:'center'
     },
     shadow: {
         position: 'absolute',
@@ -43,11 +43,8 @@ export default StyleSheet.create({
     imageContainer: {
         flex: 1,
         marginBottom: IS_IOS ? 0 : -1, // Prevent a random Android rendering issue
-        
         borderTopLeftRadius: entryBorderRadius,
         borderTopRightRadius: entryBorderRadius,
-        
-        
     },
     imageContainerEven: {
         backgroundColor: colors.black

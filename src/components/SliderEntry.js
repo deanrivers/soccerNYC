@@ -70,3 +70,5 @@ export default class SliderEntry extends Component {
         );
     }
 }
+
+

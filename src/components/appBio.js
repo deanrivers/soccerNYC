@@ -8,7 +8,7 @@ import leftButton from '../assets/icons/back2.png'
 let AppBio = ()=>{
     return(
         <View style={styles.main}>
-            <TouchableOpacity style={styles.backButton} onPress={()=>Actions.pop()}>
+            <TouchableOpacity style={styles.backButton} onPress={()=>Actions.main()}>
                 {/* <Text>Back</Text> */}
                 <Image style={{width:50,height:50,}} source={leftButton}/>
             </TouchableOpacity>

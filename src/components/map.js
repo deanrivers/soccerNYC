@@ -13,8 +13,11 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Actions } from 'react-native-router-flux'
 import config from '../../config'
 
+import LinearGradient from 'react-native-linear-gradient';
+
 import markerIcon from '../assets/icons/marker.png'
 import defaultImage from '../assets/icons/logo.png'
+import loaderImage from '../assets/icons/loader.gif'
 
 class Map extends Component{
     constructor (props) {
@@ -63,9 +66,11 @@ class Map extends Component{
 
     hitPlaceAPI = async ()=>{
         const API_KEY = config.API_KEY
+        const searchTerm = 'soccer%20field'
         const baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
+        const radius ='5000'
         const parameters = "location=" + this.state.location.latitude + "," + this.state.location.longitude +
-      "&radius=2000&keyword=soccer%20field" + "&key=" + API_KEY
+      "&radius="+radius+"&keyword="+searchTerm + "&key=" + API_KEY
         
         const url = baseUrl + parameters
 
@@ -147,7 +152,7 @@ class Map extends Component{
         .then(location => {
             this.setState({
                 location,
-                loading: false,
+                loading: true,
             },()=>{
                 this.hitPlaceAPI()
             });
@@ -205,28 +210,50 @@ class Map extends Component{
         this._map.animateToRegion({
             latitude: location.latitude,
             longitude: location.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0521,
+            latitudeDelta: 0.0522,
+            longitudeDelta: 0.0221,
         })
     }
 
     render(){
+       
+        var carouselRender = (this.state.loading) ? <View style={{flex:1,justifyContent:'center',alignItems:'center',zIndex:100000,height:'100%',backgroundColor:'',top:0,paddingBottom:'33%'}}><Image style={{flex:1,justifyContent:'center',alignItems:'center',width:60,height:60}}source={loaderImage}/></View>:
+        
+        <Carousel
+        data={this.state.coordinates}
+        renderItem={this._renderDarkItem}
+        sliderWidth={sliderWidth}
+        itemWidth={itemWidth}
+        inactiveSlideScale={0.85}
+        inactiveSlideOpacity={1}
+        enableMomentum={true}
+        activeSlideAlignment={'center'}
+        containerCustomStyle={styles.slider}
+        contentContainerCustomStyle={styles.sliderContentContainer}
+        activeAnimationType={'spring'}
+        activeAnimationOptions={{
+            friction: 5,
+            tension: 200
+        }}
+        onSnapToItem={(index)=>this.onCarouselItemChange(index)}
+    />;
 
-        if(this.state.loading){
-            return <View><Text>Test</Text></View>
-        }
+        // if(this.state.loading){
+        //     return <View><Text>Test</Text></View>
+        // }
 
         return([
             <View style={styles.main}>
                 <View style={styles.mapContainer}>
-                    <MapView                
+                    <MapView
+                        mapPadding={{top: 0, left: 0, right: 0, bottom:350}}                
                         ref={map=>this._map=map}
                         showsUserLocation={true}
                         style={styles.map}
                         region={{
                             latitude: this.state.location.latitude,
                             longitude: this.state.location.longitude,
-                            latitudeDelta: 0.0922,
+                            latitudeDelta: 0.0722,
                             longitudeDelta: 0.0421,
                         }}
                         min
@@ -245,32 +272,20 @@ class Map extends Component{
                         )}
                     </MapView>
                 </View>
-                
-                <View style={styles.carouselContainer}>
-                    {/* <Text style={styles.carouselHeader}>Local Soccer Fields</Text> */}
-                    <Carousel
-                        data={this.state.coordinates}
-                        renderItem={this._renderLightItem}
-                        sliderWidth={sliderWidth}
-                        itemWidth={itemWidth}
-                        inactiveSlideScale={0.85}
-                        inactiveSlideOpacity={0.8}
-                        enableMomentum={true}
-                        activeSlideAlignment={'center'}
-                        containerCustomStyle={styles.slider}
-                        contentContainerCustomStyle={styles.sliderContentContainer}
-                        activeAnimationType={'spring'}
-                        activeAnimationOptions={{
-                            friction: 5,
-                            tension: 200
-                        }}
-                        onSnapToItem={(index)=>this.onCarouselItemChange(index)}
-                    />
-                    {/* <View style={styles.containerA}>
-                        <TouchableOpacity style={styles.backButton} onPress={()=>Actions.pop()}>
-                            <Text style={{color:'white'}}>Back</Text>
+
+                <View style={styles.bottomContainer}>
+                    <LinearGradient colors={['transparent','black']} style={styles.linearGradient}>
+                        <View style={styles.carouselContainer}>
+                            {carouselRender}
+                        </View>
+                    </LinearGradient>
+                    
+
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity style={styles.backButton} onPress={()=>Actions.main()}>
+                            <Text style={styles.backButtonText}>Go Back.</Text>
                         </TouchableOpacity>
-                    </View> */}
+                    </View>
                 </View>
             </View>
             ])
@@ -283,13 +298,32 @@ const colors = {
     background2: '#21D4FD'
 };
 const styles = StyleSheet.create({
+
+    linearGradient:{
+        flex:1,
+        width:'100%',
+        alignItems:'center'
+    },
     carouselContainer: {
-        backgroundColor:'grey',
+        flex:3,
+        // backgroundColor:'orange',
         // justifyContent:'space-evenly',
         justifyContent:'center',
         alignItems:'center',
-        overflow:'hidden',
-        flex:1
+        // overflow:'hidden',
+        // paddingTop:50
+        
+    },
+    bottomContainer:{
+        flex:1,
+        justifyContent:'center',
+        alignItems:'center',
+        position:'absolute',
+        zIndex:100,
+        bottom:0,
+        width:'100%',
+        // backgroundColor:'black',
+        // height:'50%'
     },
 
 
@@ -326,32 +360,44 @@ const styles = StyleSheet.create({
         flex:1,
         alignItems:'center',
         justifyContent:'center',
-        // borderRadius:5
+        // position:'absolute',
+        zIndex:100
     },
     mapContainer:{
-        // margin:50,
-        // marginBottom:20,
-        // marginTop:60,
         flex:1,
+        
+        // height:'100%',
+        zIndex:100
     },
     backText:{
         color:'white'
     },
-    containerA:{
+    buttonContainer:{
         width:'100%',
-        position:'relative'
+        // position:'relative'
+        flex:1,
+        // backgroundColor:'green',
+        justifyContent:'flex-start',
+        alignItems:'flex-start',
+        backgroundColor:'black'
+
     },
     backButton: {
-        alignItems: "center",
-        justifyContent:'center',
-        backgroundColor: "black",
-        borderWidth:1,
-        borderColor:'white',
-        padding: 10,
-        height:40,
-        // width:200,
-        margin:50
+        alignItems: "flex-start",
+        justifyContent:'flex-start',
+        width:'100%'
+        // backgroundColor: "black",
+        
+
+
       },
+      backButtonText:{
+          color:'white',
+          fontFamily:'GillSans-SemiBoldItalic',
+          fontSize:80,
+          textAlign:'center',
+          width:'100%'
+      }
 })
 
 

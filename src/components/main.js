@@ -17,31 +17,32 @@ class Main extends Component{
             zipValid:false,
             zipFilled:false,
             textValue:'',
-            textInserts:['Soccer','Fútbol','Calcio','Futebol','Football','Faußall'],
+            textInserts:['Soccer','Fútbol','Calcio','Futebol','Football','Fußall'],
             globalCounter:0
         }
     }
 
     componentDidMount() {
         
-        // this.interval = setInterval(() => {
-        //     var globalCounter = this.state.globalCounter
-        //     var textInserts = this.state.textInserts
+        this.interval = setInterval(() => {
+            var globalCounter = this.state.globalCounter
+            var textInserts = this.state.textInserts
 
-        //     if(globalCounter==textInserts.length-1){
-        //         globalCounter = 0
-        //     } else{
-        //         globalCounter++
-        //     }
-        //     this.setState({globalCounter},()=>console.log(this.state.globalCounter),()=>console.log(this.state.globalCounter))
+            if(globalCounter==textInserts.length-1){
+                globalCounter = 0
+            } else{
+                globalCounter++
+            }
+            this.setState({globalCounter},()=>console.log(this.state.globalCounter),()=>console.log(this.state.globalCounter))
             
-        // }, 1000);
+        }, 3000);
 
       }
 
       componentWillUnmount() {
 
-        //clearInterval(this.interval);
+        clearInterval(this.interval);
+        console.log('main unmounted')
       }
 
     inputUpdate(e){
@@ -75,14 +76,15 @@ class Main extends Component{
                 </View>
 
                 
-                <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems:'center',backgroundColor:''}} onPress={()=>Actions.bio()}>
-                    <Text style={styles.subHeaderText}>What does this app do?</Text>
+                <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems:'flex-start',backgroundColor:''}} onPress={()=>Actions.bio()}>
+                    {/* <Text style={styles.subHeaderText}>What does this app do?</Text> */}
+                    <Text style={styles.subHeaderText}>Use this app to find soccer fields in your area. All fields are withing 5 kilometers of your current location. Built in Mid 2020 to serve the soccer community... Enjoy!</Text>
                     {/* <Text style={styles.headerText}>{this.state.textInserts[this.state.globalCounter]}.</Text> */}
                 </TouchableOpacity>
                 
 
                 <TouchableOpacity style={{flex:2,justifyContent:'flex-end',alignItems:'flex-end',backgroundColor:''}} onPress={()=>Actions.map()}>
-                    <Text style={styles.headerText}>Find {this.state.textInserts[this.state.globalCounter]}.</Text>
+                    <Text style={styles.headerText}>discover {this.state.textInserts[this.state.globalCounter]}.</Text>
                     {/* <Text style={styles.headerText}>{this.state.textInserts[this.state.globalCounter]}.</Text> */}
                 </TouchableOpacity>
             </SafeAreaView>
@@ -120,38 +122,36 @@ const styles = StyleSheet.create({
     },
 
     headerText:{
-        fontSize:130,
-        fontFamily:'GillSans-SemiBoldItalic',
-        fontFamily:'Avenir-Heavy',
-        fontFamily:'Avenir-HeavyOblique',
-        fontFamily:'GillSans-SemiBoldItalic',
-        
-        lineHeight:100,
+        fontSize:90,
+
+        fontFamily:'Helvetica',
+        // marginTop:100,
+        lineHeight:80,
         width:'100%',
         paddingTop:20,
         bottom:0,
+        textAlign:'right',
+        // backgroundColor:'red',
 
         color:'white',
+        // color:'white'
 
         // backgroundColor:'black',
     },
     subHeaderText:{
-        fontSize:50,
-        fontFamily:'HelveticaNeue-UltraLight',
-        justifyContent:'center',
-        alignItems:'center',
-        // fontFamily:'Avenir-Heavy',
-        // fontFamily:'Avenir-HeavyOblique',
-        // fontFamily:'GillSans-SemiBoldItalic',
+        fontSize:18,
+        fontFamily:'HelveticaNeue-Thin',
         
-        // lineHeight:50,
-        width:'100%',
+        justifyContent:'flex-start',
+        alignItems:'flex-start',
+        flexWrap:'wrap',
+        width:'60%',
         // paddingTop:10,
         // bottom:0,
-
         color:'white',
-
-        // backgroundColor:'black',
+        opacity:0.5,
+        // backgroundColor:'bla',
+                // backgroundColor:'black',
     },
    
     locationText:{
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     getLocationButton:{
         borderWidth:1,
         borderColor:'white',
-        color:'black',
+    
         justifyContent:'center',
         alignItems:'center',
         height:50,

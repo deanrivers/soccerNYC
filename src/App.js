@@ -54,10 +54,10 @@ class App extends Component{
     <StatusBar hidden/>,
         <Router>
             <Stack key="root">
-              <Scene key="main" component={Main} initial title="Main" hideNavBar initial setZip={this.setZip} setCoordinates={this.setCoordinates}/>
-              <Scene key="cards" component={CardView} title="Cards" hideNavBar/>
-              <Scene key="map" component={Map} title="Map" hideNavBar/>
-              <Scene key="bio" component={AppBio} title="bio" hideNavBar/>
+              <Scene type="reset" key="main" component={Main} initial title="Main" hideNavBar initial setZip={this.setZip} setCoordinates={this.setCoordinates}/>
+              <Scene type="reset" key="cards" component={CardView} title="Cards" hideNavBar/>
+              <Scene type="reset" key="map" component={Map} title="Map" hideNavBar/>
+              <Scene type="reset" key="bio" component={AppBio} title="bio" hideNavBar/>
             </Stack>
           </Router>
   ]);
