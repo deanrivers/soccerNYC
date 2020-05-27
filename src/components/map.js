@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { SafeAreaView,StyleSheet,Text,View,Dimensions,Image } from 'react-native'
 
-import MapView, {Marker} from 'react-native-maps'
+import MapView, {Marker,Circle} from 'react-native-maps'
 import GetLocation from 'react-native-get-location'
+import openMap from 'react-native-open-maps';
+import Dialog from "react-native-dialog";
 
 import Carousel from 'react-native-snap-carousel'
 import { sliderWidth, itemWidth } from './styles/SliderEntry.style'
@@ -26,6 +28,8 @@ class Map extends Component{
             loading:true,
             location:{},
             coordinates:[],
+            circleCenter:{},
+            dialogVisible:true
             // coordinates: [{
             //     title: 'Sinatra Park',
             //     subtitle:'test',
@@ -50,6 +54,10 @@ class Map extends Component{
         };
         this._renderDarkItem = this._renderDarkItem.bind(this)
         this._requestLocation = this._requestLocation.bind(this)
+    }
+
+    handleYes(){
+
     }
 
     componentDidMount(){
@@ -153,7 +161,10 @@ class Map extends Component{
             this.setState({
                 location,
                 loading: true,
+                circleCenter:{latitude:location.latitude,longitude:location.longitude}
             },()=>{
+                console.log('My device location',this.state.location)
+                console.log('Circle Center:',this.state.circleCenter)
                 this.hitPlaceAPI()
             });
         })
@@ -199,13 +210,19 @@ class Map extends Component{
     }
 
     _renderDarkItem ({item, index}) {
-        return <SliderEntry data={item} even={true} />;
+        return <SliderEntry data={item} even={true}/>;
     }
 
     onCarouselItemChange(index){
-        console.log(index)
+        // console.log(index)
         let location = this.state.coordinates[index]
-        console.log(location)
+        // console.log(location)
+
+        // this.setState({
+        //     //circleCenter:{latitude:location.latitude,longitude:location.longitude}
+        // },()=>{
+            
+        // })
 
         this._map.animateToRegion({
             latitude: location.latitude,
@@ -219,7 +236,7 @@ class Map extends Component{
        
         var carouselRender = (this.state.loading) ? <View style={{flex:1,justifyContent:'center',alignItems:'center',zIndex:100000,height:'100%',backgroundColor:'',top:0,paddingBottom:'33%'}}><Image style={{flex:1,justifyContent:'center',alignItems:'center',width:60,height:60}}source={loaderImage}/></View>:
         
-        <Carousel
+        (<Carousel
         data={this.state.coordinates}
         renderItem={this._renderDarkItem}
         sliderWidth={sliderWidth}
@@ -236,7 +253,7 @@ class Map extends Component{
             tension: 200
         }}
         onSnapToItem={(index)=>this.onCarouselItemChange(index)}
-    />;
+    />);
 
         // if(this.state.loading){
         //     return <View><Text>Test</Text></View>
@@ -244,6 +261,16 @@ class Map extends Component{
 
         return([
             <View style={styles.main}>
+                 {/* <View style={{flex:1,position:'absolute',zIndex:100000}}>
+                    <Dialog.Container visible={this.state.dialogVisible}>
+                        <Dialog.Title>Open Apple Maps?</Dialog.Title>
+                        <Dialog.Description>
+                            Are you sure you want to get directions to this field?
+                        </Dialog.Description>
+                        <Dialog.Button label="Cancel" onPress={()=>{this.setState({dialogVisible:false})}}/>
+                        <Dialog.Button label="Yes" onPress={()=>this.handleYes()}/>
+                    </Dialog.Container>
+                </View> */}
                 <View style={styles.mapContainer}>
                     <MapView
                         mapPadding={{top: 0, left: 0, right: 0, bottom:350}}                
@@ -256,8 +283,18 @@ class Map extends Component{
                             latitudeDelta: 0.0722,
                             longitudeDelta: 0.0421,
                         }}
-                        min
+                        
                     >
+                        {/* <Circle
+                            center={{
+                                latitude:this.state.circleCenter.latitude,
+                                longitude:this.state.circleCenter.longitude
+                            }}
+                            radius={200}
+                            strokeWidth={5}
+                            strokeColor='red'
+                            zIndex={100}
+                        /> */}
                         {this.state.coordinates.map( marker=>
                             (
                                 <Marker
@@ -282,7 +319,7 @@ class Map extends Component{
                     
 
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.backButton} onPress={()=>Actions.main()}>
+                        <TouchableOpacity style={styles.backButton} onPress={()=>Actions.pop()}>
                             <Text style={styles.backButtonText}>Go Back.</Text>
                         </TouchableOpacity>
                     </View>
@@ -394,6 +431,7 @@ const styles = StyleSheet.create({
       backButtonText:{
           color:'white',
           fontFamily:'GillSans-SemiBoldItalic',
+          fontFamily:'Helvetica',
           fontSize:80,
           textAlign:'center',
           width:'100%'

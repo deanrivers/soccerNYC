@@ -23,25 +23,25 @@ class Main extends Component{
     }
 
     componentDidMount() {
-        
-        this.interval = setInterval(() => {
-            var globalCounter = this.state.globalCounter
-            var textInserts = this.state.textInserts
 
-            if(globalCounter==textInserts.length-1){
-                globalCounter = 0
-            } else{
-                globalCounter++
-            }
-            this.setState({globalCounter},()=>console.log(this.state.globalCounter),()=>console.log(this.state.globalCounter))
+        // this.interval = setInterval(() => {
+        //     var globalCounter = this.state.globalCounter
+        //     var textInserts = this.state.textInserts
+
+        //     if(globalCounter==textInserts.length-1){
+        //         globalCounter = 0
+        //     } else{
+        //         globalCounter++
+        //     }
+        //     this.setState({globalCounter},()=>console.log(this.state.globalCounter),()=>console.log(this.state.globalCounter))
             
-        }, 3000);
+        // }, 3000);
 
       }
 
       componentWillUnmount() {
 
-        clearInterval(this.interval);
+        // clearInterval(this.interval);
         console.log('main unmounted')
       }
 
@@ -75,12 +75,11 @@ class Main extends Component{
                         <Image style={{width:40,height:40}} source={logoImage}/>
                 </View>
 
-                
-                <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems:'flex-start',backgroundColor:''}} onPress={()=>Actions.bio()}>
+                <View style={{flex:1,justifyContent:'center',alignItems:'flex-start',backgroundColor:''}} >
                     {/* <Text style={styles.subHeaderText}>What does this app do?</Text> */}
-                    <Text style={styles.subHeaderText}>Use this app to find soccer fields in your area. All fields are withing 5 kilometers of your current location. Built in Mid 2020 to serve the soccer community... Enjoy!</Text>
+                    <Text style={styles.subHeaderText}>Use this app to find soccer fields in your area. All fields are within 5 kilometers of your current location. Built in  2020 to serve the worldwide football community.        Enjoy!</Text>
                     {/* <Text style={styles.headerText}>{this.state.textInserts[this.state.globalCounter]}.</Text> */}
-                </TouchableOpacity>
+                </View>
                 
 
                 <TouchableOpacity style={{flex:2,justifyContent:'flex-end',alignItems:'flex-end',backgroundColor:''}} onPress={()=>Actions.map()}>
@@ -139,17 +138,16 @@ const styles = StyleSheet.create({
         // backgroundColor:'black',
     },
     subHeaderText:{
-        fontSize:18,
-        fontFamily:'HelveticaNeue-Thin',
-        
+        fontSize:14,
+        fontFamily:'HelveticaNeue-Italic',
         justifyContent:'flex-start',
         alignItems:'flex-start',
         flexWrap:'wrap',
-        width:'60%',
+        width:'50%',
         // paddingTop:10,
         // bottom:0,
         color:'white',
-        opacity:0.5,
+        // opacity:0.5,
         // backgroundColor:'bla',
                 // backgroundColor:'black',
     },

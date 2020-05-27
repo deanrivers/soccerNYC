@@ -3,6 +3,9 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import { ParallaxImage } from 'react-native-snap-carousel';
 import styles from './styles/SliderEntry.style';
+import Dialog from 'react-native-dialog'
+
+import openMap from 'react-native-open-maps'
 
 export default class SliderEntry extends Component {
 
@@ -10,8 +13,15 @@ export default class SliderEntry extends Component {
         data: PropTypes.object.isRequired,
         even: PropTypes.bool,
         parallax: PropTypes.bool,
-        parallaxProps: PropTypes.object
+        parallaxProps: PropTypes.object,
     };
+
+    constructor(props){
+        super(props)
+        this.state={
+            dialogVisible:false
+        }
+    }
 
     get image () {
         const { data: { illustration }, parallax, parallaxProps, even } = this.props;
@@ -27,6 +37,7 @@ export default class SliderEntry extends Component {
               {...parallaxProps}
             />
         ) : (
+                
             <Image
               source={{ uri: illustration }}
               style={styles.image}
@@ -34,9 +45,23 @@ export default class SliderEntry extends Component {
         );
     }
 
+    handleYes(){
+        this.locationPressed(this.props.data)
+        this.setState({dialogVisible:false})
+    }
+
+    locationPressed(data){
+        openMap({
+            latitude:data.latitude,
+            longitude:data.longitude,
+            travelType:'drive',
+            navigate_mode:'preview',
+            query:data.title
+        })
+    }
+
     render () {
         const { data: { title, subtitle }, even } = this.props;
-
         const uppercaseTitle = title ? (
             <Text
               style={[styles.title, even ? styles.titleEven : {}]}
@@ -46,11 +71,11 @@ export default class SliderEntry extends Component {
             </Text>
         ) : false;
 
-        return (
+        return ([
             <TouchableOpacity
               activeOpacity={1}
               style={styles.slideInnerContainer}
-              onPress={() => { alert(`You've clicked '${title}'`); }}
+              onPress={()=>this.setState({dialogVisible:true})}
               >
                 <View style={styles.shadow} />
                 <View style={[styles.imageContainer, even ? styles.imageContainerEven : {}]}>
@@ -66,8 +91,19 @@ export default class SliderEntry extends Component {
                         { subtitle }
                     </Text>
                 </View>
-            </TouchableOpacity>
-        );
+            </TouchableOpacity>,
+
+            <View style={{flex:1,position:'absolute',zIndex:100000}}>
+                <Dialog.Container visible={this.state.dialogVisible}>
+                    <Dialog.Title>Open Apple Maps?</Dialog.Title>
+                    <Dialog.Description>
+                        Are you sure you want to get directions to this field?
+                    </Dialog.Description>
+                    <Dialog.Button label="Cancel" onPress={()=>{this.setState({dialogVisible:false})}}/>
+                    <Dialog.Button label="Yes" onPress={()=>this.handleYes()}/>
+                </Dialog.Container>
+            </View>,
+        ]);
     }
 }
 

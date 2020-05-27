@@ -31,6 +31,7 @@ class App extends Component{
     super(props)
     this.state = {
       zipCode:'',
+
     }
     this.setZip = this.setZip.bind(this)
   }
@@ -38,6 +39,8 @@ class App extends Component{
   componentDidMount(){
     SplashScreen.hide()
   }
+
+
 
   setZip(zip){
     this.setState({zipCode:zip},()=>{
@@ -54,10 +57,10 @@ class App extends Component{
     <StatusBar hidden/>,
         <Router>
             <Stack key="root">
-              <Scene type="reset" key="main" component={Main} initial title="Main" hideNavBar initial setZip={this.setZip} setCoordinates={this.setCoordinates}/>
-              <Scene type="reset" key="cards" component={CardView} title="Cards" hideNavBar/>
-              <Scene type="reset" key="map" component={Map} title="Map" hideNavBar/>
-              <Scene type="reset" key="bio" component={AppBio} title="bio" hideNavBar/>
+              <Scene key="main" component={Main} initial title="Main" hideNavBar initial setZip={this.setZip} setCoordinates={this.setCoordinates}/>
+              <Scene key="cards" component={CardView} title="Cards" hideNavBar/>
+              <Scene key="map" component={Map} title="Map" hideNavBar/>
+              <Scene key="bio" component={AppBio} title="bio" hideNavBar/>
             </Stack>
           </Router>
   ]);
