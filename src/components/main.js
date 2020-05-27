@@ -77,7 +77,9 @@ class Main extends Component{
 
                 <View style={{flex:1,justifyContent:'center',alignItems:'flex-start',backgroundColor:''}} >
                     {/* <Text style={styles.subHeaderText}>What does this app do?</Text> */}
-                    <Text style={styles.subHeaderText}>Use this app to find soccer fields in your area. All fields are within 5 kilometers of your current location. Built in  2020 to serve the worldwide football community.        Enjoy!</Text>
+                    <Text style={styles.subHeaderText}>All fields are within 5km of your current location.</Text>
+                    <Text></Text>
+                    <Text style={styles.subHeaderText}>Built in to serve the worldwide football community.</Text>
                     {/* <Text style={styles.headerText}>{this.state.textInserts[this.state.globalCounter]}.</Text> */}
                 </View>
                 
@@ -121,11 +123,11 @@ const styles = StyleSheet.create({
     },
 
     headerText:{
-        fontSize:90,
+        fontSize:80,
 
         fontFamily:'Helvetica',
         // marginTop:100,
-        lineHeight:80,
+        lineHeight:70,
         width:'100%',
         paddingTop:20,
         bottom:0,
@@ -143,7 +145,7 @@ const styles = StyleSheet.create({
         justifyContent:'flex-start',
         alignItems:'flex-start',
         flexWrap:'wrap',
-        width:'50%',
+        width:'60%',
         // paddingTop:10,
         // bottom:0,
         color:'white',

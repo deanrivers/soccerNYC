@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity,StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { ParallaxImage } from 'react-native-snap-carousel';
 import styles from './styles/SliderEntry.style';
-import Dialog from 'react-native-dialog'
+import Dialog, {BlurView} from 'react-native-dialog'
 
 import openMap from 'react-native-open-maps'
 
@@ -61,6 +61,16 @@ export default class SliderEntry extends Component {
     }
 
     render () {
+
+
+        const blurComponentIOS = (
+            <BlurView
+              style={StyleSheet.absoluteFill}
+              blurType="xlight"
+              blurAmount={50}
+            />
+          )
+
         const { data: { title, subtitle }, even } = this.props;
         const uppercaseTitle = title ? (
             <Text
@@ -94,7 +104,11 @@ export default class SliderEntry extends Component {
             </TouchableOpacity>,
 
             <View style={{flex:1,position:'absolute',zIndex:100000}}>
-                <Dialog.Container visible={this.state.dialogVisible}>
+                <Dialog.Container 
+                    visible={this.state.dialogVisible}
+                    // blurComponentIOS={blurComponentIOS}
+                    
+                    >
                     <Dialog.Title>Open Apple Maps?</Dialog.Title>
                     <Dialog.Description>
                         Are you sure you want to get directions to this field?
