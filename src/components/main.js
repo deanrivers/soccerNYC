@@ -23,20 +23,18 @@ class Main extends Component{
     }
 
     componentDidMount() {
+       this.interval = setInterval(() => {
+            var globalCounter = this.state.globalCounter
+            var textInserts = this.state.textInserts
 
-        // this.interval = setInterval(() => {
-        //     var globalCounter = this.state.globalCounter
-        //     var textInserts = this.state.textInserts
-
-        //     if(globalCounter==textInserts.length-1){
-        //         globalCounter = 0
-        //     } else{
-        //         globalCounter++
-        //     }
-        //     this.setState({globalCounter},()=>console.log(this.state.globalCounter),()=>console.log(this.state.globalCounter))
+            if(globalCounter==textInserts.length-1){
+                globalCounter = 0
+            } else{
+                globalCounter++
+            }
+            this.setState({globalCounter},()=>console.log(this.state.globalCounter),()=>console.log(this.state.globalCounter))
             
-        // }, 3000);
-
+        }, 3000);
       }
 
       componentWillUnmount() {
@@ -82,10 +80,23 @@ class Main extends Component{
                     <Text style={styles.subHeaderText}>Built in to serve the worldwide football community.</Text>
                     {/* <Text style={styles.headerText}>{this.state.textInserts[this.state.globalCounter]}.</Text> */}
                 </View>
-                
+                <View style={{flex:1,justifyContent:'center',alignItems:'flex-end',backgroundColor:''}}>
+                    <View style={{marginBottom:5,height:89,borderWidth:1,borderTopColor:'black',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:'100%',opacity:1}}/>
+                    <View style={{marginBottom:5,height:55,borderWidth:1,borderTopColor:'black',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:'90%',opacity:0.9}}/>
+                    <View style={{marginBottom:5,height:34,borderWidth:1,borderTopColor:'black',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:'80%',opacity:0.8}}/>
+                    <View style={{marginBottom:5,height:13,borderWidth:1,borderTopColor:'black',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:'70%',opacity:0.7}}/>
+                    <View style={{marginBottom:5,height:8,borderWidth:1,borderTopColor:'black',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:'60%',opacity:0.6}}/>
+                    <View style={{marginBottom:5,height:5,borderWidth:1,borderTopColor:'black',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:'50%',opacity:0.5}}/>
+                    <View style={{marginBottom:5,height:3,borderWidth:1,borderTopColor:'black',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:'40%',opacity:0.4}}/>
+                    <View style={{marginBottom:5,height:2,borderWidth:1,borderTopColor:'black',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:'30%',opacity:0.43}}/>
+                    <View style={{marginBottom:5,height:1,borderWidth:1,borderTopColor:'black',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:'20%',opacity:0.2}}/>
+                    <View style={{marginBottom:5,height:1,borderWidth:1,borderTopColor:'black',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:'10%',opacity:0.1}}/>
 
+                </View>
+                
                 <TouchableOpacity style={{flex:2,justifyContent:'flex-end',alignItems:'flex-end',backgroundColor:''}} onPress={()=>Actions.map()}>
-                    <Text style={styles.headerText}>discover {this.state.textInserts[this.state.globalCounter]}.</Text>
+                    <Text style={styles.headerText}>Discover {this.state.textInserts[this.state.globalCounter]}</Text>
+                    
                     {/* <Text style={styles.headerText}>{this.state.textInserts[this.state.globalCounter]}.</Text> */}
                 </TouchableOpacity>
             </SafeAreaView>
