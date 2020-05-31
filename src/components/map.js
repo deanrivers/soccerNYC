@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { SafeAreaView,StyleSheet,Text,View,Dimensions,Image } from 'react-native'
+import { SafeAreaView,StyleSheet,Text,View,Dimensions,Image,Animated,Easing } from 'react-native'
 
-import MapView, {Marker,Circle} from 'react-native-maps'
+import MapView, {Marker,Circle,Callout, PROVIDER_GOOGLE} from 'react-native-maps'
 import GetLocation from 'react-native-get-location'
 import openMap from 'react-native-open-maps';
 import Dialog from "react-native-dialog";
@@ -19,17 +19,24 @@ import LinearGradient from 'react-native-linear-gradient';
 
 import markerIcon from '../assets/icons/marker.png'
 import defaultImage from '../assets/icons/logo.png'
-import loaderImage from '../assets/icons/loader.gif'
+import loaderImage from '../assets/icons/mag.gif'
 
 class Map extends Component{
+  
     constructor (props) {
+        const {width,height} = Dimensions.get('window')
         super(props);
         this.state = {
-            loading:true,
+            loading:false,
             location:{},
             coordinates:[],
             circleCenter:{},
-            dialogVisible:true
+            dialogVisible:true,
+            carouselYValue: new Animated.Value(height),
+            carouselOpacity: new Animated.Value(0),
+            markerOpacity: new Animated.Value(0),
+            mainOpacity: 1,
+            mapOpacity: new Animated.Value(0),
             // coordinates: [{
             //     title: 'Sinatra Park',
             //     subtitle:'test',
@@ -61,6 +68,21 @@ class Map extends Component{
     }
 
     componentDidMount(){
+
+        // Animated.timing(this.state.mainOpacity,{
+        //   toValue:1,
+        //   duration:1000,
+        //   easing:Easing.linear
+        // }).start()
+
+        //animae map opacity
+        Animated.timing(this.state.mapOpacity,{
+          toValue:1,
+          duration:3000,
+          delay:600,
+          easing: Easing.linear,
+          useNativeDriver:false
+        }).start()
         
         console.log('Component Mounted')
         console.log('------------------')
@@ -73,7 +95,7 @@ class Map extends Component{
     }
 
     hitPlaceAPI = async ()=>{
-        const API_KEY = config.API_KEY
+        const API_KEY = config.GOOGLE_PLACES_API_KEY
         const searchTerm = 'soccer%20field'
         const baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
         const radius ='5000'
@@ -108,7 +130,6 @@ class Map extends Component{
                     console.log('error',error)
                     console.log('name',data.results[i]['name'])
                     console.log('photos',data.results[i]['photos'])
-                    
                 }
 
                 if(data.results["business_status"] !=="OPERATIONAL"){
@@ -134,7 +155,39 @@ class Map extends Component{
             }
             console.log('STATE COORDINATES',coordinates)
             this.setState({coordinates},()=>setTimeout( ()=>{
-                this.setState({loading:false})
+                this.setState({loading:false},()=>{
+                  //animate carousel
+                  // Animated.timing(this.state.carouselOpacity,{
+                  //   toValue:1,
+                  //   duration:1000,
+                  //   easing: Easing.linear
+                  // }).start()
+
+                  //animate carousel pop up
+                  Animated.timing(this.state.carouselYValue,{
+                    toValue:0,
+                    duration:1000,
+                    easing:Easing.linear,
+                    delay:500,
+                    useNativeDriver:false
+                  }).start()
+
+                  Animated.timing(this.state.carouselOpacity,{
+                    toValue:1,
+                    duration:1000,
+                    delay:500,
+                    easing: Easing.linear
+                  }).start()
+
+                  //animate marker opacity
+                  Animated.timing(this.state.markerOpacity,{
+                    toValue: 1,
+                    duration:2000,
+                    delay:500,
+                    easing: Easing.linear,
+                    useNativeDriver:false
+                  }).start()
+                })
                 console.log('THE COMPLETE ARRAY OF OBJECTS',this.state.coordinates)
             },10))
         }
@@ -146,6 +199,7 @@ class Map extends Component{
 
         try{
             const response = await fetch(url);
+
             return response.url
         } catch(error){
             console.log(error)
@@ -214,7 +268,9 @@ class Map extends Component{
     }
 
     onCarouselItemChange(index){
-        // console.log(index)
+        console.log('index',index)
+
+        
         let location = this.state.coordinates[index]
         // console.log(location)
 
@@ -234,8 +290,11 @@ class Map extends Component{
 
     render(){
        
-        var carouselRender = (this.state.loading) ? <View style={{flex:1,justifyContent:'center',alignItems:'center',zIndex:100000,height:'100%',backgroundColor:'',top:0,paddingBottom:'33%'}}><Image style={{flex:1,justifyContent:'center',alignItems:'center',width:60,height:60}}source={loaderImage}/></View>:
         
+        var loaderRender = (this.state.loading)?<View style={{flex:1,justifyContent:'center',alignItems:'center',zIndex:100000,height:'100%',backgroundColor:'',top:0,paddingBottom:'33%'}}><Image style={{flex:1,justifyContent:'center',alignItems:'center',width:60,height:60}}source={loaderImage}/></View>:
+        null
+
+        var carouselRender = (this.state.loading)?null:
         (<Carousel
         data={this.state.coordinates}
         renderItem={this._renderDarkItem}
@@ -246,7 +305,7 @@ class Map extends Component{
         enableMomentum={true}
         activeSlideAlignment={'center'}
         containerCustomStyle={styles.slider}
-        contentContainerCustomStyle={styles.sliderContentContainer}
+        contentContainerCustomStyle={ styles.sliderContentContainer}
         activeAnimationType={'spring'}
         activeAnimationOptions={{
             friction: 5,
@@ -255,24 +314,224 @@ class Map extends Component{
         onSnapToItem={(index)=>this.onCarouselItemChange(index)}
     />);
 
+
+
         // if(this.state.loading){
         //     return <View><Text>Test</Text></View>
         // }
 
+        const customMapStyle = [
+            {
+              "elementType": "geometry",
+              "stylers": [
+                {
+                  "color": "#212121"
+                }
+              ]
+            },
+            {
+              "elementType": "labels.icon",
+              "stylers": [
+                {
+                  "visibility": "off"
+                }
+              ]
+            },
+            {
+              "elementType": "labels.text.fill",
+              "stylers": [
+                {
+                  "color": "#757575"
+                }
+              ]
+            },
+            {
+              "elementType": "labels.text.stroke",
+              "stylers": [
+                {
+                  "color": "#212121"
+                }
+              ]
+            },
+            {
+              "featureType": "administrative",
+              "elementType": "geometry",
+              "stylers": [
+                {
+                  "color": "#757575"
+                },
+                {
+                  "visibility": "off"
+                }
+              ]
+            },
+            {
+              "featureType": "administrative.country",
+              "elementType": "labels.text.fill",
+              "stylers": [
+                {
+                  "color": "#9e9e9e"
+                }
+              ]
+            },
+            {
+              "featureType": "administrative.locality",
+              "elementType": "labels.text.fill",
+              "stylers": [
+                {
+                  "color": "#bdbdbd"
+                }
+              ]
+            },
+            {
+              "featureType": "poi",
+              "stylers": [
+                {
+                  "visibility": "off"
+                }
+              ]
+            },
+            {
+              "featureType": "poi",
+              "elementType": "labels.text.fill",
+              "stylers": [
+                {
+                  "color": "#757575"
+                }
+              ]
+            },
+            {
+              "featureType": "poi.park",
+              "elementType": "geometry",
+              "stylers": [
+                {
+                  "color": "#181818"
+                }
+              ]
+            },
+            {
+              "featureType": "poi.park",
+              "elementType": "labels.text.fill",
+              "stylers": [
+                {
+                  "color": "#616161"
+                }
+              ]
+            },
+            {
+              "featureType": "poi.park",
+              "elementType": "labels.text.stroke",
+              "stylers": [
+                {
+                  "color": "#1b1b1b"
+                }
+              ]
+            },
+            {
+              "featureType": "road",
+              "elementType": "geometry.fill",
+              "stylers": [
+                {
+                  "color": "#2c2c2c"
+                }
+              ]
+            },
+            {
+              "featureType": "road",
+              "elementType": "labels.icon",
+              "stylers": [
+                {
+                  "visibility": "off"
+                }
+              ]
+            },
+            {
+              "featureType": "road",
+              "elementType": "labels.text.fill",
+              "stylers": [
+                {
+                  "color": "#8a8a8a"
+                }
+              ]
+            },
+            {
+              "featureType": "road.arterial",
+              "elementType": "geometry",
+              "stylers": [
+                {
+                  "color": "#373737"
+                }
+              ]
+            },
+            {
+              "featureType": "road.highway",
+              "elementType": "geometry",
+              "stylers": [
+                {
+                  "color": "#3c3c3c"
+                }
+              ]
+            },
+            {
+              "featureType": "road.highway.controlled_access",
+              "elementType": "geometry",
+              "stylers": [
+                {
+                  "color": "#4e4e4e"
+                }
+              ]
+            },
+            {
+              "featureType": "road.local",
+              "elementType": "labels.text.fill",
+              "stylers": [
+                {
+                  "color": "#616161"
+                }
+              ]
+            },
+            {
+              "featureType": "transit",
+              "stylers": [
+                {
+                  "visibility": "off"
+                }
+              ]
+            },
+            {
+              "featureType": "transit",
+              "elementType": "labels.text.fill",
+              "stylers": [
+                {
+                  "color": "#757575"
+                }
+              ]
+            },
+            {
+              "featureType": "water",
+              "elementType": "geometry",
+              "stylers": [
+                {
+                  "color": "#000000"
+                }
+              ]
+            },
+            {
+              "featureType": "water",
+              "elementType": "labels.text.fill",
+              "stylers": [
+                {
+                  "color": "#3d3d3d"
+                }
+              ]
+            }
+          ]
+
         return([
-            <View style={styles.main}>
-                 {/* <View style={{flex:1,position:'absolute',zIndex:100000}}>
-                    <Dialog.Container visible={this.state.dialogVisible}>
-                        <Dialog.Title>Open Apple Maps?</Dialog.Title>
-                        <Dialog.Description>
-                            Are you sure you want to get directions to this field?
-                        </Dialog.Description>
-                        <Dialog.Button label="Cancel" onPress={()=>{this.setState({dialogVisible:false})}}/>
-                        <Dialog.Button label="Yes" onPress={()=>this.handleYes()}/>
-                    </Dialog.Container>
-                </View> */}
-                <View style={styles.mapContainer}>
+            <View style={[styles.main,{opacity:this.state.mainOpacity}]}>
+                <Animated.View style={[styles.mapContainer,{opacity:this.state.mapOpacity}]}>
                     <MapView
+                        provider={PROVIDER_GOOGLE}
                         mapPadding={{top: 0, left: 0, right: 0, bottom:350}}                
                         ref={map=>this._map=map}
                         showsUserLocation={true}
@@ -283,6 +542,7 @@ class Map extends Component{
                             latitudeDelta: 0.0722,
                             longitudeDelta: 0.0421,
                         }}
+                        customMapStyle={customMapStyle}
                         
                     >
                         {/* <Circle
@@ -295,32 +555,48 @@ class Map extends Component{
                             strokeColor='red'
                             zIndex={100}
                         /> */}
-                        {this.state.coordinates.map( marker=>
+                        {this.state.coordinates.map( (marker,index)=>
                             (
                                 <Marker
+                                key={index}
                                 coordinate={{
                                     latitude:marker.latitude,
                                     longitude:marker.longitude
                                 }}
                                 title={marker.title}
-                                >
-                                </Marker>
+                                pinColor='black'
+                                onPress={()=>this.onCarouselItemChange(index)}
+
+                                />
+                      
+                              
                             )
                         )}
                     </MapView>
-                </View>
+                </Animated.View>
 
                 <View style={styles.bottomContainer}>
-                    <LinearGradient colors={['transparent','black']} style={styles.linearGradient}>
-                        <View style={styles.carouselContainer}>
+                    {/* <View style={{lex:1,backgroundColor:'black'}}>
+                        <Text style={{textAlign:'left',width:'100%',color:'white'}}>Number of soccer fields found: {this.state.coordinates.length}</Text>
+                    </View> */}
+                    
+                    <LinearGradient colors={['transparent','black']} style={[styles.linearGradient,{backgroundColor:'',flex:1}]}>
+                      <View style={{flex:1,backgroundColor:'',height:'100%'}}>
+                          <Animated.View style={[styles.loaderConainer,{top:0,opacity:1}]}>
+                            {loaderRender}
+                          </Animated.View>
+
+                        <Animated.View style={[styles.carouselContainer,{top:0,opacity:this.state.carouselOpacity}]}>
                             {carouselRender}
-                        </View>
+                        </Animated.View> 
+                      </View>
+                       
                     </LinearGradient>
                     
 
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity style={styles.backButton} onPress={()=>Actions.pop()}>
-                            <Text style={styles.backButtonText}>Go Back.</Text>
+                            <Animated.Text style={[styles.backButtonText,{opacity:this.state.mapOpacity}]}>Go Back.</Animated.Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -337,9 +613,9 @@ const colors = {
 const styles = StyleSheet.create({
 
     linearGradient:{
-        flex:1,
+        // flex:1,
         width:'100%',
-        alignItems:'center'
+        // alignItems:'center'
     },
     carouselContainer: {
         flex:3,
@@ -347,9 +623,17 @@ const styles = StyleSheet.create({
         // justifyContent:'space-evenly',
         justifyContent:'center',
         alignItems:'center',
+        
         // overflow:'hidden',
         // paddingTop:50
         
+    },
+    loaderConainer:{
+      flex:3,
+      // backgroundColor:'orange',
+      // justifyContent:'space-evenly',
+      justifyContent:'center',
+      alignItems:'center',
     },
     bottomContainer:{
         flex:1,

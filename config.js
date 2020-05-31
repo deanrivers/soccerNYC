@@ -1,5 +1,5 @@
-import {API_KEY} from 'react-native-dotenv'
+import {GOOGLE_PLACES_API_KEY,GOOGLE_MAPS_API_KEY} from 'react-native-dotenv'
 
 export default {
-    API_KEY
+    GOOGLE_PLACES_API_KEY,GOOGLE_MAPS_API_KEY
 }

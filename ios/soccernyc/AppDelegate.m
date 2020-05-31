@@ -1,9 +1,11 @@
 #import "AppDelegate.h"
+#import "API_KEY.h"
 
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import "RNSplashScreen.h"
+
 
 #if DEBUG
 #import <FlipperKit/FlipperClient.h>
@@ -12,6 +14,7 @@
 #import <FlipperKitNetworkPlugin/FlipperKitNetworkPlugin.h>
 #import <SKIOSNetworkPlugin/SKIOSNetworkAdapter.h>
 #import <FlipperKitReactPlugin/FlipperKitReactPlugin.h>
+#import <GoogleMaps/GoogleMaps.h>
 
 static void InitializeFlipper(UIApplication *application) {
   FlipperClient *client = [FlipperClient sharedClient];
@@ -27,7 +30,10 @@ static void InitializeFlipper(UIApplication *application) {
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+
 {
+  
+[GMSServices provideAPIKey:@"AIzaSyDxElRQV5wLxoE2t35q4snHGuGKHKffhwE"]; // add this line using the api key obtained from Google Console
 #if DEBUG
   InitializeFlipper(application);
 #endif
