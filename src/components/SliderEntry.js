@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { ParallaxImage } from 'react-native-snap-carousel';
 import styles from './styles/SliderEntry.style';
 import Dialog, {BlurView} from 'react-native-dialog'
-
 import openMap from 'react-native-open-maps'
 
 export default class SliderEntry extends Component {
@@ -56,7 +55,9 @@ export default class SliderEntry extends Component {
             longitude:data.longitude,
             travelType:'drive',
             navigate_mode:'preview',
-            query:data.title
+            query:data.title,
+            provider:'apple',
+            
         })
     }
 

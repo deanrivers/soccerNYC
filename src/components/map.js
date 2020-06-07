@@ -63,9 +63,6 @@ class Map extends Component{
         this._requestLocation = this._requestLocation.bind(this)
     }
 
-    handleYes(){
-
-    }
 
     componentDidMount(){
 
@@ -106,7 +103,7 @@ class Map extends Component{
 
         const response = await fetch(url)
         const data = await response.json()
-        console.log(data.status)
+        //console.log('Data coming in:',data)
         
 
         var location
@@ -115,6 +112,22 @@ class Map extends Component{
 
         if(data.status = 'OK'){
             for(var i = 0;i<data.results.length-1;i++){
+
+              //set variable for name and imageLink
+              var name = data.results[i].name.toLowerCase()
+              var imageLink = ''
+
+              //try to upddate imageLink if it exists
+              try{
+                imageLink = data.results[i].photos[0].photo_reference
+              } catch(error){
+                console.log(error)
+              }
+
+              //only process if it has an image link and the name is not just "soccer field"
+              if(name !== 'soccer field' && imageLink){
+                console.log('Valid information!!!!--->',name,imageLink)
+                
                 obj = {}
                 location = data.results[i]
                 obj['title'] = data.results[i].name
@@ -123,45 +136,34 @@ class Map extends Component{
                 obj['longitude'] = data.results[i].geometry.location.lng
                 obj['latitudeDelta'] = 0.0922
                 obj['longitudeDelta'] = 0.0421
+                obj['photo_reference'] = imageLink
 
-                try{
-                    obj['photo_reference'] = data.results[i].photos[0].photo_reference
-                } catch(error){
-                    console.log('error',error)
-                    console.log('name',data.results[i]['name'])
-                    console.log('photos',data.results[i]['photos'])
-                }
+                // try{
+                //     obj['photo_reference'] = data.results[i].photos[0].photo_reference
+                // } catch(error){
+                //     console.log('error',error)
+                //     console.log('name',data.results[i]['name'])
+                //     console.log('photos',data.results[i]['photos'])
+                // }
 
-                if(data.results["business_status"] !=="OPERATIONAL"){
-                    coordinates.push(obj)
-                } else{
-                    console.log('Something is not right for this entry:')
-                    console.log(obj)
-                }
+                //push object to array
+                coordinates.push(obj)
+
+              }
             }
-            
+
             //loop for photos
             for(var i=0; i<coordinates.length;i++){
                 const photoRef = coordinates[i].photo_reference
-                if(photoRef!==undefined){
-                    const photo_url = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400'
-                    const photoParams = '&photoreference='+photoRef+'&key='+API_KEY
-                    const complete_photo_url = photo_url+photoParams
-                    // console.log('URL:',complete_photo_url)
-                    coordinates[i]['illustration'] = await this.hitPhotoAPI(complete_photo_url)
-                } else{
-                    coordinates[i]['illustration'] = 'https://sjsuspartans.com/images/2019/5/24/SJS21818.JPG'
-                }
+                const photo_url = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400'
+                const photoParams = '&photoreference='+photoRef+'&key='+API_KEY
+                const complete_photo_url = photo_url+photoParams
+                coordinates[i]['illustration'] = await this.hitPhotoAPI(complete_photo_url)
             }
+
             console.log('STATE COORDINATES',coordinates)
             this.setState({coordinates},()=>setTimeout( ()=>{
                 this.setState({loading:false},()=>{
-                  //animate carousel
-                  // Animated.timing(this.state.carouselOpacity,{
-                  //   toValue:1,
-                  //   duration:1000,
-                  //   easing: Easing.linear
-                  // }).start()
 
                   //animate carousel pop up
                   Animated.timing(this.state.carouselYValue,{
@@ -188,15 +190,12 @@ class Map extends Component{
                     useNativeDriver:false
                   }).start()
                 })
-                console.log('THE COMPLETE ARRAY OF OBJECTS',this.state.coordinates)
+                //console.log('THE COMPLETE ARRAY OF OBJECTS',this.state.coordinates)
             },10))
         }
     }
 
     hitPhotoAPI = async (url) => {
-        // console.log('hit photo API')
-        // console.log('URL->>>>>',url)
-
         try{
             const response = await fetch(url);
 
@@ -289,8 +288,7 @@ class Map extends Component{
     }
 
     render(){
-       
-        
+      
         var loaderRender = (this.state.loading)?<View style={{flex:1,justifyContent:'center',alignItems:'center',zIndex:100000,height:'100%',backgroundColor:'',top:0,paddingBottom:'33%'}}><Image style={{flex:1,justifyContent:'center',alignItems:'center',width:60,height:60}}source={loaderImage}/></View>:
         null
 
@@ -305,7 +303,7 @@ class Map extends Component{
         enableMomentum={true}
         activeSlideAlignment={'center'}
         containerCustomStyle={styles.slider}
-        contentContainerCustomStyle={ styles.sliderContentContainer}
+        contentContainerCustomStyle={styles.sliderContentContainer}
         activeAnimationType={'spring'}
         activeAnimationOptions={{
             friction: 5,
@@ -313,12 +311,6 @@ class Map extends Component{
         }}
         onSnapToItem={(index)=>this.onCarouselItemChange(index)}
     />);
-
-
-
-        // if(this.state.loading){
-        //     return <View><Text>Test</Text></View>
-        // }
 
         const customMapStyle = [
             {
