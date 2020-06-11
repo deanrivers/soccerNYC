@@ -23,7 +23,7 @@ import SplashScreen from 'react-native-splash-screen'
 import Main from './components/main'
 import CardView from './components/cardsView'
 import Map from './components/map'
-import AppBio from './components/appBio'
+
 
 class App extends Component{
 
@@ -60,7 +60,6 @@ class App extends Component{
               <Scene key="main" component={Main} initial title="Main" hideNavBar initial setZip={this.setZip} setCoordinates={this.setCoordinates}/>
               <Scene key="cards" component={CardView} title="Cards" hideNavBar/>
               <Scene key="map" component={Map} title="Map" hideNavBar/>
-              <Scene key="bio" component={AppBio} title="bio" hideNavBar/>
             </Stack>
           </Router>
   ]);
