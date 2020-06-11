@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 
 import { Text,View,Image,StyleSheet,TouchableOpacity, SafeAreaView,Animated,Easing,Dimensions }from 'react-native'
 
-import {Actions} from 'react-native-router-flux'
+import {Actions, Reducer} from 'react-native-router-flux'
 
 import {Hoshi} from 'react-native-textinput-effects'
 
@@ -256,14 +256,12 @@ class Main extends Component{
                 </Animated.View>
                 
                 
-                    <TouchableOpacity style={{flex:2,justifyContent:'flex-end',alignItems:'flex-end',backgroundColor:''}} onPress={()=>Actions.map()}>
-                        <Animated.Text style={[styles.headerText,{opacity:this.state.discoverOpacity}]}>Discover {this.state.textInserts[this.state.globalCounter]}</Animated.Text>
-                        
-                        {/* <Text style={styles.headerText}>{this.state.textInserts[this.state.globalCounter]}.</Text> */}
-                    </TouchableOpacity>
+                <TouchableOpacity style={{flex:2,justifyContent:'flex-end',alignItems:'flex-end',backgroundColor:''}} onPress={()=>Actions.map()}>
+                    <Animated.Text style={[styles.headerText,{opacity:this.state.discoverOpacity}]}>Discover {this.state.textInserts[this.state.globalCounter]}</Animated.Text>
+                    
+                    {/* <Text style={styles.headerText}>{this.state.textInserts[this.state.globalCounter]}.</Text> */}
+                </TouchableOpacity>
 
-             
-                
             </SafeAreaView>
         )
     }
@@ -299,7 +297,11 @@ const styles = StyleSheet.create({
     },
 
     headerText:{
-        fontSize:80,
+        // flex:1,
+        // backgroundColor:'red',
+        // justifyContent:'flex-end',
+        // alignContent:'flex-end',
+        fontSize:70,
 
         fontFamily:'Helvetica',
         // marginTop:100,

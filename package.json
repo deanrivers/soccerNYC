@@ -26,7 +26,8 @@
     "react-native-screens": "^2.7.0",
     "react-native-snap-carousel": "^3.9.0",
     "react-native-splash-screen": "^3.2.0",
-    "react-native-textinput-effects": "^0.6.1"
+    "react-native-textinput-effects": "^0.6.1",
+    "logkitty": ">=0.7.1"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",

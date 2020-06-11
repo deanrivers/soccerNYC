@@ -708,9 +708,10 @@ const styles = StyleSheet.create({
           color:'white',
           fontFamily:'GillSans-SemiBoldItalic',
           fontFamily:'Helvetica',
-          fontSize:80,
+          fontSize:70,
           textAlign:'center',
-          width:'100%'
+          width:'100%',
+          marginBottom:'5%'
       }
 })
 
