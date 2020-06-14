@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { SafeAreaView,StyleSheet,Text,View,Dimensions,Image,Animated,Easing } from 'react-native'
 
-import MapView, {Marker,Circle,Callout, PROVIDER_GOOGLE} from 'react-native-maps'
+import MapView, {Marker,Circle,Callout, PROVIDER_GOOGLE, Polygon} from 'react-native-maps'
 import GetLocation from 'react-native-get-location'
 import openMap from 'react-native-open-maps';
 import Dialog from "react-native-dialog";
@@ -9,7 +9,7 @@ import Dialog from "react-native-dialog";
 import Carousel from 'react-native-snap-carousel'
 import { sliderWidth, itemWidth } from './styles/SliderEntry.style'
 import SliderEntry from './SliderEntry';
-
+// import customMapStyle from './styles/customMapStyle'
 import leftButton from '../assets/icons/arrows.png'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Actions } from 'react-native-router-flux'
@@ -20,6 +20,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import markerIcon from '../assets/icons/marker.png'
 import defaultImage from '../assets/icons/logo.png'
 import loaderImage from '../assets/icons/mag.gif'
+
 
 class Map extends Component{
   
@@ -35,11 +36,12 @@ class Map extends Component{
             dialogVisible:true,
             carouselYValue: new Animated.Value(height),
             carouselOpacity: new Animated.Value(0),
-            markerOpacity: new Animated.Value(0),
+            markerOpacity: new Animated.Value(1),
             mainOpacity: 1,
             mapOpacity: new Animated.Value(0),
             selectedMarkerIndex: 0,
-            markerSelectedScale: new Animated.Value(0)
+            markerSelectedScale: new Animated.Value(0),
+            radius: new Animated.Value(0)
             // coordinates: [{
             //     title: 'Sinatra Park',
             //     subtitle:'test',
@@ -68,13 +70,6 @@ class Map extends Component{
 
 
     componentDidMount(){
-
-
-        // Animated.timing(this.state.mainOpacity,{
-        //   toValue:1,
-        //   duration:1000,
-        //   easing:Easing.linear
-        // }).start()
 
         //animae map opacity
         Animated.timing(this.state.mapOpacity,{
@@ -105,7 +100,6 @@ class Map extends Component{
       "&radius="+radius+"&keyword="+searchTerm + "&key=" + API_KEY
         
         const url = baseUrl + parameters
-
         const response = await fetch(url)
         const data = await response.json()
         //console.log('Data coming in:',data)
@@ -186,14 +180,24 @@ class Map extends Component{
                     easing: Easing.linear
                   }).start()
 
-                  //animate marker opacity
-                  Animated.timing(this.state.markerOpacity,{
-                    toValue: 1,
-                    duration:2000,
-                    delay:500,
+
+
+                  //animate markers
+                  Animated.loop(Animated.timing(this.state.radius , {
+                    toValue: 50,
+                    duration: 3000,
                     easing: Easing.linear,
                     useNativeDriver:false
-                  }).start()
+                  })).start();
+
+                  //animate opacity
+                  Animated.loop(Animated.timing(this.state.markerOpacity , {
+                    toValue: 0,
+                    duration: 3000,
+                    easing: Easing.linear,
+                    useNativeDriver:false
+                  })).start();
+
                 })
                 //console.log('THE COMPLETE ARRAY OF OBJECTS',this.state.coordinates)
             },10))
@@ -277,12 +281,27 @@ class Map extends Component{
 
         console.log('Location State ->',this.state.location)
 
+        // this.setState({selectedMarkerIndex:index})
+
         this._map.animateToRegion({
-          latitude: location.latitude,
-          longitude: location.longitude,
+          ...location,
           latitudeDelta: 0.0522,
           longitudeDelta: 0.0221,
         })
+
+        
+
+
+
+        
+        
+
+    }
+
+    changeMarkerColor(index){
+      console.log('triggered')
+      //change marker color for the one that is selected
+      this.setState({selectedMarkerIndex:index},()=>console.log('Selected marker index',this.state.selectedMarkerIndex))
 
     }
 
@@ -291,7 +310,7 @@ class Map extends Component{
       console.log('location title',location.title)
 
       //change marker color for the one that is selected
-      // this.setState({selectedMarkerIndex:index},()=>console.log('Selected marker index',this.state.selectedMarkerIndex))
+      //this.setState({selectedMarkerIndex:index},()=>console.log('Selected marker index',this.state.selectedMarkerIndex))
 
       //animate to marker
       this._map.animateToRegion({
@@ -346,221 +365,16 @@ class Map extends Component{
         onSnapToItem={(index)=>this.onCarouselItemChange(index)}
     />);
 
-        const customMapStyle = [
-            {
-              "elementType": "geometry",
-              "stylers": [
-                {
-                  "color": "#212121"
-                }
-              ]
-            },
-            {
-              "elementType": "labels.icon",
-              "stylers": [
-                {
-                  "visibility": "off"
-                }
-              ]
-            },
-            {
-              "elementType": "labels.text.fill",
-              "stylers": [
-                {
-                  "color": "#757575"
-                }
-              ]
-            },
-            {
-              "elementType": "labels.text.stroke",
-              "stylers": [
-                {
-                  "color": "#212121"
-                }
-              ]
-            },
-            {
-              "featureType": "administrative",
-              "elementType": "geometry",
-              "stylers": [
-                {
-                  "color": "#757575"
-                },
-                {
-                  "visibility": "off"
-                }
-              ]
-            },
-            {
-              "featureType": "administrative.country",
-              "elementType": "labels.text.fill",
-              "stylers": [
-                {
-                  "color": "#9e9e9e"
-                }
-              ]
-            },
-            {
-              "featureType": "administrative.locality",
-              "elementType": "labels.text.fill",
-              "stylers": [
-                {
-                  "color": "#bdbdbd"
-                }
-              ]
-            },
-            {
-              "featureType": "poi",
-              "stylers": [
-                {
-                  "visibility": "off"
-                }
-              ]
-            },
-            {
-              "featureType": "poi",
-              "elementType": "labels.text.fill",
-              "stylers": [
-                {
-                  "color": "#757575"
-                }
-              ]
-            },
-            {
-              "featureType": "poi.park",
-              "elementType": "geometry",
-              "stylers": [
-                {
-                  "color": "#181818"
-                }
-              ]
-            },
-            {
-              "featureType": "poi.park",
-              "elementType": "labels.text.fill",
-              "stylers": [
-                {
-                  "color": "#616161"
-                }
-              ]
-            },
-            {
-              "featureType": "poi.park",
-              "elementType": "labels.text.stroke",
-              "stylers": [
-                {
-                  "color": "#1b1b1b"
-                }
-              ]
-            },
-            {
-              "featureType": "road",
-              "elementType": "geometry.fill",
-              "stylers": [
-                {
-                  "color": "#2c2c2c"
-                }
-              ]
-            },
-            {
-              "featureType": "road",
-              "elementType": "labels.icon",
-              "stylers": [
-                {
-                  "visibility": "off"
-                }
-              ]
-            },
-            {
-              "featureType": "road",
-              "elementType": "labels.text.fill",
-              "stylers": [
-                {
-                  "color": "#8a8a8a"
-                }
-              ]
-            },
-            {
-              "featureType": "road.arterial",
-              "elementType": "geometry",
-              "stylers": [
-                {
-                  "color": "#373737"
-                }
-              ]
-            },
-            {
-              "featureType": "road.highway",
-              "elementType": "geometry",
-              "stylers": [
-                {
-                  "color": "#3c3c3c"
-                }
-              ]
-            },
-            {
-              "featureType": "road.highway.controlled_access",
-              "elementType": "geometry",
-              "stylers": [
-                {
-                  "color": "#4e4e4e"
-                }
-              ]
-            },
-            {
-              "featureType": "road.local",
-              "elementType": "labels.text.fill",
-              "stylers": [
-                {
-                  "color": "#616161"
-                }
-              ]
-            },
-            {
-              "featureType": "transit",
-              "stylers": [
-                {
-                  "visibility": "off"
-                }
-              ]
-            },
-            {
-              "featureType": "transit",
-              "elementType": "labels.text.fill",
-              "stylers": [
-                {
-                  "color": "#757575"
-                }
-              ]
-            },
-            {
-              "featureType": "water",
-              "elementType": "geometry",
-              "stylers": [
-                {
-                  "color": "#000000"
-                }
-              ]
-            },
-            {
-              "featureType": "water",
-              "elementType": "labels.text.fill",
-              "stylers": [
-                {
-                  "color": "#3d3d3d"
-                }
-              ]
-            }
-          ]
+        const customMapStyle = require('./styles/customMapStyle.json')
 
         return([
             <View style={[styles.main,{opacity:this.state.mainOpacity}]}>
                 <Animated.View style={[styles.mapContainer,{opacity:this.state.mapOpacity}]}>
                     <MapView
-                        provider={PROVIDER_GOOGLE}
+                        // provider={PROVIDER_GOOGLE}
                         mapPadding={{top: 0, left: 0, right: 0, bottom:350}}                
                         ref={map=>this._map=map}
-                        showsUserLocation={true}
+                        showsUserLocation={false}
                         style={styles.map}
                         region={{
                             latitude: this.state.location.latitude,
@@ -568,8 +382,6 @@ class Map extends Component{
                             latitudeDelta: 0.0722,
                             longitudeDelta: 0.0421,
                         }}
-
-                        
 
                         // region={{
                         //   latitude:this.state.currentRegion?this.state.currentRegion.latitude:this.state.location.latitude,
@@ -581,15 +393,15 @@ class Map extends Component{
                         onRegionChangeComplete={()=>console.log('THE REGION CHANGED')}
                         
                     >
-                        {/* <Circle
-                            center={{
-                                latitude:this.state.circleCenter.latitude,
-                                longitude:this.state.circleCenter.longitude
-                            }}
-                            radius={200}
-                            strokeWidth={5}
-                            strokeColor='red'
-                            zIndex={100}
+
+                        {/* <Circle 
+                          center={this.state.circleCenter} 
+                          fillColor={'rgba(50,70,100,0.5)'}
+                          radius={200}
+                          strokeColor={'red'}
+                          radius={1000}
+                        
+                        
                         /> */}
                         {this.state.coordinates.map( (marker,index)=>{
                         
@@ -603,8 +415,12 @@ class Map extends Component{
                                 // title={marker.title}
                                 // pinColor={this.state.selectedMarkerIndex===index?'red':'black'}
                                 >
-                                  <Animated.View style={[styles.markerWrap,{transform: [{ scale:2 }]}]} useNativeDriver={true}>
-                                     <Animated.View style={[styles.ring]} useNativeDriver={true} />
+                                  <Animated.View style={[styles.markerWrap]} useNativeDriver={true}>
+                                    <Animated.View style={[styles.ring,,{width:this.state.radius,height:this.state.radius,borderRadius:1000,opacity:this.state.markerOpacity}]} useNativeDriver={true} />
+                                    {/* <View style={this.state.selectedMarkerIndex===index?styles.selectedMarker:styles.marker} /> */}
+                                    
+                                    
+                                    
                                     <View style={styles.marker} />
                                   </Animated.View>
                                   
@@ -763,10 +579,15 @@ const styles = StyleSheet.create({
       },
 
       marker: {
-
         width: 8,
         height: 8,
         borderRadius: 4,
+        backgroundColor: "white",
+      },
+      selectedMarker:{
+        width: 20,
+        height: 20,
+        borderRadius: 40,
         backgroundColor: "red",
       },
       ring: {
@@ -782,6 +603,13 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
       },
+      circle:{
+        width: 20,
+        height: 20,
+        borderRadius: 40,
+        backgroundColor: "orange",
+      }
+
 })
 
 
