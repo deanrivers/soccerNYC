@@ -29,6 +29,7 @@ class Map extends Component{
         this.state = {
             loading:false,
             location:{},
+            currentRegion:null,
             coordinates:[],
             circleCenter:{},
             dialogVisible:true,
@@ -37,6 +38,8 @@ class Map extends Component{
             markerOpacity: new Animated.Value(0),
             mainOpacity: 1,
             mapOpacity: new Animated.Value(0),
+            selectedMarkerIndex: 0,
+            markerSelectedScale: new Animated.Value(0)
             // coordinates: [{
             //     title: 'Sinatra Park',
             //     subtitle:'test',
@@ -66,6 +69,7 @@ class Map extends Component{
 
     componentDidMount(){
 
+
         // Animated.timing(this.state.mainOpacity,{
         //   toValue:1,
         //   duration:1000,
@@ -89,6 +93,7 @@ class Map extends Component{
         console.log('------------------')
         console.log('------------------')
         this._requestLocation()
+        
     }
 
     hitPlaceAPI = async ()=>{
@@ -213,11 +218,11 @@ class Map extends Component{
         .then(location => {
             this.setState({
                 location,
+                currentRegion:location,
                 loading: true,
                 circleCenter:{latitude:location.latitude,longitude:location.longitude}
             },()=>{
-                console.log('My device location',this.state.location)
-                console.log('Circle Center:',this.state.circleCenter)
+                console.log('Updated Region',this.state.currentRegion)
                 this.hitPlaceAPI()
             });
         })
@@ -267,27 +272,56 @@ class Map extends Component{
     }
 
     onCarouselItemChange(index){
-        console.log('index',index)
-
-        
+        console.log('Carousel changed to ->',index)
         let location = this.state.coordinates[index]
-        // console.log(location)
 
-        // this.setState({
-        //     //circleCenter:{latitude:location.latitude,longitude:location.longitude}
-        // },()=>{
-            
-        // })
+        console.log('Location State ->',this.state.location)
 
         this._map.animateToRegion({
-            latitude: location.latitude,
-            longitude: location.longitude,
-            latitudeDelta: 0.0522,
-            longitudeDelta: 0.0221,
+          latitude: location.latitude,
+          longitude: location.longitude,
+          latitudeDelta: 0.0522,
+          longitudeDelta: 0.0221,
         })
+
     }
 
+    onMarkerChange(index){
+      let location = this.state.coordinates[index]
+      console.log('location title',location.title)
+
+      //change marker color for the one that is selected
+      // this.setState({selectedMarkerIndex:index},()=>console.log('Selected marker index',this.state.selectedMarkerIndex))
+
+      //animate to marker
+      this._map.animateToRegion({
+          latitude: location.latitude,
+          longitude: location.longitude,
+          latitudeDelta: 0.0522,
+          longitudeDelta: 0.0221,
+      })
+
+      // set location region to new location region
+      // this.setState({location})
+      
+    }
+
+    markerScale(){
+      
+
+      // Animated.loop(Animated.timing(this.markerSelectedScale , {
+      //   toValue: 5,
+      //   duration: 1000,
+      // })).start();
+
+      
+    }
+
+    
+
     render(){
+
+
       
         var loaderRender = (this.state.loading)?<View style={{flex:1,justifyContent:'center',alignItems:'center',zIndex:100000,height:'100%',backgroundColor:'',top:0,paddingBottom:'33%'}}><Image style={{flex:1,justifyContent:'center',alignItems:'center',width:60,height:60}}source={loaderImage}/></View>:
         null
@@ -534,7 +568,17 @@ class Map extends Component{
                             latitudeDelta: 0.0722,
                             longitudeDelta: 0.0421,
                         }}
+
+                        
+
+                        // region={{
+                        //   latitude:this.state.currentRegion?this.state.currentRegion.latitude:this.state.location.latitude,
+                        //   longitude:this.state.currentRegion?this.state.currentRegion.longitude:this.state.location.longitude,
+                        //   latitudeDelta: 0.0722,
+                        //   longitudeDelta: 0.0421,
+                        // }}
                         customMapStyle={customMapStyle}
+                        onRegionChangeComplete={()=>console.log('THE REGION CHANGED')}
                         
                     >
                         {/* <Circle
@@ -547,22 +591,26 @@ class Map extends Component{
                             strokeColor='red'
                             zIndex={100}
                         /> */}
-                        {this.state.coordinates.map( (marker,index)=>
-                            (
+                        {this.state.coordinates.map( (marker,index)=>{
+                        
+                           return (
                                 <Marker
                                 key={index}
                                 coordinate={{
                                     latitude:marker.latitude,
                                     longitude:marker.longitude
                                 }}
-                                title={marker.title}
-                                pinColor='black'
-                                onPress={()=>this.onCarouselItemChange(index)}
+                                // title={marker.title}
+                                // pinColor={this.state.selectedMarkerIndex===index?'red':'black'}
+                                >
+                                  <Animated.View style={[styles.markerWrap,{transform: [{ scale:2 }]}]} useNativeDriver={true}>
+                                     <Animated.View style={[styles.ring]} useNativeDriver={true} />
+                                    <View style={styles.marker} />
+                                  </Animated.View>
+                                  
 
-                                />
-                      
-                              
-                            )
+                                </Marker>
+                            )}
                         )}
                     </MapView>
                 </Animated.View>
@@ -712,7 +760,28 @@ const styles = StyleSheet.create({
           textAlign:'center',
           width:'100%',
           marginBottom:'5%'
-      }
+      },
+
+      marker: {
+
+        width: 8,
+        height: 8,
+        borderRadius: 4,
+        backgroundColor: "red",
+      },
+      ring: {
+        width: 24,
+        height: 24,
+        borderRadius: 12,
+        backgroundColor: "rgba(130,4,150, 0.3)",
+        position: "absolute",
+        borderWidth: 1,
+        borderColor: "rgba(130,4,150, 0.5)",
+      },
+      markerWrap: {
+        alignItems: "center",
+        justifyContent: "center",
+      },
 })
 
 

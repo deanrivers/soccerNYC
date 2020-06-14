@@ -63,7 +63,7 @@ class Main extends Component{
             } else{
                 globalCounter++
             }
-            this.setState({globalCounter},()=>console.log(this.state.globalCounter),()=>console.log(this.state.globalCounter))
+            this.setState({globalCounter})
             
         }, 3000);
 
