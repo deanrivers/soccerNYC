@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { SafeAreaView,StyleSheet,Text,View,Dimensions,Image,Animated,Easing } from 'react-native'
+import React, { Component, useEffect } from 'react'
+import { SafeAreaView,StyleSheet,Text,View,Dimensions,Image,Animated,Easing,ScrollView, Platform } from 'react-native'
 
 import MapView, {Marker,Circle,Callout, PROVIDER_GOOGLE, Polygon} from 'react-native-maps'
 import GetLocation from 'react-native-get-location'
@@ -7,6 +7,7 @@ import openMap from 'react-native-open-maps';
 import Dialog from "react-native-dialog";
 
 import Carousel from 'react-native-snap-carousel'
+import Slide from  './Slide'
 import { sliderWidth, itemWidth } from './styles/SliderEntry.style'
 import SliderEntry from './SliderEntry';
 // import customMapStyle from './styles/customMapStyle'
@@ -21,6 +22,28 @@ import markerIcon from '../assets/icons/marker.png'
 import defaultImage from '../assets/icons/logo.png'
 import loaderImage from '../assets/icons/mag.gif'
 
+
+
+const { width, height } = Dimensions.get("window");
+const CARD_HEIGHT = 220;
+const CARD_WIDTH = width * 0.8;
+const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
+
+let mapIndex = 0
+let mapAnimation = new Animated.Value(0)
+
+// useEffect(()=>{
+//     mapAnimation.addListener(({value})=>{
+//         let index = Math.floor(value/CARD_WIDTH+0.3)
+//         if(index >= state.markers.length){
+//             index = state.markers.length-1
+//         }
+
+//         if(index<=0){
+//             index = 0
+//         }
+//     })
+// })
 
 class Map extends Component{
   
@@ -339,8 +362,6 @@ class Map extends Component{
     
 
     render(){
-
-
       
         var loaderRender = (this.state.loading)?<View style={{flex:1,justifyContent:'center',alignItems:'center',zIndex:100000,height:'100%',backgroundColor:'',top:0,paddingBottom:'33%'}}><Image style={{flex:1,justifyContent:'center',alignItems:'center',width:60,height:60}}source={loaderImage}/></View>:
         null
@@ -368,10 +389,11 @@ class Map extends Component{
         const customMapStyle = require('./styles/customMapStyle.json')
 
         return([
+        
             <View style={[styles.main,{opacity:this.state.mainOpacity}]}>
                 <Animated.View style={[styles.mapContainer,{opacity:this.state.mapOpacity}]}>
                     <MapView
-                        // provider={PROVIDER_GOOGLE}
+                        provider={PROVIDER_GOOGLE}
                         mapPadding={{top: 0, left: 0, right: 0, bottom:350}}                
                         ref={map=>this._map=map}
                         showsUserLocation={false}
@@ -431,32 +453,101 @@ class Map extends Component{
                     </MapView>
                 </Animated.View>
 
+
+                
+
                 <View style={styles.bottomContainer}>
+
+                    
                     {/* <View style={{lex:1,backgroundColor:'black'}}>
                         <Text style={{textAlign:'left',width:'100%',color:'white'}}>Number of soccer fields found: {this.state.coordinates.length}</Text>
                     </View> */}
                     
-                    <LinearGradient colors={['transparent','black']} style={[styles.linearGradient,{backgroundColor:'',flex:1}]}>
+                    {/* <LinearGradient colors={['transparent','black']} style={[styles.linearGradient,{backgroundColor:'',flex:1}]}> */}
                       <View style={{flex:1,backgroundColor:'',height:'100%'}}>
                           <Animated.View style={[styles.loaderConainer,{top:0,opacity:1}]}>
                             {loaderRender}
                           </Animated.View>
 
-                        <Animated.View style={[styles.carouselContainer,{top:0,opacity:this.state.carouselOpacity}]}>
-                            {carouselRender}
-                        </Animated.View> 
+                        
                       </View>
                        
-                    </LinearGradient>
+                    {/* </LinearGradient> */}
                     
 
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.backButton} onPress={()=>Actions.pop()}>
-                            <Animated.Text style={[styles.backButtonText,{opacity:this.state.mapOpacity}]}>Go Back.</Animated.Text>
-                        </TouchableOpacity>
-                    </View>
+                    
                 </View>
-            </View>
+            </View>,
+
+            <Animated.ScrollView
+                style={styles.scrollView}
+                horizontal
+                scrollEventThrottle={1}
+                showsHorizontalScrollIndicator={false}
+                pagingEnabled
+                snapToInterval={CARD_WIDTH+20}
+                snapToAlignment='center'
+                contentInset={{
+                    top:0,
+                    left:SPACING_FOR_CARD_INSET,
+                    bottom:0,
+                    right:SPACING_FOR_CARD_INSET
+                }}
+                contentContainerStyle={{
+                    paddingHorizontal: Platform.OS === 'android'?SPACING_FOR_CARD_INSET:0
+                }}
+                onScroll={Animated.event(
+                    [
+                        {
+                            nativeEvent:{
+                                contentOffset:{
+                                    x:mapAnimation
+                                }
+                            }
+                        }
+                    ]
+                )}
+                
+                >
+                {/* {carouselRender} */}
+
+                {this.state.coordinates.map((item,index)=>{
+                    console.log('CAROUSEL RENDER',item)
+                    return(
+                        <View style={styles.card} key={index}>
+                            <Image
+                                source={{uri:item.illustration}}
+                                
+                                style={styles.cardImage}
+                                resizeMode="cover"
+                            />
+              
+                            <View style={styles.textContent}>
+                                <Text numberOfLines={1} style={styles.cardtitle}>{item.title}</Text>
+                                <Text numberOfLines={1} style={styles.cardDescription}>{item.subtitle}</Text>
+                                <View style={styles.button}>
+                                    <TouchableOpacity
+                                        onPress={()=>{}}
+                                        style={styles.signIn}
+                                    >
+                                        <Text style={styles.textSign}>Find Pitch</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    )
+                })}
+
+            </Animated.ScrollView>,
+
+            // <View style={styles.buttonContainer}>
+            //     <TouchableOpacity style={styles.backButton} onPress={()=>Actions.pop()}>
+            //         <Animated.Text style={[styles.backButtonText,{opacity:this.state.mapOpacity}]}>Go Back.</Animated.Text>
+            //     </TouchableOpacity>
+            // </View>
+
+
+
             ])
     }
 }
@@ -538,13 +629,13 @@ const styles = StyleSheet.create({
         alignItems:'center',
         justifyContent:'center',
         // position:'absolute',
-        zIndex:100
+        // zIndex:100
     },
     mapContainer:{
         flex:1,
         
         // height:'100%',
-        zIndex:100
+        // zIndex:100
     },
     backText:{
         color:'white'
@@ -552,7 +643,7 @@ const styles = StyleSheet.create({
     buttonContainer:{
         width:'100%',
         // position:'relative'
-        flex:1,
+        
         // backgroundColor:'green',
         justifyContent:'flex-start',
         alignItems:'flex-start',
@@ -608,6 +699,69 @@ const styles = StyleSheet.create({
         height: 20,
         borderRadius: 40,
         backgroundColor: "orange",
+      },
+      scrollView: {
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        paddingVertical: 10,
+        zIndex:100000
+      },
+      card: {
+        // padding: 10,
+        elevation: 2,
+        backgroundColor: "#FFF",
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
+        marginHorizontal: 10,
+        shadowColor: "#000",
+        shadowRadius: 5,
+        shadowOpacity: 0.3,
+        shadowOffset: { x: 2, y: -2 },
+        height: CARD_HEIGHT,
+        width: CARD_WIDTH,
+        overflow: "hidden",
+      },
+      cardImage: {
+        flex: 3,
+        width: "100%",
+        height: "100%",
+        alignSelf: "center",
+        zIndex:1000
+        // backgroundColor:'red'
+      },
+      textContent: {
+        flex: 2,
+        padding: 10,
+      },
+      cardtitle: {
+        fontSize: 12,
+        // marginTop: 5,
+        fontWeight: "bold",
+      },
+      cardDescription: {
+        fontSize: 12,
+        color: "#444",
+      },
+      button: {
+        alignItems: 'center',
+        marginTop: 5
+      },
+      signIn: {
+          width: '100%',
+          padding:5,
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius: 3,
+          color:'black'
+      },
+      textSign: {
+          fontSize: 14,
+          fontWeight: 'bold',
+          borderColor:'black',
+          borderWidth:1,
+          width:'100%'
       }
 
 })
