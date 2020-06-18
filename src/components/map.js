@@ -56,7 +56,7 @@ class Map extends Component{
             currentRegion:null,
             coordinates:[],
             circleCenter:{},
-            dialogVisible:true,
+            dialogVisible: true,
             carouselYValue: new Animated.Value(height),
             carouselOpacity: new Animated.Value(0),
             markerOpacity: new Animated.Value(1),
@@ -548,7 +548,7 @@ class Map extends Component{
 
 
 
-            ])
+        ])
     }
 }
 const colors = {
