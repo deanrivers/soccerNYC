@@ -7,7 +7,7 @@ import openMap from 'react-native-open-maps';
 import Dialog from "react-native-dialog";
 
 import Carousel from 'react-native-snap-carousel'
-import Slide from  './Slide'
+
 import { sliderWidth, itemWidth } from './styles/SliderEntry.style'
 import SliderEntry from './SliderEntry';
 // import customMapStyle from './styles/customMapStyle'

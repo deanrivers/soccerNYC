@@ -7,9 +7,8 @@ import openMap from 'react-native-open-maps';
 import Dialog from "react-native-dialog";
 
 import Carousel from 'react-native-snap-carousel'
-import Slide from  './Slide'
-import { sliderWidth, itemWidth } from './styles/SliderEntry.style'
-import SliderEntry from './SliderEntry';
+
+
 // import customMapStyle from './styles/customMapStyle'
 import leftButton from '../assets/icons/arrows.png'
 import { TouchableOpacity } from 'react-native-gesture-handler'
@@ -22,6 +21,8 @@ import markerIcon from '../assets/icons/map_marker.png'
 import defaultImage from '../assets/icons/logo.png'
 import loaderImage from '../assets/icons/mag.gif'
 
+import Slide from './Slide'
+
 
 const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = 220;
@@ -32,6 +33,8 @@ const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
 
 const MapFunctional = ()=>{
 
+
+
     const {width,height} = Dimensions.get('window')
 
     //declare states
@@ -40,7 +43,7 @@ const MapFunctional = ()=>{
     const [currentRegion,updateCurrentRegion] = useState(null)
     const [coordinates,updateCoordinates] = useState([])
     const [circleCenter,updateCircleCenter] = useState({})
-    const [dialogVisible,updateDialogVisible] = useState(true)
+    const [dialogVisible,updateDialogVisible] = useState(false)
     const [carouselYValue,updateCarouselYValue] = useState(new Animated.Value(height))
     const [carouselOpacity,updateCarouselOpacity] = useState(new Animated.Value(0))
     const [markerOpacity,updateMarkerOpacity] = useState(new Animated.Value(1))
@@ -50,6 +53,25 @@ const MapFunctional = ()=>{
     const [markerSelectedScale,updateMarkerSelectedScale] = useState(new Animated.Value(0))
     const [radius,updateRadius] = useState(new Animated.Value(0))
 
+    locationPressed = (data) =>{
+
+        openMap({
+            latitude:data.latitude,
+            longitude:data.longitude,
+            travelType:'drive',
+            navigate_mode:'preview',
+            query:data.title,
+            provider:'apple',
+            
+        })
+    }
+
+    handleYes = (data) => {
+        console.log('BIG DATA',data)
+        locationPressed(data)
+        updateDialogVisible(false)
+    }
+    
     _requestLocation = () => {
         GetLocation.getCurrentPosition({
             enableHighAccuracy: true,
@@ -139,17 +161,8 @@ const MapFunctional = ()=>{
                 obj['longitudeDelta'] = 0.0421
                 obj['photo_reference'] = imageLink
 
-                // try{
-                //     obj['photo_reference'] = data.results[i].photos[0].photo_reference
-                // } catch(error){
-                //     console.log('error',error)
-                //     console.log('name',data.results[i]['name'])
-                //     console.log('photos',data.results[i]['photos'])
-                // }
-
                 //push object to array
                 coordinates.push(obj)
-
             }
         }
 
@@ -165,46 +178,14 @@ const MapFunctional = ()=>{
             console.log('STATE COORDINATES',coordinates)
             updateCoordinates(coordinates)
             updateLoading(false)
-            // this.setState({coordinates},()=>setTimeout( ()=>{
-            //     this.setState({loading:false},()=>{
 
-            //     //animate carousel pop up
-            //     Animated.timing(this.state.carouselYValue,{
-            //         toValue:0,
-            //         duration:1000,
-            //         easing:Easing.linear,
-            //         delay:500,
-            //         useNativeDriver:false
-            //     }).start()
-
-            //     Animated.timing(this.state.carouselOpacity,{
-            //         toValue:1,
-            //         duration:1000,
-            //         delay:500,
-            //         easing: Easing.linear
-            //     }).start()
-
-
-
-            //     //animate markers
-            //     Animated.loop(Animated.timing(this.state.radius , {
-            //         toValue: 50,
-            //         duration: 3000,
-            //         easing: Easing.linear,
-            //         useNativeDriver:false
-            //     })).start();
-
-            //     //animate opacity
-            //     Animated.loop(Animated.timing(this.state.markerOpacity , {
-            //         toValue: 0,
-            //         duration: 3000,
-            //         easing: Easing.linear,
-            //         useNativeDriver:false
-            //     })).start();
-
-            //     })
-            //     //console.log('THE COMPLETE ARRAY OF OBJECTS',this.state.coordinates)
-            // },10))
+            //animate carousel pop up
+            Animated.timing(carouselOpacity,{
+                toValue:1,
+                duration:1000,
+                delay:500,
+                easing: Easing.linear
+            }).start()
         }
     }
 
@@ -217,6 +198,8 @@ const MapFunctional = ()=>{
             console.log(error)
         }
     }
+
+ 
 
     
 
@@ -237,12 +220,6 @@ const MapFunctional = ()=>{
             easing: Easing.linear,
             useNativeDriver:false
         }).start()
-
-        //add code for carousel/marker animations
-        
-
-
-        
     },[])
 
 
@@ -290,7 +267,7 @@ const MapFunctional = ()=>{
     
         const scale = mapAnimation.interpolate({
           inputRange,
-          outputRange: [1, 1.5, 1],
+          outputRange: [1, 3, 1],
           extrapolate: "clamp"
         });
 
@@ -328,12 +305,12 @@ const MapFunctional = ()=>{
                     mapPadding={{top: 0, left: 0, right: 0, bottom:350}}                
                     // ref={map=>this._map=map}
                     ref={_map}
-                    showsUserLocation={false}
+                    showsUserLocation={true}
                     style={styles.map}
                     region={{
                         latitude: location.latitude,
                         longitude: location.longitude,
-                        latitudeDelta: 0.0722,
+                        latitudeDelta: 0.0922,
                         longitudeDelta: 0.0421,
                     }}
 
@@ -343,7 +320,7 @@ const MapFunctional = ()=>{
                 >
 
                     {coordinates.map( (marker,index)=>{
-                        console.log('interpolations index',interpolations[index])
+                        
                         const scaleStyle = {
 
                             transform:[
@@ -352,25 +329,24 @@ const MapFunctional = ()=>{
                                 }
                             ]
                         }
-                        console.log('SCALE STYLE~~~~',scaleStyle)
                        return (
                             <Marker
-                            key={index}
-                            coordinate={{
-                                latitude:marker.latitude,
-                                longitude:marker.longitude
-                            }}
-                            onPress={(e)=>onMarkerPress(e)}
-                            // title={marker.title}
-                            // pinColor={this.state.selectedMarkerIndex===index?'red':'black'}
+                                key={index}
+                                coordinate={{
+                                    latitude:marker.latitude,
+                                    longitude:marker.longitude
+                                }}
+                                onPress={(e)=>onMarkerPress(e)}
+                                // title={marker.title}
+                                // pinColor={this.state.selectedMarkerIndex===index?'red':'black'}
                             >
                               <Animated.View style={[styles.markerWrap]}>
-                                  <Animated.Image
+                                  {/* <Animated.Image
                                     source={markerIcon}
                                     style={[styles.marker,scaleStyle]}
                                     resizeMode="cover"
-                                  />
-                                {/* <Animated.View style={[styles.ring,scaleStyle]}/> */}
+                                  /> */}
+                                <Animated.View style={[styles.ring,scaleStyle]}/>
    
                                 
                                 
@@ -395,11 +371,12 @@ const MapFunctional = ()=>{
                     <View style={{flex:1}}>
                         <Animated.ScrollView
                         ref={_scrollView}
-                        style={styles.scrollView}
+                        style={[styles.scrollView,{opacity:carouselOpacity}]}
                         horizontal
-                        scrollEventThrottle={1}
+                        scrollEventThrottle={10}
                         showsHorizontalScrollIndicator={false}
                         pagingEnabled
+                        decelerationRate="fast"
                         snapToInterval={CARD_WIDTH+20}
                         snapToAlignment='center'
                         contentInset={{
@@ -429,27 +406,10 @@ const MapFunctional = ()=>{
 
                         {coordinates.map((item,index)=>{
                             return(
-                                <View style={styles.card} key={index}>
-                                    <Image
-                                        source={{uri:item.illustration}}
-                                        style={styles.cardImage}
-                                        resizeMode="cover"
-                                    />
-                    
-                                    <View style={styles.textContent}>
-                                        <Text numberOfLines={1} style={styles.cardtitle}>{item.title}</Text>
-                                        <Text numberOfLines={1} style={styles.cardDescription}>{item.subtitle}</Text>
-                                        <View style={styles.button}>
-                                            <TouchableOpacity
-                                                onPress={()=>{}}
-                                                style={styles.signIn}
-                                            >
-                                                <Text style={styles.textSign}>Find Pitch</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                </View>
+                                <Slide data={item} key={index}/>
                             )
+                            
+                            
                         })}
                         </Animated.ScrollView>
 
@@ -462,7 +422,8 @@ const MapFunctional = ()=>{
                 </LinearGradient>
 
             </View>
-        </View>
+        </View>,
+        
     ])
 
 }
@@ -583,13 +544,13 @@ const styles = StyleSheet.create({
         backgroundColor: "red",
       },
       ring: {
-        width: 24,
-        height: 24,
-        borderRadius: 12,
-        backgroundColor: "rgba(130,4,150, 0.3)",
+        width: 15,
+        height: 15,
+        borderRadius: 100,
+        backgroundColor: "rgba(255,255,255, 0.3)",
         position: "absolute",
         borderWidth: 1,
-        borderColor: "rgba(130,4,150, 0.5)",
+        borderColor: "black",
       },
       markerWrap: {
         alignItems: "center",
@@ -599,8 +560,6 @@ const styles = StyleSheet.create({
       },
 
       scrollView: {
-        // position: "absolute",
-        // flex:1,
         bottom: 0,
         left: 0,
         right: 0,
