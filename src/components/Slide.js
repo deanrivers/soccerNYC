@@ -45,10 +45,11 @@ const Slide = (props) => {
                 
                 
             </View>
-
+            <View style={{height:1,backgroundColor:'white',paddingTop:0,paddingBottom:0}}/>
             <TouchableOpacity style={[styles.button]} onPress={()=>updateDialogVisible(true)}>
+            
                 <View style={[styles.signIn]}>
-                    <Text style={{color:'white'}}>Get Directions</Text>
+                    <Text style={{color:'white',fontFamily:'Helvetica',}}>Get Directions</Text>
                 </View>
             </TouchableOpacity>
         </View>,
@@ -71,10 +72,10 @@ const styles = StyleSheet.create({
     card: {
         // padding: 10,
         elevation: 2,
-        backgroundColor: "#3F4045",
-        backgroundColor: "black",
-        borderTopLeftRadius: 5,
-        borderTopRightRadius: 5,
+        // backgroundColor: "#3F4045",
+        // backgroundColor: "black",
+        // borderTopLeftRadius: 5,
+        // borderTopRightRadius: 5,
         marginHorizontal: 10,
         shadowColor: "#000",
         shadowRadius: 5,
@@ -84,7 +85,7 @@ const styles = StyleSheet.create({
         width: CARD_WIDTH,
         overflow: "hidden",
         borderColor:'white',
-        // borderWidth:1,
+        borderWidth:1,
         borderRadius:10,
         zIndex:100
       },
@@ -105,11 +106,13 @@ const styles = StyleSheet.create({
         fontSize: 16,
         // marginTop: 5,
         fontWeight: "bold",
+        fontFamily:'Helvetica',
       },
       cardDescription: {
         fontSize: 15,
         color: "#444",
-        fontStyle:'italic'
+        fontStyle:'italic',
+        fontFamily:'Helvetica',
       },
       button: {
         justifyContent:'center',
@@ -119,10 +122,10 @@ const styles = StyleSheet.create({
         width:'100%',
         borderColor:'white',
         // borderRadiusBottom:10,
-        borderWidth:1,
+        // borderTopWidth:1,
         flex:2,
-        borderBottomEndRadius:10,
-        borderBottomStartRadius:10
+        // borderBottomEndRadius:10,
+        // borderBottomStartRadius:10
         },
  
     textSign:{
@@ -135,11 +138,13 @@ const styles = StyleSheet.create({
         justifyContent:'center',
         alignItems:'center',
         textAlign:'center',
-        borderRadius:20
+        // borderRadius:20,
+        fontFamily:'Helvetica',
     },
     signIn:{
         alignItems:'center',
-        justifyContent:'center'
+        justifyContent:'center',
+        fontFamily:'Helvetica',
     }
 })
 

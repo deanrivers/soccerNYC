@@ -340,14 +340,18 @@ const MapFunctional = ()=>{
                     )}
                 </MapView>
             </Animated.View>
+            
 
 
             
         </View>,
 
+
+
         <View style={[styles.bottomContainer,{flex:1}]}>
-            <LinearGradient colors={['transparent','black']} style={{width:'100%'}}>
             
+            <LinearGradient colors={['transparent','black']} style={{width:'100%'}}>
+                            
                 <Animated.ScrollView
                     ref={_scrollView}
                     style={[styles.scrollView,{opacity:carouselOpacity,bottom:0}]}
@@ -389,11 +393,10 @@ const MapFunctional = ()=>{
                 })}
                 </Animated.ScrollView>
 
-                
-            
+                <View style={{height:3,backgroundColor:'white',paddingTop:0,paddingBottom:0}}/>
 
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.backButton} onPress={()=>Actions.pop()}>
+                    <TouchableOpacity style={[styles.backButton,{justifyContent:'flex-end'}]} onPress={()=>Actions.pop()}>
                         <Animated.Text style={[styles.backButtonText,{opacity:mapOpacity}]}>&lt; Go Back.</Animated.Text>
                     </TouchableOpacity>
                 </View>
@@ -474,20 +477,9 @@ const styles = StyleSheet.create({
         // height:'100%',
         // zIndex:100
     },
-    backText:{
-        color:'white'
-    },
     buttonContainer:{
-        width:'100%',
-        // position:'relative'
-        flex:1,
-        zIndex:1000
+        // backgroundColor:'green'
         
-        
-        // backgroundColor:'green',
-        // justifyContent:'flex-start',
-        // alignItems:'flex-start',
-        // backgroundColor:'black'
 
     },
     backButton: {
@@ -498,12 +490,11 @@ const styles = StyleSheet.create({
       },
     backButtonText:{
         color:'white',
-        fontFamily:'GillSans-SemiBoldItalic',
         fontFamily:'Helvetica',
         fontSize:70,
         textAlign:'center',
         width:'100%',
-        marginBottom:'5%'
+        
     },
 
     marker: {
@@ -538,13 +529,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 0,
         right: 0,
-        // paddingVertical: 30,
-        // marginBottom:20,
-        // backgroundColor:'red',
-        // flex:1,
-
-        
-        // justifyContent:'center'
+        paddingVertical: 30,
     },
 
 
