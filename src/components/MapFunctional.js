@@ -29,11 +29,7 @@ const CARD_HEIGHT = 220;
 const CARD_WIDTH = width * 0.8;
 const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
 
-
-
 const MapFunctional = ()=>{
-
-
 
     const {width,height} = Dimensions.get('window')
 
@@ -52,25 +48,6 @@ const MapFunctional = ()=>{
     const [selectedMarkerIndex,updateSelectedMarkerIndex] = useState(0)
     const [markerSelectedScale,updateMarkerSelectedScale] = useState(new Animated.Value(0))
     const [radius,updateRadius] = useState(new Animated.Value(0))
-
-    locationPressed = (data) =>{
-
-        openMap({
-            latitude:data.latitude,
-            longitude:data.longitude,
-            travelType:'drive',
-            navigate_mode:'preview',
-            query:data.title,
-            provider:'apple',
-            
-        })
-    }
-
-    handleYes = (data) => {
-        console.log('BIG DATA',data)
-        locationPressed(data)
-        updateDialogVisible(false)
-    }
     
     _requestLocation = () => {
         GetLocation.getCurrentPosition({
@@ -215,8 +192,8 @@ const MapFunctional = ()=>{
         //animtae map opacity
         Animated.timing(mapOpacity,{
             toValue:1,
-            duration:3000,
-            delay:600,
+            duration:1000,
+            delay:0,
             easing: Easing.linear,
             useNativeDriver:false
         }).start()
@@ -264,6 +241,12 @@ const MapFunctional = ()=>{
           index * CARD_WIDTH,
           ((index + 1) * CARD_WIDTH),
         ];
+
+        // const inputRange = [
+        //     ((index - 1) * CARD_WIDTH),
+        //     ((index + 1) * CARD_WIDTH),
+        //     ((index + 1) * CARD_WIDTH),
+        // ]
     
         const scale = mapAnimation.interpolate({
           inputRange,
@@ -271,9 +254,12 @@ const MapFunctional = ()=>{
           extrapolate: "clamp"
         });
 
-        
-    
-        return {scale} ;
+        const opacity = mapAnimation.interpolate({
+            inputRange,
+            outputRange: [0.4, 1, 0.4],
+            extrapolate: "clamp"
+        })
+        return {scale,opacity} ;
       });
 
       //scroll to card when marker is selected
@@ -297,6 +283,10 @@ const MapFunctional = ()=>{
     const customMapStyle = require('./styles/customMapStyle.json')
 
     return([
+
+        // <Animated.View style={[styles.loaderConainer,{opacity:loading?true:false}]}>
+        //     {loaderRender}
+        // </Animated.View>,
         
         <View style={[styles.main,{opacity:1}]}>
             <Animated.View style={[styles.mapContainer,{opacity:mapOpacity}]}>
@@ -327,8 +317,10 @@ const MapFunctional = ()=>{
                                 {
                                     scale: interpolations[index].scale
                                 }
-                            ]
+                            ],
+                            opacity:interpolations[index].opacity
                         }
+
                        return (
                             <Marker
                                 key={index}
@@ -341,88 +333,76 @@ const MapFunctional = ()=>{
                                 // pinColor={this.state.selectedMarkerIndex===index?'red':'black'}
                             >
                               <Animated.View style={[styles.markerWrap]}>
-                                  {/* <Animated.Image
-                                    source={markerIcon}
-                                    style={[styles.marker,scaleStyle]}
-                                    resizeMode="cover"
-                                  /> */}
                                 <Animated.View style={[styles.ring,scaleStyle]}/>
-   
-                                
-                                
-                                {/* <View style={styles.marker} /> */}
                               </Animated.View>
-                              
-
                             </Marker>
                         )}
                     )}
                 </MapView>
             </Animated.View>
 
-            <View style={styles.bottomContainer}>
-                <LinearGradient colors={['transparent','black']} style={[styles.linearGradient,{backgroundColor:'',flex:1}]}>
-                  <View style={{flex:1,backgroundColor:'',height:'100%'}}>
-                      <Animated.View style={[styles.loaderConainer,{top:0,opacity:1}]}>
-                        {loaderRender}
-                      </Animated.View>
-                  </View>
 
-                    <View style={{flex:1}}>
-                        <Animated.ScrollView
-                        ref={_scrollView}
-                        style={[styles.scrollView,{opacity:carouselOpacity}]}
-                        horizontal
-                        scrollEventThrottle={10}
-                        showsHorizontalScrollIndicator={false}
-                        pagingEnabled
-                        decelerationRate="fast"
-                        snapToInterval={CARD_WIDTH+20}
-                        snapToAlignment='center'
-                        contentInset={{
-                            top:0,
-                            left:SPACING_FOR_CARD_INSET,
-                            bottom:0,
-                            right:SPACING_FOR_CARD_INSET
-                        }}
-                        contentContainerStyle={{
-                            paddingHorizontal: Platform.OS === 'android'?SPACING_FOR_CARD_INSET:0
-                        }}
-                        onScroll={Animated.event(
-                            [
-                                {
-                                    nativeEvent:{
-                                        contentOffset:{
-                                            x:mapAnimation
-                                        }
+            
+        </View>,
+
+        <View style={[styles.bottomContainer,{flex:1}]}>
+            <LinearGradient colors={['transparent','black']} style={{width:'100%'}}>
+            
+                <Animated.ScrollView
+                    ref={_scrollView}
+                    style={[styles.scrollView,{opacity:carouselOpacity,bottom:0}]}
+                    
+                    horizontal
+                    scrollEventThrottle={10}
+                    showsHorizontalScrollIndicator={false}
+                    pagingEnabled
+                    decelerationRate="fast"
+                    snapToInterval={CARD_WIDTH+20}
+                    snapToAlignment='center'
+                    contentInset={{
+                        top:0,
+                        left:SPACING_FOR_CARD_INSET,
+                        bottom:0,
+                        right:SPACING_FOR_CARD_INSET
+                    }}
+                    contentContainerStyle={{
+                        paddingHorizontal: Platform.OS === 'android'?SPACING_FOR_CARD_INSET:0
+                    }}
+                    onScroll={Animated.event(
+                        [
+                            {
+                                nativeEvent:{
+                                    contentOffset:{
+                                        x:mapAnimation
                                     }
                                 }
-                            ],
-                            {useNativeDriver: true}
-                        )}
-                        
-                        >
-                        {/* {carouselRender} */}
+                            }
+                        ],
+                        {useNativeDriver: true}
+                    )}
+                
+                >
+                {coordinates.map((item,index)=>{
+                    return(
+                        <Slide data={item} key={index}/>
+                    )
+                })}
+                </Animated.ScrollView>
 
-                        {coordinates.map((item,index)=>{
-                            return(
-                                <Slide data={item} key={index}/>
-                            )
-                            
-                            
-                        })}
-                        </Animated.ScrollView>
+                
+            
 
-                        <View style={styles.buttonContainer}>
-                            <TouchableOpacity style={styles.backButton} onPress={()=>Actions.pop()}>
-                                <Animated.Text style={[styles.backButtonText,{opacity:mapOpacity}]}>Go Back.</Animated.Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </LinearGradient>
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.backButton} onPress={()=>Actions.pop()}>
+                        <Animated.Text style={[styles.backButtonText,{opacity:mapOpacity}]}>&lt; Go Back.</Animated.Text>
+                    </TouchableOpacity>
+                </View>
+            </LinearGradient>
 
-            </View>
         </View>,
+        
+        
+
         
     ])
 
@@ -430,18 +410,16 @@ const MapFunctional = ()=>{
 
 const styles = StyleSheet.create({
 
-    linearGradient:{
-        // flex:1,
-        width:'100%',
-        // alignItems:'center'
-    },
+
     carouselContainer: {
         flex:3,
         justifyContent:'center',
         alignItems:'center',
     },
     loaderConainer:{
-      flex:3,
+        height:20,
+        zIndex:100,
+      flex:1,
       // backgroundColor:'orange',
       // justifyContent:'space-evenly',
       justifyContent:'center',
@@ -449,12 +427,14 @@ const styles = StyleSheet.create({
     },
     bottomContainer:{
         flex:1,
-        justifyContent:'center',
-        alignItems:'center',
+        // height:height/3,
+        justifyContent:'flex-end',
+        alignItems:'flex-end',
         position:'absolute',
         zIndex:100,
         bottom:0,
         width:'100%',
+
         // backgroundColor:'black',
         // height:'50%'
     },
@@ -475,15 +455,7 @@ const styles = StyleSheet.create({
     sliderContentContainer: {
         paddingVertical: 10 // for custom animation
     },
-    paginationContainer: {
-        paddingVertical: 8
-    },
-    paginationDot: {
-        width: 8,
-        height: 8,
-        borderRadius: 4,
-        marginHorizontal: 8
-    },
+
     main:{
         flex:1,
         backgroundColor:'black',
@@ -508,119 +480,75 @@ const styles = StyleSheet.create({
     buttonContainer:{
         width:'100%',
         // position:'relative'
+        flex:1,
+        zIndex:1000
+        
         
         // backgroundColor:'green',
-        justifyContent:'flex-start',
-        alignItems:'flex-start',
-        backgroundColor:'black'
+        // justifyContent:'flex-start',
+        // alignItems:'flex-start',
+        // backgroundColor:'black'
 
     },
     backButton: {
-        alignItems: "flex-start",
-        justifyContent:'flex-start',
+        // alignItems: "flex-start",
+        // justifyContent:'flex-start',
         width:'100%'
 
       },
-      backButtonText:{
-          color:'white',
-          fontFamily:'GillSans-SemiBoldItalic',
-          fontFamily:'Helvetica',
-          fontSize:70,
-          textAlign:'center',
-          width:'100%',
-          marginBottom:'5%'
-      },
+    backButtonText:{
+        color:'white',
+        fontFamily:'GillSans-SemiBoldItalic',
+        fontFamily:'Helvetica',
+        fontSize:70,
+        textAlign:'center',
+        width:'100%',
+        marginBottom:'5%'
+    },
 
-      marker: {
-        width: 30,
-        height: 30,
-        // borderRadius: 4,
-        // backgroundColor: "white",
-      },
-      selectedMarker:{
+    marker: {
+    width: 30,
+    height: 30,
+    // borderRadius: 4,
+    // backgroundColor: "white",
+    },
+    selectedMarker:{
         width: 20,
         height: 20,
         borderRadius: 40,
         backgroundColor: "red",
-      },
-      ring: {
+    },
+    ring: {
         width: 15,
         height: 15,
         borderRadius: 100,
-        backgroundColor: "rgba(255,255,255, 0.3)",
+        backgroundColor: "rgba(255,255,255, 1)",
         position: "absolute",
-        borderWidth: 1,
+        // borderWidth: 1,
         borderColor: "black",
-      },
-      markerWrap: {
+    },
+    markerWrap: {
         alignItems: "center",
         justifyContent: "center",
         width:50,
         height:50,
-      },
+    },
 
-      scrollView: {
+    scrollView: {
         bottom: 0,
         left: 0,
         right: 0,
-        paddingVertical: 10,
+        // paddingVertical: 30,
+        // marginBottom:20,
+        // backgroundColor:'red',
+        // flex:1,
+
         
-      },
-      card: {
-        // padding: 10,
-        elevation: 2,
-        backgroundColor: "#ddd",
-        borderTopLeftRadius: 5,
-        borderTopRightRadius: 5,
-        marginHorizontal: 10,
-        shadowColor: "#000",
-        shadowRadius: 5,
-        shadowOpacity: 0.3,
-        shadowOffset: { x: 2, y: -2 },
-        height: CARD_HEIGHT,
-        width: CARD_WIDTH,
-        overflow: "hidden",
-      },
-      cardImage: {
-        flex: 3,
-        width: "100%",
-        height: "100%",
-        alignSelf: "center",
-        zIndex:1000
-        // backgroundColor:'red'
-      },
-      textContent: {
-        flex: 2,
-        padding: 10,
-      },
-      cardtitle: {
-        fontSize: 12,
-        // marginTop: 5,
-        fontWeight: "bold",
-      },
-      cardDescription: {
-        fontSize: 12,
-        color: "#444",
-      },
-      button: {
-        alignItems: 'center',
-        marginTop: 5
-      },
-      signIn: {
-          width: '100%',
-          padding:5,
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderRadius: 3,
-          color:'black'
-      },
-      textSign: {
-          fontSize: 14,
-          fontWeight: 'bold',
-          borderColor:'black',
-          borderWidth:1,
-          width:'100%'
-      }
+        // justifyContent:'center'
+    },
+
+
+  
 
 })
 

@@ -1,10 +1,10 @@
 import React,{useEffect, useState } from 'react'
-import { SafeAreaView,StyleSheet,Text,View,Dimensions,Image,TouchableOpacity,Animated,Easing,ScrollView, Platform,Alert } from 'react-native'
+import { SafeAreaView,StyleSheet,Text,View,Dimensions,Image,BlurView,TouchableOpacity,Animated,Easing,ScrollView, Platform,Alert } from 'react-native'
 import Dialog from "react-native-dialog";
 import openMap from 'react-native-open-maps';
 
 const { width, height } = Dimensions.get("window");
-const CARD_HEIGHT = 220;
+const CARD_HEIGHT = height/2.5;
 const CARD_WIDTH = width * 0.8;
 const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
 
@@ -31,8 +31,6 @@ const Slide = (props) => {
         updateDialogVisible(false)
     }
 
-    
-
     return([
         <View style={styles.card}>
             <Image
@@ -41,31 +39,31 @@ const Slide = (props) => {
                 resizeMode="cover"
             />
 
-            <View style={styles.textContent}>
-                <Text numberOfLines={1} style={styles.cardtitle}>{props.data.title}</Text>
-                <Text numberOfLines={1} style={styles.cardDescription}>{props.data.subtitle}</Text>
-                <View style={styles.button}>
-                    <TouchableOpacity
-                        style={styles.signIn}
-                        onPress={()=>updateDialogVisible(true)}
-                    >
-                        <Text style={styles.textSign}>Find Pitch</Text>
-                    </TouchableOpacity>
-                </View>
+            <View style={[styles.textContent]}>
+                <Text numberOfLines={1} style={[styles.cardtitle,{color:'white'}]}>{props.data.title}</Text>
+                <Text numberOfLines={1} style={[styles.cardDescription,{color:'#95A3A4'}]}>{props.data.subtitle}</Text>
+                
+                
             </View>
+
+            <TouchableOpacity style={[styles.button]} onPress={()=>updateDialogVisible(true)}>
+                <View style={[styles.signIn]}>
+                    <Text style={{color:'white'}}>Get Directions</Text>
+                </View>
+            </TouchableOpacity>
         </View>,
         <View style={{flex:1,position:'absolute',zIndex:100}}>
-        <Dialog.Container 
-            visible={dialogVisible}
-            >
-            <Dialog.Title>Open Apple Maps?</Dialog.Title>
-            <Dialog.Description>
-                Get directions to {props.data.title}
-            </Dialog.Description>
-            <Dialog.Button label="Cancel" onPress={()=>updateDialogVisible(false)}/>
-            <Dialog.Button label="Yes" onPress={()=>handleYes(props.data)}/>
-        </Dialog.Container>
-    </View>
+            <Dialog.Container 
+                visible={dialogVisible}
+                >
+                <Dialog.Title>Open Apple Maps?</Dialog.Title>
+                <Dialog.Description>
+                    Get directions to "{props.data.title}""
+                </Dialog.Description>
+                <Dialog.Button label="Cancel" onPress={()=>updateDialogVisible(false)} color="black"/>
+                <Dialog.Button label="Yes" onPress={()=>handleYes(props.data)} color="black"/>
+            </Dialog.Container>
+        </View>
     ])
 }
 
@@ -73,7 +71,8 @@ const styles = StyleSheet.create({
     card: {
         // padding: 10,
         elevation: 2,
-        backgroundColor: "#ddd",
+        backgroundColor: "#3F4045",
+        backgroundColor: "black",
         borderTopLeftRadius: 5,
         borderTopRightRadius: 5,
         marginHorizontal: 10,
@@ -84,36 +83,64 @@ const styles = StyleSheet.create({
         height: CARD_HEIGHT,
         width: CARD_WIDTH,
         overflow: "hidden",
+        borderColor:'white',
+        // borderWidth:1,
+        borderRadius:10,
+        zIndex:100
       },
       cardImage: {
-        flex: 3,
+        flex: 7,
         width: "100%",
-        height: "100%",
-        alignSelf: "center",
-        zIndex:1000
+        
+        // alignSelf: "center",
+        // zIndex:1000
         // backgroundColor:'red'
       },
       textContent: {
         flex: 2,
         padding: 10,
+        
       },
       cardtitle: {
-        fontSize: 12,
+        fontSize: 16,
         // marginTop: 5,
         fontWeight: "bold",
       },
       cardDescription: {
-        fontSize: 12,
+        fontSize: 15,
         color: "#444",
+        fontStyle:'italic'
       },
-      signIn: {
-        width: '100%',
-        padding:5,
-        justifyContent: 'center',
+      button: {
+        justifyContent:'center',
         alignItems: 'center',
-        borderRadius: 3,
-        color:'black'
+        // backgroundColor:'#3F4045',
+        // marginTop: 10,
+        width:'100%',
+        borderColor:'white',
+        // borderRadiusBottom:10,
+        borderWidth:1,
+        flex:2,
+        borderBottomEndRadius:10,
+        borderBottomStartRadius:10
+        },
+ 
+    textSign:{
+        color:'white',
+        borderWidth:1,
+        borderColor:'white',
+        width:'100%',
+        height:30,
+        // height:'100%',
+        justifyContent:'center',
+        alignItems:'center',
+        textAlign:'center',
+        borderRadius:20
     },
+    signIn:{
+        alignItems:'center',
+        justifyContent:'center'
+    }
 })
 
 export default Slide
