@@ -46,8 +46,7 @@ const MapFunctional = ()=>{
     const [mainOpacity,updateMainOpacity] = useState(1)
     const [mapOpacity,updateMapOpacity] = useState(new Animated.Value(0))
     const [selectedMarkerIndex,updateSelectedMarkerIndex] = useState(0)
-    const [markerSelectedScale,updateMarkerSelectedScale] = useState(new Animated.Value(0))
-    const [radius,updateRadius] = useState(new Animated.Value(0))
+
     
     _requestLocation = () => {
         GetLocation.getCurrentPosition({
@@ -219,6 +218,8 @@ const MapFunctional = ()=>{
                 mapIndex = index;
                 const coordinate = coordinates[index];
                 console.log('carousel cooridinate',coordinate)
+
+
                 
                 _map.current.animateToRegion(
                   {
@@ -231,35 +232,36 @@ const MapFunctional = ()=>{
                 );
               }
             }, 10);
-          });
+          },()=>updateSelectedMarkerIndex(index));
     })
+
+
 
     const interpolations = coordinates.map((marker, index) => {
         
         const inputRange = [
-          (index - 1) * CARD_WIDTH,
-          index * CARD_WIDTH,
-          ((index + 1) * CARD_WIDTH),
-        ];
+            ((index - 1) * CARD_WIDTH),
+            ((index) * CARD_WIDTH),
+            ((index + 1) * CARD_WIDTH),
+        ]
 
-        // const inputRange = [
-        //     ((index - 1) * CARD_WIDTH),
-        //     ((index + 1) * CARD_WIDTH),
-        //     ((index + 1) * CARD_WIDTH),
-        // ]
+        const barWidth = mapAnimation.interpolate({
+            inputRange:[0,coordinates.length],
+            outputRange:[0,100]
+        })
     
         const scale = mapAnimation.interpolate({
           inputRange,
-          outputRange: [1, 3, 1],
+          outputRange: [1, 3,1],
           extrapolate: "clamp"
         });
 
         const opacity = mapAnimation.interpolate({
-            inputRange,
-            outputRange: [0.4, 1, 0.4],
+            inputRange:inputRange,
+            outputRange: [.3,1,.3],
             extrapolate: "clamp"
         })
-        return {scale,opacity} ;
+        return {scale,opacity,barWidth} ;
       });
 
       //scroll to card when marker is selected
@@ -392,6 +394,8 @@ const MapFunctional = ()=>{
                     )
                 })}
                 </Animated.ScrollView>
+
+
 
                 <View style={{height:3,backgroundColor:'white',paddingTop:0,paddingBottom:0}}/>
 

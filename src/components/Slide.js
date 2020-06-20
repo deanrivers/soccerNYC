@@ -72,10 +72,9 @@ const styles = StyleSheet.create({
     card: {
         // padding: 10,
         elevation: 2,
-        // backgroundColor: "#3F4045",
+        // backgroundColor: "#66A182",
         // backgroundColor: "black",
-        // borderTopLeftRadius: 5,
-        // borderTopRightRadius: 5,
+        borderTopLeftRadius: 0,
         marginHorizontal: 10,
         shadowColor: "#000",
         shadowRadius: 5,
@@ -86,16 +85,12 @@ const styles = StyleSheet.create({
         overflow: "hidden",
         borderColor:'white',
         borderWidth:1,
-        borderRadius:10,
+
         zIndex:100
       },
       cardImage: {
         flex: 7,
         width: "100%",
-        
-        // alignSelf: "center",
-        // zIndex:1000
-        // backgroundColor:'red'
       },
       textContent: {
         flex: 2,
