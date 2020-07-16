@@ -231,7 +231,7 @@ class Main extends Component{
     render(){
         return(
             <SafeAreaView style={styles.main}>
-                <Animated.View style={{flex:2,justifyContent:'center',alignItems:'center',backgroundColor:'black',opacity:this.state.logoOpacity}}>
+                <Animated.View style={{flex:1,justifyContent:'center',alignItems:'center',backgroundColor:'black',opacity:this.state.logoOpacity}}>
                         <Image style={{width:40,height:40}} source={logoImage}/>
                 </Animated.View>
 
@@ -240,7 +240,8 @@ class Main extends Component{
                     <Text style={styles.subHeaderText}>All fields are within 5km of your current location.</Text>
                     <Text></Text>
                     <Text style={styles.subHeaderText}>Built to serve the worldwide football community.</Text>
-                    {/* <Text style={styles.headerText}>{this.state.textInserts[this.state.globalCounter]}.</Text> */}
+                    <Text></Text>
+                    <Text style={styles.subHeaderText}>In association with Jogalavida.</Text>
                 </Animated.View>
                 <Animated.View style={{flex:1,justifyContent:'center',alignItems:'flex-end',backgroundColor:'',opacity:this.state.fadeValue}}>
                     <Animated.View style={{marginBottom:this.state.marginBottomValue,height:89,borderWidth:1,borderTopColor:'transparent',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue1,opacity:1}}/>
@@ -256,7 +257,7 @@ class Main extends Component{
                 </Animated.View>
                 
                 
-                <TouchableOpacity style={{flex:2,justifyContent:'flex-end',alignItems:'flex-end',backgroundColor:''}} onPress={()=>Actions.map()}>
+                <TouchableOpacity style={{flex:1.5,justifyContent:'flex-end',alignItems:'flex-end',backgroundColor:''}} onPress={()=>Actions.map()}>
                     <Animated.Text style={[styles.headerText,{opacity:this.state.discoverOpacity}]}>Discover {this.state.textInserts[this.state.globalCounter]}</Animated.Text>
                     
                     {/* <Text style={styles.headerText}>{this.state.textInserts[this.state.globalCounter]}.</Text> */}

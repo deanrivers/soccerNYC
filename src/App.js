@@ -22,7 +22,6 @@ import SplashScreen from 'react-native-splash-screen'
 
 import Main from './components/main'
 import CardView from './components/cardsView'
-import Map from './components/map'
 import MapFunctional from './components/MapFunctional'
 
 

@@ -46,6 +46,7 @@ const MapFunctional = ()=>{
     const [mainOpacity,updateMainOpacity] = useState(1)
     const [mapOpacity,updateMapOpacity] = useState(new Animated.Value(0))
     const [selectedMarkerIndex,updateSelectedMarkerIndex] = useState(0)
+    const [markerLocation,updateMarkerLocation] = useState(new Animated.Value(10))
 
     
     _requestLocation = () => {
@@ -155,6 +156,14 @@ const MapFunctional = ()=>{
             updateCoordinates(coordinates)
             updateLoading(false)
 
+            //animate markers
+            Animated.timing(markerLocation,{
+                toValue:0,
+                duration:1000,
+                delay:500,
+                easing: Easing.linear
+            }).start()
+
             //animate carousel pop up
             Animated.timing(carouselOpacity,{
                 toValue:1,
@@ -174,10 +183,6 @@ const MapFunctional = ()=>{
             console.log(error)
         }
     }
-
- 
-
-    
 
     let mapIndex = 0;
     let mapAnimation = new Animated.Value(0);
@@ -219,8 +224,6 @@ const MapFunctional = ()=>{
                 const coordinate = coordinates[index];
                 console.log('carousel cooridinate',coordinate)
 
-
-                
                 _map.current.animateToRegion(
                   {
                     latitude:coordinate.latitude,
@@ -234,8 +237,6 @@ const MapFunctional = ()=>{
             }, 10);
           },()=>updateSelectedMarkerIndex(index));
     })
-
-
 
     const interpolations = coordinates.map((marker, index) => {
         
@@ -257,7 +258,7 @@ const MapFunctional = ()=>{
         });
 
         const opacity = mapAnimation.interpolate({
-            inputRange:inputRange,
+            inputRange,
             outputRange: [.3,1,.3],
             extrapolate: "clamp"
         })
@@ -285,7 +286,6 @@ const MapFunctional = ()=>{
     const customMapStyle = require('./styles/customMapStyle.json')
 
     return([
-
         // <Animated.View style={[styles.loaderConainer,{opacity:loading?true:false}]}>
         //     {loaderRender}
         // </Animated.View>,
@@ -294,7 +294,7 @@ const MapFunctional = ()=>{
             <Animated.View style={[styles.mapContainer,{opacity:mapOpacity}]}>
                 <MapView
                     provider={PROVIDER_GOOGLE}
-                    mapPadding={{top: 0, left: 0, right: 0, bottom:350}}                
+                    mapPadding={{top: 0, left: 0, right: 0, bottom:300}}                
                     // ref={map=>this._map=map}
                     ref={_map}
                     showsUserLocation={true}
@@ -305,47 +305,46 @@ const MapFunctional = ()=>{
                         latitudeDelta: 0.0922,
                         longitudeDelta: 0.0421,
                     }}
-
                     customMapStyle={customMapStyle}
                     onRegionChangeComplete={()=>console.log('THE REGION CHANGED')}
-                    
                 >
-
                     {coordinates.map( (marker,index)=>{
-                        
                         const scaleStyle = {
-
                             transform:[
                                 {
                                     scale: interpolations[index].scale
                                 }
                             ],
-                            opacity:interpolations[index].opacity
+                            
+                        }
+
+                        const opacityStyle = {
+                            opacity: interpolations[index].opacity
                         }
 
                        return (
-                            <Marker
-                                key={index}
-                                coordinate={{
-                                    latitude:marker.latitude,
-                                    longitude:marker.longitude
-                                }}
-                                onPress={(e)=>onMarkerPress(e)}
-                                // title={marker.title}
-                                // pinColor={this.state.selectedMarkerIndex===index?'red':'black'}
-                            >
-                              <Animated.View style={[styles.markerWrap]}>
-                                <Animated.View style={[styles.ring,scaleStyle]}/>
-                              </Animated.View>
-                            </Marker>
+
+                           
+                                <Marker
+                                    key={index}
+                                    coordinate={{
+                                        latitude:marker.latitude,
+                                        longitude:marker.longitude
+                                    }}
+                                    onPress={(e)=>onMarkerPress(e)}
+                                    
+                                    // title={marker.title}
+                                    // pinColor={this.state.selectedMarkerIndex===index?'red':'black'}
+                                >
+                                    <Animated.View style={[styles.markerWrap,opacityStyle]}>
+                                        <Animated.View style={[styles.ring,scaleStyle]}/>
+                                    </Animated.View>
+                                </Marker>
+                            
                         )}
                     )}
                 </MapView>
             </Animated.View>
-            
-
-
-            
         </View>,
 
 
@@ -386,10 +385,10 @@ const MapFunctional = ()=>{
                         ],
                         {useNativeDriver: true}
                     )}
-                
                 >
                 {coordinates.map((item,index)=>{
                     return(
+                        
                         <Slide data={item} key={index}/>
                     )
                 })}
@@ -398,10 +397,9 @@ const MapFunctional = ()=>{
 
 
                 <View style={{height:3,backgroundColor:'white',paddingTop:0,paddingBottom:0}}/>
-
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity style={[styles.backButton,{justifyContent:'flex-end'}]} onPress={()=>Actions.pop()}>
-                        <Animated.Text style={[styles.backButtonText,{opacity:mapOpacity}]}>&lt; Go Back.</Animated.Text>
+                        <Animated.Text style={[styles.backButtonText,{opacity:mapOpacity,backgroundColor:'black'}]}>&lt; Go Back.</Animated.Text>
                     </TouchableOpacity>
                 </View>
             </LinearGradient>
@@ -426,11 +424,11 @@ const styles = StyleSheet.create({
     loaderConainer:{
         height:20,
         zIndex:100,
-      flex:1,
-      // backgroundColor:'orange',
-      // justifyContent:'space-evenly',
-      justifyContent:'center',
-      alignItems:'center',
+        flex:1,
+        // backgroundColor:'orange',
+        // justifyContent:'space-evenly',
+        justifyContent:'center',
+        alignItems:'center',
     },
     bottomContainer:{
         flex:1,
@@ -472,14 +470,12 @@ const styles = StyleSheet.create({
         flex:1,
         alignItems:'center',
         justifyContent:'center',
+        
         // position:'absolute',
         // zIndex:100
     },
     mapContainer:{
         flex:1,
-        
-        // height:'100%',
-        // zIndex:100
     },
     buttonContainer:{
         // backgroundColor:'green'
