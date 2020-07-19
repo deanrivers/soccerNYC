@@ -9,7 +9,8 @@ const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = height/2.5;
 const CARD_WIDTH = width * 0.8;
 const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
-let gradient = ['#485563', '#000000']
+let gradient = ['#1c2227', '#000000']
+let gradient2 = ['#000000','#485563']
 
 const Slide = (props) => {
 
@@ -53,14 +54,14 @@ const Slide = (props) => {
                     
                     {/* <View style={{height:1,backgroundColor:'red',paddingTop:0,paddingBottom:0}}/> */}
                     <View style={{flex:3,justifyContent:'center',alignItems:'center'}}>
-                        <TouchableOpacity style={[styles.button]} onPress={()=>updateDialogVisible(true)}>
-                            <View style={[styles.signIn]}>
-                                <Text style={{color:'white',fontFamily:'Helvetica',}}>Get Directions</Text>
-                            </View>
-                        </TouchableOpacity>
+                        <LinearGradient colors={['transparent']} style={styles.button}>
+                            <TouchableOpacity onPress={()=>updateDialogVisible(true)}>
+                                <View style={[styles.signIn]}>
+                                    <Text style={{color:'white',fontFamily:'DamascusLight',fontWeight:'bold'}}>Get Directions</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </LinearGradient>
                     </View>
-                    
-                    
                 </LinearGradient>
                 {/* </AnimatedLinearGradient> */}
             </View>
@@ -93,15 +94,26 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowOffset: { x: 2, y: -2 },
         overflow: "hidden",
-        zIndex:100
+        zIndex:100,
+
+        shadowOffset:{  width: 0,  height: 3,  },
+        shadowColor: 'black',
+        shadowOpacity: 1.0,
+        // padding:10,
+        // margin:10
+
+
       },
     linearGradient: {
-    height: CARD_HEIGHT,
-    width: CARD_WIDTH,
-    padding:15,
-    borderRadius:10,
-    borderColor:gradient[0],
-    borderWidth:0,
+        height: CARD_HEIGHT,
+        width: CARD_WIDTH,
+        padding:15,
+        borderRadius:10,
+        borderColor:gradient[0],
+        borderColor:'white',
+        borderWidth:0,
+
+
     },
     cardImage: {
     flex: 7,
@@ -114,15 +126,20 @@ const styles = StyleSheet.create({
     
     },
     cardtitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    fontFamily:'Helvetica',
+        fontSize: 16,
+        fontWeight: "bold",
+        fontFamily:'DamascusLight',
+        // fontFamily:'AvenirNext-UltraLight',
+        // fontFamily:'AvenirNext-UltraLight',
     },
     cardDescription: {
-    fontSize: 15,
-    color: "#444",
-    fontStyle:'italic',
-    fontFamily:'Helvetica',
+        fontSize: 14,
+        color: "#444",
+        fontStyle:'italic',
+
+        fontFamily:'AvenirNext-Regular',
+        fontFamily:'DamascusLight',
+        // fontWeight:'bold'
     },
     button: {
         justifyContent:'center',

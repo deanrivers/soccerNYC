@@ -323,6 +323,9 @@ const MapFunctional = ()=>{
             </Animated.View>
         </View>,
 
+        // <View style={{backgroundColor:'#0C120C',zIndex:0,position:'absolute',height:'50%',width:'100%',bottom:0,borderTopLeftRadius:0}}/>
+        //,
+
         <View style={[styles.bottomContainer,{flex:1}]}>
             <LinearGradient colors={['transparent','black']} style={{width:'100%'}}>
                 {loaderRender}
@@ -358,26 +361,25 @@ const MapFunctional = ()=>{
                         {useNativeDriver: true}
                     )}
                 >
-                {coordinates.map((item,index)=>{
-                    return(
-                        
-                        <Slide data={item} key={index}/>
-                    )
-                })}
+                    
+                    {coordinates.map((item,index)=>{
+                        return(
+                            <Slide data={item} key={index}/>
+                        )
+                    })}
                 </Animated.ScrollView>
 
-                <View style={{height:5,backgroundColor:'white',paddingTop:0,paddingBottom:0}}/>
+                
 
-                <View style={styles.buttonContainer}>
+                <Animated.View style={[styles.buttonContainer,{opacity:mapOpacity}]}>
+                    {/* <View style={{height:5,backgroundColor:'white',paddingTop:0,paddingBottom:0}}/> */}
                     <TouchableOpacity style={[styles.backButton,{justifyContent:'flex-end'}]} onPress={()=>Actions.pop()}>
-                        <Animated.Text style={[styles.backButtonText,{opacity:mapOpacity,backgroundColor:'black'}]}>&lt; Go Back.</Animated.Text>
+                        <Animated.Text style={[styles.backButtonText]}>&lt; Go Back.</Animated.Text>
                     </TouchableOpacity>
-                </View>
+                </Animated.View>
             </LinearGradient>
-
         </View>,
     ])
-
 }
 
 const styles = StyleSheet.create({
@@ -430,12 +432,19 @@ const styles = StyleSheet.create({
     mapContainer:{
         flex:1,
     },
+    buttonContainer:{
+        // backgroundColor:'black',
+        marginBottom:'1%'
+    },
     backButton: {
-        width:'100%'
+        width:'100%',
     },
     backButtonText:{
         color:'white',
         fontFamily:'Helvetica',
+        fontFamily: 'AppleSDGothicNeo-UltraLight',
+        fontFamily:'AvenirNext-UltraLight',
+        fontFamily:'DamascusLight',
         fontSize:70,
         textAlign:'center',
         width:'100%',

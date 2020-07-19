@@ -4,10 +4,7 @@ import { Text,View,Image,StyleSheet,TouchableOpacity, SafeAreaView,Animated,Easi
 
 import {Actions, Reducer} from 'react-native-router-flux'
 
-import {Hoshi} from 'react-native-textinput-effects'
-
 import logoImage from '../assets/icons/logo.png'
-
 
 class Main extends Component{
     constructor(props){
@@ -18,7 +15,7 @@ class Main extends Component{
             zipValid:false,
             zipFilled:false,
             textValue:'',
-            textInserts:['Fútbol','Soccer','Calcio','Futebol','Football','Fußall','Fótbolta','foutbòl','bọl'],
+            textInserts:['Fútbol','Soccer','Calcio','Futebol','Football','Fußall','Fótbolta','Foutbòl'],
             globalCounter:0,
             fadeValue: new Animated.Value(0),
             xValue1: new Animated.Value(0),
@@ -38,11 +35,8 @@ class Main extends Component{
             logoWidthValue: new Animated.Value(0),
             logoHeightvalue: new Animated.Value(0),
             logoOpacity: new Animated.Value(0)
-
         }
     }
-
-
 
     componentDidMount() {
 
@@ -64,10 +58,7 @@ class Main extends Component{
                 globalCounter++
             }
             this.setState({globalCounter})
-            
         }, 3000);
-
-
 
         // //Animate opacity of lines
         Animated.timing(this.state.fadeValue,{
@@ -197,35 +188,11 @@ class Main extends Component{
             useNativeDriver:useNativeDriver
         }).start()
 
-      }
-
-      componentWillUnmount() {
-
-        // clearInterval(this.interval);
-        console.log('main unmounted')
-      }
-
-    inputUpdate(e){
-        var zipCode = e
-        this.setState({zipCode},()=>{
-            if(zipCode.length == 5){
-                this.setState({zipFilled:true},()=>{
-                console.log(this.state.zipFilled)
-                })
-            } else{
-                this.setState({zipFilled:false},()=>{
-                console.log(this.state.zipFilled)
-                })
-            }
-        })
     }
 
-    searchPressed(){
-        if(this.state.zipFilled){
-            this.props.setZip(this.state.zipCode)
-        } else{
-            alert('Please enter your zip code.')
-        }
+    componentWillUnmount() {
+    clearInterval(this.interval);
+    console.log('main unmounteddd')
     }
 
     render(){
@@ -236,13 +203,13 @@ class Main extends Component{
                 </Animated.View>
 
                 <Animated.View style={{flex:1,justifyContent:'center',alignItems:'flex-start',backgroundColor:'',opacity:this.state.subHeaderOpacity}} >
-                    {/* <Text style={styles.subHeaderText}>What does this app do?</Text> */}
                     <Text style={styles.subHeaderText}>All fields are within 5km of your current location.</Text>
                     <Text></Text>
                     <Text style={styles.subHeaderText}>Built to serve the worldwide football community.</Text>
                     <Text></Text>
                     <Text style={styles.subHeaderText}>In association with Jogalavida.</Text>
                 </Animated.View>
+                
                 <Animated.View style={{flex:1,justifyContent:'center',alignItems:'flex-end',backgroundColor:'',opacity:this.state.fadeValue}}>
                     <Animated.View style={{marginBottom:this.state.marginBottomValue,height:89,borderWidth:1,borderTopColor:'transparent',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue1,opacity:1}}/>
                     <Animated.View style={{marginBottom:this.state.marginBottomValue,height:55,borderWidth:1,borderTopColor:'transparent',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue2,opacity:0.9}}/>
@@ -256,11 +223,8 @@ class Main extends Component{
                     <Animated.View style={{marginBottom:this.state.marginBottomValue,height:1,borderWidth:1,borderTopColor:'transparent',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue10,opacity:0.1}}/>
                 </Animated.View>
                 
-                
-                <TouchableOpacity style={{flex:1.5,justifyContent:'flex-end',alignItems:'flex-end',backgroundColor:''}} onPress={()=>Actions.map()}>
+                <TouchableOpacity style={{flex:1,justifyContent:'flex-end',alignItems:'flex-end',backgroundColor:''}} onPress={()=>Actions.map()}>
                     <Animated.Text style={[styles.headerText,{opacity:this.state.discoverOpacity}]}>Discover {this.state.textInserts[this.state.globalCounter]}</Animated.Text>
-                    
-                    {/* <Text style={styles.headerText}>{this.state.textInserts[this.state.globalCounter]}.</Text> */}
                 </TouchableOpacity>
 
             </SafeAreaView>
@@ -271,15 +235,10 @@ class Main extends Component{
 const styles = StyleSheet.create({
     main: {
         flex:1,
-        // width:'100%',
-        // alignItems:'center',
         backgroundColor:'black',
-        // justifyContent:'center',
-        // alignItems:'center'
       },
     textContainer: {
         borderWidth: 1,
-        // width:300,
         height: 50,
         justifyContent:'center',
         borderTopColor:'#f4f4f3',
@@ -289,88 +248,57 @@ const styles = StyleSheet.create({
     },
     textContainerInvalid:{
         borderWidth: 1,
-        // width:300,
         height: 50,
         justifyContent:'center',
         borderTopColor:'#f4f4f3',
         borderRightColor:'#f4f4f3',
         borderLeftColor:'#f4f4f3',
     },
-
     headerText:{
-        // flex:1,
-        // backgroundColor:'red',
-        // justifyContent:'flex-end',
-        // alignContent:'flex-end',
         fontSize:70,
-
         fontFamily:'Helvetica',
-        // marginTop:100,
+        fontFamily:'AppleSDGothicNeo-UltraLight',
+        fontFamily:'AvenirNext-UltraLight',
+        fontFamily:'DamascusLight',
         lineHeight:70,
         width:'100%',
         paddingTop:20,
         bottom:0,
         textAlign:'right',
-        // backgroundColor:'red',
-
         color:'white',
-        // color:'white'
-
-        // backgroundColor:'black',
+        backgroundColor:'black'
     },
     subHeaderText:{
-        fontSize:14,
+        fontSize:18,
         fontFamily:'HelveticaNeue-Italic',
+        fontFamily:'AvenirNext-Regular',
+        fontFamily:'DamascusLight',
         justifyContent:'flex-start',
         alignItems:'flex-start',
         flexWrap:'wrap',
         width:'60%',
-        // paddingTop:10,
-        // bottom:0,
         color:'white',
         paddingLeft:5,
-        
-        // opacity:0.5,
-        // backgroundColor:'bla',
-                // backgroundColor:'black',
     },
-   
     locationText:{
         color:'white',
         fontFamily:'Arial',
     },
-
     getLocationButton:{
         borderWidth:1,
         borderColor:'white',
-    
         justifyContent:'center',
         alignItems:'center',
         height:50,
         borderRadius:0
-        // width: 300,
-        // marginTop:10
     },
     searchText:{
-        fontFamily:'Arial'
+        fontFamily:'Arial',
+        
     },
     buttonView:{
         flex:3,
-        // backgroundColor:'red',
         justifyContent:'center',
-    },
-    hoshiView:{
-        width:300,
-        fontFamily:'Didot',
-        paddingBottom:60
-    },
-    hoshiInput:{
-        padding:100,
-        fontFamily:'Didot',
-        fontSize:30
-    },
-    hoshiLabel:{
-        fontFamily:'Didot',
     },
     description:{
         color:'white'
