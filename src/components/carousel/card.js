@@ -1,20 +1,18 @@
 import React from 'react'
 import {View, Text,StyleSheet,Image,TouchableOpacity} from 'react-native'
 import ImageOverlay from 'react-native-image-overlay'
-import ImageGradient from 'react-native-image-gradient';
 
-import imageTech from '../assets/icons/technology.svg'
-// import imageCompass from '../assets/icons/compasses.png'
-import imageCompass from '../assets/icons/maps-and-location.png'
-import imageSoccer from '../assets/icons/humanpictos.png'
-import imageLeague from '../assets/icons/web.png'
+
+
+import imageCompass from '../../assets/icons/maps-and-location.png'
+import imageSoccer from '../../assets/icons/humanpictos.png'
+import imageLeague from '../../assets/icons/web.png'
 
 
 let Card = (props) =>{
     return(
         <View style={styles.cardView}>
             <View style={styles.locationView}>
-
                 <Text style={styles.locationText}>{props.location}</Text>
             </View>
 

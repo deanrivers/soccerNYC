@@ -1,40 +1,14 @@
 import React, { Component } from 'react'
 import {View,Text,SafeAreaView,StyleSheet,ScrollView,TouchableOpacity,Image} from 'react-native'
-import Card from '../components/card'
+import Card from './card'
 import {Actions} from 'react-native-router-flux'
 
 
-import imageSinatra from '../assets/Sinatra.png'
-import imageBerryLane from '../assets/berryLane.jpg'
-import imageWeehawken from '../assets/weehawken.jpg'
-import imageLeft from '../assets/icons/arrows.png'
+
 
 
 class CardView extends Component{
-    constructor(props){
-        super(props)
-        this.state = {
-            cardData: [{
-                'location': 'Sinatra Park',
-                'leagues': ['Hoboken Youth Soccer Leagues','Hoboken Adult Soccer League'],
-                'pickupFriendly':true,
-                'image': imageSinatra
-            },
-            {
-                'location': 'Berry Lane Park',
-                'leagues': ['Weekend League','High School Soccer'],
-                'pickupFriendly':false,
-                'image': imageBerryLane
-            },
-            {
-                'location': 'Weehawken Waterfront',
-                'leagues': ['Zog Sports','High School Soccer'],
-                'pickupFriendly':true,
-                'image':imageWeehawken
-            }]
-        }
-    }
-
+    
     handleZipPress(){
         //go back to zip code screen
         Actions.pop()

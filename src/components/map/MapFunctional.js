@@ -1,33 +1,21 @@
-import React, { Component, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView,StyleSheet,Text,View,Dimensions,Image,Animated,Easing,ScrollView, Platform,Alert } from 'react-native'
-
 import MapView, {Marker,Circle,Callout, PROVIDER_GOOGLE, Polygon} from 'react-native-maps'
 import GetLocation from 'react-native-get-location'
-import openMap from 'react-native-open-maps';
-import Dialog from "react-native-dialog";
-
-import Carousel from 'react-native-snap-carousel'
-
-
-// import customMapStyle from './styles/customMapStyle'
-import leftButton from '../assets/icons/arrows.png'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Actions } from 'react-native-router-flux'
-import config from '../../config'
-
+import config from '../../../config'
 import LinearGradient from 'react-native-linear-gradient';
-
-import markerIcon from '../assets/icons/map_marker.png'
-import defaultImage from '../assets/icons/logo.png'
-import loaderImage from '../assets/icons/mag.gif'
-
-import Slide from './Slide'
+import loaderImage from '../../assets/icons/mag.gif'
+import Slide from '../carousel/Slide'
 
 
 const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = 220;
 const CARD_WIDTH = width * 0.8;
 const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
+const customMapStyle = require('../styles/customMapStyle.json')
+
 
 const MapFunctional = ()=>{
 
@@ -184,14 +172,9 @@ const MapFunctional = ()=>{
         }
     }
 
-    let mapIndex = 0;
-    let mapAnimation = new Animated.Value(0);
-
     //component did mount
     useEffect(()=>{
         _requestLocation()
-
-        console.log('uuuuu')
 
         //animtae map opacity
         Animated.timing(mapOpacity,{
@@ -199,11 +182,13 @@ const MapFunctional = ()=>{
             duration:1000,
             delay:0,
             easing: Easing.linear,
-            useNativeDriver:false
+            useNativeDriver:true
         }).start()
     },[])
 
-
+    //listen to map change
+    let mapIndex = 0;
+    let mapAnimation = new Animated.Value(0);
     useEffect(()=>{
         mapAnimation.addListener(({ value }) => {
             // console.log(coordinates)
@@ -215,9 +200,7 @@ const MapFunctional = ()=>{
             if (index <= 0) {
               index = 0;
             }
-      
             clearTimeout(regionTimeout);
-      
             const regionTimeout = setTimeout(() => {
               if( mapIndex !== index ) {
                 mapIndex = index;
@@ -238,8 +221,9 @@ const MapFunctional = ()=>{
           },()=>updateSelectedMarkerIndex(index));
     })
 
+    //these interpolations give the markers the effect of increasing and decreasing size
+    //along with the change in carousel
     const interpolations = coordinates.map((marker, index) => {
-        
         const inputRange = [
             ((index - 1) * CARD_WIDTH),
             ((index) * CARD_WIDTH),
@@ -265,37 +249,33 @@ const MapFunctional = ()=>{
         return {scale,opacity,barWidth} ;
       });
 
-      //scroll to card when marker is selected
-      const onMarkerPress = (mapEventData) => {
+    //scroll to card when marker is selected
+    const onMarkerPress = (mapEventData) => {
         const markerID = mapEventData._targetInst.return.key;
-    
+
         let x = (markerID * CARD_WIDTH) + (markerID * 20); 
         if (Platform.OS === 'ios') {
-          x = x - SPACING_FOR_CARD_INSET;
+            x = x - SPACING_FOR_CARD_INSET;
         }
-    
+
         _scrollView.current.scrollTo({x: x, y: 0, animated: true});
-      }
+    }
 
-      const _map = React.useRef(null)
-      const _scrollView = React.useRef(null)
-
-    var loaderRender = (loading)?<View style={{flex:1,justifyContent:'center',alignItems:'center',zIndex:100000,height:'100%',backgroundColor:'',top:0,paddingBottom:'33%'}}><Image style={{flex:1,justifyContent:'center',alignItems:'center',width:60,height:60}}source={loaderImage}/></View>:
-    null
-
-    const customMapStyle = require('./styles/customMapStyle.json')
+    const _map = React.useRef(null)
+    const _scrollView = React.useRef(null)
+    
+    //load icon
+    var loaderRender = (loading)?
+    <View style={{flex:1,justifyContent:'center',alignItems:'center',zIndex:100000,height:'100%',backgroundColor:'',top:0,paddingBottom:'33%'}}>
+        <Image style={{flex:1,justifyContent:'center',alignItems:'center',width:60,height:60}}source={loaderImage}/>
+    </View>:null
 
     return([
-        // <Animated.View style={[styles.loaderConainer,{opacity:loading?true:false}]}>
-        //     {loaderRender}
-        // </Animated.View>,
-        
         <View style={[styles.main,{opacity:1}]}>
             <Animated.View style={[styles.mapContainer,{opacity:mapOpacity}]}>
                 <MapView
                     provider={PROVIDER_GOOGLE}
-                    mapPadding={{top: 0, left: 0, right: 0, bottom:300}}                
-                    // ref={map=>this._map=map}
+                    mapPadding={{top: 0, left: 0, right: 0, bottom:300}}
                     ref={_map}
                     showsUserLocation={true}
                     style={styles.map}
@@ -315,7 +295,6 @@ const MapFunctional = ()=>{
                                     scale: interpolations[index].scale
                                 }
                             ],
-                            
                         }
 
                         const opacityStyle = {
@@ -323,40 +302,33 @@ const MapFunctional = ()=>{
                         }
 
                        return (
-
-                           
-                                <Marker
-                                    key={index}
-                                    coordinate={{
-                                        latitude:marker.latitude,
-                                        longitude:marker.longitude
-                                    }}
-                                    onPress={(e)=>onMarkerPress(e)}
-                                    
-                                    // title={marker.title}
-                                    // pinColor={this.state.selectedMarkerIndex===index?'red':'black'}
-                                >
-                                    <Animated.View style={[styles.markerWrap,opacityStyle]}>
-                                        <Animated.View style={[styles.ring,scaleStyle]}/>
-                                    </Animated.View>
-                                </Marker>
-                            
+                            <Marker
+                                key={index}
+                                coordinate={{
+                                    latitude:marker.latitude,
+                                    longitude:marker.longitude
+                                }}
+                                onPress={(e)=>onMarkerPress(e)}
+                                
+                                // title={marker.title}
+                                // pinColor={this.state.selectedMarkerIndex===index?'red':'black'}
+                            >
+                                <Animated.View style={[styles.markerWrap,opacityStyle]}>
+                                    <Animated.View style={[styles.ring,scaleStyle]}/>
+                                </Animated.View>
+                            </Marker>
                         )}
                     )}
                 </MapView>
             </Animated.View>
         </View>,
 
-
-
         <View style={[styles.bottomContainer,{flex:1}]}>
-            
             <LinearGradient colors={['transparent','black']} style={{width:'100%'}}>
-                            
+                {loaderRender}
                 <Animated.ScrollView
                     ref={_scrollView}
                     style={[styles.scrollView,{opacity:carouselOpacity,bottom:0}]}
-                    
                     horizontal
                     scrollEventThrottle={10}
                     showsHorizontalScrollIndicator={false}
@@ -394,9 +366,8 @@ const MapFunctional = ()=>{
                 })}
                 </Animated.ScrollView>
 
+                <View style={{height:5,backgroundColor:'white',paddingTop:0,paddingBottom:0}}/>
 
-
-                <View style={{height:3,backgroundColor:'white',paddingTop:0,paddingBottom:0}}/>
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity style={[styles.backButton,{justifyContent:'flex-end'}]} onPress={()=>Actions.pop()}>
                         <Animated.Text style={[styles.backButtonText,{opacity:mapOpacity,backgroundColor:'black'}]}>&lt; Go Back.</Animated.Text>
@@ -405,17 +376,16 @@ const MapFunctional = ()=>{
             </LinearGradient>
 
         </View>,
-        
-        
-
-        
     ])
 
 }
 
 const styles = StyleSheet.create({
-
-
+    main:{
+        flex:1,
+        backgroundColor:'black',
+        justifyContent:'center',
+    },
     carouselContainer: {
         flex:3,
         justifyContent:'center',
@@ -425,26 +395,18 @@ const styles = StyleSheet.create({
         height:20,
         zIndex:100,
         flex:1,
-        // backgroundColor:'orange',
-        // justifyContent:'space-evenly',
         justifyContent:'center',
         alignItems:'center',
     },
     bottomContainer:{
         flex:1,
-        // height:height/3,
         justifyContent:'flex-end',
         alignItems:'flex-end',
         position:'absolute',
         zIndex:100,
         bottom:0,
         width:'100%',
-
-        // backgroundColor:'black',
-        // height:'50%'
     },
-
-
     subtitle: {
         marginTop: 5,
         paddingHorizontal: 30,
@@ -460,63 +422,32 @@ const styles = StyleSheet.create({
     sliderContentContainer: {
         paddingVertical: 10 // for custom animation
     },
-
-    main:{
-        flex:1,
-        backgroundColor:'black',
-        justifyContent:'center',
-    },
     map:{
         flex:1,
         alignItems:'center',
         justifyContent:'center',
-        
-        // position:'absolute',
-        // zIndex:100
     },
     mapContainer:{
         flex:1,
     },
-    buttonContainer:{
-        // backgroundColor:'green'
-        
-
-    },
     backButton: {
-        // alignItems: "flex-start",
-        // justifyContent:'flex-start',
         width:'100%'
-
-      },
+    },
     backButtonText:{
         color:'white',
         fontFamily:'Helvetica',
         fontSize:70,
         textAlign:'center',
         width:'100%',
-        
-    },
-
-    marker: {
-    width: 30,
-    height: 30,
-    // borderRadius: 4,
-    // backgroundColor: "white",
-    },
-    selectedMarker:{
-        width: 20,
-        height: 20,
-        borderRadius: 40,
-        backgroundColor: "red",
     },
     ring: {
         width: 15,
         height: 15,
         borderRadius: 100,
-        backgroundColor: "rgba(255,255,255, 1)",
+        backgroundColor: "#485563",
         position: "absolute",
-        // borderWidth: 1,
-        borderColor: "black",
+        borderWidth:1,
+        borderColor:'white'
     },
     markerWrap: {
         alignItems: "center",
@@ -524,18 +455,12 @@ const styles = StyleSheet.create({
         width:50,
         height:50,
     },
-
     scrollView: {
         bottom: 0,
         left: 0,
         right: 0,
-        paddingVertical: 30,
+        paddingVertical: 0,
     },
-
-
-  
-
 })
-
 
 export default MapFunctional
