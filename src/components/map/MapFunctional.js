@@ -9,12 +9,17 @@ import LinearGradient from 'react-native-linear-gradient';
 import loaderImage from '../../assets/icons/mag.gif'
 import Slide from '../carousel/Slide'
 
+// import Carousel from 'react-native-snap-carousel'
+// import SliderEntry from '../carousel/SliderEntry'
+
+import SnapCarousel from '../carousel/SnapCarousel'
+
 
 const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = 220;
 const CARD_WIDTH = width * 0.8;
 const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
-const customMapStyle = require('../styles/customMapStyle.json')
+const customMapStyle = require('../../styles/customMapStyle.json')
 
 
 const MapFunctional = ()=>{
@@ -25,7 +30,7 @@ const MapFunctional = ()=>{
     const [loading,updateLoading] = useState(false)
     const [location,updateLocation] = useState({})
     const [currentRegion,updateCurrentRegion] = useState(null)
-    const [coordinates,updateCoordinates] = useState([])
+    const [locationDataArray,updateLocationDataArray] = useState([])
     const [circleCenter,updateCircleCenter] = useState({})
     const [dialogVisible,updateDialogVisible] = useState(false)
     const [carouselYValue,updateCarouselYValue] = useState(new Animated.Value(height))
@@ -95,7 +100,7 @@ const MapFunctional = ()=>{
         
 
         var location
-        var coordinates = []
+        var locationDataArray = []
         var obj = {}
 
         if(data.status = 'OK'){
@@ -127,21 +132,21 @@ const MapFunctional = ()=>{
                 obj['photo_reference'] = imageLink
 
                 //push object to array
-                coordinates.push(obj)
+                locationDataArray.push(obj)
             }
         }
 
             //loop for photos
-            for(var i=0; i<coordinates.length;i++){
-                const photoRef = coordinates[i].photo_reference
+            for(var i=0; i<locationDataArray.length;i++){
+                const photoRef = locationDataArray[i].photo_reference
                 const photo_url = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400'
                 const photoParams = '&photoreference='+photoRef+'&key='+API_KEY
                 const complete_photo_url = photo_url+photoParams
-                coordinates[i]['illustration'] = await hitPhotoAPI(complete_photo_url)
+                locationDataArray[i]['illustration'] = await hitPhotoAPI(complete_photo_url)
             }
 
-            console.log('STATE COORDINATES',coordinates)
-            updateCoordinates(coordinates)
+            console.log('STATE COORDINATES',locationDataArray)
+            updateLocationDataArray(locationDataArray)
             updateLoading(false)
 
             //animate markers
@@ -172,6 +177,8 @@ const MapFunctional = ()=>{
         }
     }
 
+
+
     //component did mount
     useEffect(()=>{
         _requestLocation()
@@ -191,11 +198,11 @@ const MapFunctional = ()=>{
     let mapAnimation = new Animated.Value(0);
     useEffect(()=>{
         mapAnimation.addListener(({ value }) => {
-            // console.log(coordinates)
+            // console.log(locationDataArray)
             let index = Math.floor(value / CARD_WIDTH + 0.3);
             console.log(index) // animate 30% away from landing on the next item
-            if (index >= coordinates.length) {
-              index = coordinates.length - 1;
+            if (index >= locationDataArray.length) {
+              index = locationDataArray.length - 1;
             }
             if (index <= 0) {
               index = 0;
@@ -204,7 +211,7 @@ const MapFunctional = ()=>{
             const regionTimeout = setTimeout(() => {
               if( mapIndex !== index ) {
                 mapIndex = index;
-                const coordinate = coordinates[index];
+                const coordinate = locationDataArray[index];
                 console.log('carousel cooridinate',coordinate)
 
                 _map.current.animateToRegion(
@@ -223,7 +230,7 @@ const MapFunctional = ()=>{
 
     //these interpolations give the markers the effect of increasing and decreasing size
     //along with the change in carousel
-    const interpolations = coordinates.map((marker, index) => {
+    const interpolations = locationDataArray.map((marker, index) => {
         const inputRange = [
             ((index - 1) * CARD_WIDTH),
             ((index) * CARD_WIDTH),
@@ -231,7 +238,7 @@ const MapFunctional = ()=>{
         ]
 
         const barWidth = mapAnimation.interpolate({
-            inputRange:[0,coordinates.length],
+            inputRange:[0,locationDataArray.length],
             outputRange:[0,100]
         })
     
@@ -288,7 +295,7 @@ const MapFunctional = ()=>{
                     customMapStyle={customMapStyle}
                     onRegionChangeComplete={()=>console.log('THE REGION CHANGED')}
                 >
-                    {coordinates.map( (marker,index)=>{
+                    {locationDataArray.map( (marker,index)=>{
                         const scaleStyle = {
                             transform:[
                                 {
@@ -327,9 +334,12 @@ const MapFunctional = ()=>{
         //,
 
         <View style={[styles.bottomContainer,{flex:1}]}>
+
+            
             <LinearGradient colors={['transparent','black']} style={{width:'100%'}}>
                 {loaderRender}
-                <Animated.ScrollView
+                {/* old carousel */}
+                {/* <Animated.ScrollView
                     ref={_scrollView}
                     style={[styles.scrollView,{opacity:carouselOpacity,bottom:0}]}
                     horizontal
@@ -367,9 +377,15 @@ const MapFunctional = ()=>{
                             <Slide data={item} key={index}/>
                         )
                     })}
-                </Animated.ScrollView>
+                </Animated.ScrollView> */}
 
-                
+
+
+               {/* new carousel */}
+               {!loading?
+                <SnapCarousel
+                        data={locationDataArray}
+                />:null}
 
                 <Animated.View style={[styles.buttonContainer,{opacity:mapOpacity}]}>
                     {/* <View style={{height:5,backgroundColor:'white',paddingTop:0,paddingBottom:0}}/> */}

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity,StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { ParallaxImage } from 'react-native-snap-carousel';
-import styles from './styles/SliderEntry.style';
+import styles from '../../styles/SliderEntry.style';
 import Dialog, {BlurView} from 'react-native-dialog'
 import openMap from 'react-native-open-maps'
 
@@ -57,13 +57,10 @@ export default class SliderEntry extends Component {
             navigate_mode:'preview',
             query:data.title,
             provider:'apple',
-            
         })
     }
 
     render () {
-
-
         const blurComponentIOS = (
             <BlurView
               style={StyleSheet.absoluteFill}
@@ -104,20 +101,22 @@ export default class SliderEntry extends Component {
                 </View>
             </TouchableOpacity>,
 
-            <View style={{flex:1,position:'absolute',zIndex:100000}}>
-                <Dialog.Container 
-                    visible={this.state.dialogVisible}
-                    // blurComponentIOS={blurComponentIOS}
+
+            // directions dialog box
+            // <View style={{flex:1,position:'absolute',zIndex:100000}}>
+            //     <Dialog.Container 
+            //         visible={this.state.dialogVisible}
+            //         // blurComponentIOS={blurComponentIOS}
                     
-                    >
-                    <Dialog.Title>Open Apple Maps?</Dialog.Title>
-                    <Dialog.Description>
-                        Are you sure you want to get directions to this field?
-                    </Dialog.Description>
-                    <Dialog.Button label="Cancel" onPress={()=>{this.setState({dialogVisible:false})}}/>
-                    <Dialog.Button label="Yes" onPress={()=>this.handleYes()}/>
-                </Dialog.Container>
-            </View>,
+            //         >
+            //         <Dialog.Title>Open Apple Maps?</Dialog.Title>
+            //         <Dialog.Description>
+            //             Are you sure you want to get directions to this field?
+            //         </Dialog.Description>
+            //         <Dialog.Button label="Cancel" onPress={()=>{this.setState({dialogVisible:false})}}/>
+            //         <Dialog.Button label="Yes" onPress={()=>this.handleYes()}/>
+            //     </Dialog.Container>
+            // </View>,
         ]);
     }
 }
