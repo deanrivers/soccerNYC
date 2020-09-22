@@ -16,17 +16,31 @@ const itemHorizontalMargin = wp(2);
 export const sliderWidth = viewportWidth;
 export const itemWidth = slideWidth + itemHorizontalMargin * 2;
 
-const entryBorderRadius = 8;
+const entryBorderRadius = 10;
 
 export default StyleSheet.create({
     slideInnerContainer: {
         width: itemWidth,
         height: slideHeight,
-        paddingHorizontal: itemHorizontalMargin,
+        // paddingHorizontal: itemHorizontalMargin,
         paddingBottom: 0, // needed for shadow
         flex:1,
         justifyContent:'center',
         // alignItems:'center'
+    },
+
+    directionButton:{
+        position:'absolute',
+        top:0,
+        right:0,
+        backgroundColor:'red',
+        zIndex:100,
+        borderRadius:0,
+        padding:20,
+        backgroundColor:colors.black,
+        borderTopEndRadius:entryBorderRadius,
+        paddingHorizontal: itemHorizontalMargin,
+    
     },
     shadow: {
         position: 'absolute',

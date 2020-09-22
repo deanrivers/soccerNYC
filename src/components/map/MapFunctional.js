@@ -196,46 +196,81 @@ const MapFunctional = ()=>{
     //listen to map change
     let mapIndex = 0;
     let mapAnimation = new Animated.Value(0);
-    useEffect(()=>{
-        mapAnimation.addListener(({ value }) => {
-            // console.log(locationDataArray)
-            let index = Math.floor(value / CARD_WIDTH + 0.3);
-            console.log(index) // animate 30% away from landing on the next item
-            if (index >= locationDataArray.length) {
-              index = locationDataArray.length - 1;
-            }
-            if (index <= 0) {
-              index = 0;
-            }
-            clearTimeout(regionTimeout);
-            const regionTimeout = setTimeout(() => {
-              if( mapIndex !== index ) {
-                mapIndex = index;
-                const coordinate = locationDataArray[index];
-                console.log('carousel cooridinate',coordinate)
 
-                _map.current.animateToRegion(
-                  {
-                    latitude:coordinate.latitude,
-                    longitude:coordinate.longitude,
-                    latitudeDelta:  0.0922,
-                    longitudeDelta: 0.0421,
-                  },
-                  350
-                );
-              }
-            }, 10);
-          },()=>updateSelectedMarkerIndex(index));
-    })
+
+    // useEffect(()=>{
+
+    //     console.log('Listener triggered')
+    //     mapAnimation.addListener(({ value }) => {
+    //         // console.log(locationDataArray)
+    //         let index = Math.floor(value / CARD_WIDTH + 0.3);
+    //         console.log(index) // animate 30% away from landing on the next item
+    //         if (index >= locationDataArray.length) {
+    //           index = locationDataArray.length - 1;
+    //         }
+    //         if (index <= 0) {
+    //           index = 0;
+    //         }
+    //         clearTimeout(regionTimeout);
+    //         const regionTimeout = setTimeout(() => {
+    //           if( mapIndex !== index ) {
+    //             mapIndex = index;
+    //             const coordinate = locationDataArray[index];
+    //             console.log('carousel cooridinate',coordinate)
+
+    //             _map.current.animateToRegion(
+    //               {
+    //                 latitude:coordinate.latitude,
+    //                 longitude:coordinate.longitude,
+    //                 latitudeDelta:  0.0922,
+    //                 longitudeDelta: 0.0421,
+    //               },
+    //               350
+    //             );
+    //           }
+    //         }, 10);
+    //       },()=>updateSelectedMarkerIndex(index));
+    // },[selectedMarkerIndex])
+
+    //update index from Carousel
+    updateSelectedIndex = (index)=>{
+        console.log('index',index)
+        //animate map
+        _map.current.animateToRegion({
+            latitude:locationDataArray[index].latitude,
+            longitude:locationDataArray[index].longitude,
+            latitudeDelta:  0.0922,
+            longitudeDelta: 0.0421,
+        },350);
+        
+        // updateSelectedMarkerIndex(index)
+    }
+
+    //listen to marker index change
+    // useEffect(()=>{
+    //     if(locationDataArray.length!==0){
+    //         console.log('Selected Index',selectedMarkerIndex)
+    //         _map.current.animateToRegion({
+    //             latitude:locationDataArray[selectedMarkerIndex].latitude,
+    //             longitude:locationDataArray[selectedMarkerIndex].longitude,
+    //             latitudeDelta:  0.0922,
+    //             longitudeDelta: 0.0421,
+    //         },350);
+    //     }
+
+
+    // },[selectedMarkerIndex])
 
     //these interpolations give the markers the effect of increasing and decreasing size
     //along with the change in carousel
     const interpolations = locationDataArray.map((marker, index) => {
-        const inputRange = [
-            ((index - 1) * CARD_WIDTH),
-            ((index) * CARD_WIDTH),
-            ((index + 1) * CARD_WIDTH),
-        ]
+        // const inputRange = [
+        //     ((index - 1) * CARD_WIDTH),
+        //     ((index) * CARD_WIDTH),
+        //     ((index + 1) * CARD_WIDTH),
+        // ]
+
+        const inputRange = [10,30,50]
 
         const barWidth = mapAnimation.interpolate({
             inputRange:[0,locationDataArray.length],
@@ -243,9 +278,9 @@ const MapFunctional = ()=>{
         })
     
         const scale = mapAnimation.interpolate({
-          inputRange,
-          outputRange: [1, 3,1],
-          extrapolate: "clamp"
+            inputRange,
+            outputRange: [1, 3,1],
+            extrapolate: "clamp"
         });
 
         const opacity = mapAnimation.interpolate({
@@ -315,14 +350,15 @@ const MapFunctional = ()=>{
                                     latitude:marker.latitude,
                                     longitude:marker.longitude
                                 }}
-                                onPress={(e)=>onMarkerPress(e)}
+                                // onPress={(e)=>onMarkerPress(e)}
                                 
-                                // title={marker.title}
-                                // pinColor={this.state.selectedMarkerIndex===index?'red':'black'}
+                                title={marker.title}
+                                //pinColor={this.state.selectedMarkerIndex===index?'red':'black'}
+                                pinColor='orange'
                             >
-                                <Animated.View style={[styles.markerWrap,opacityStyle]}>
+                                {/* <Animated.View style={[styles.markerWrap,opacityStyle]}>
                                     <Animated.View style={[styles.ring,scaleStyle]}/>
-                                </Animated.View>
+                                </Animated.View> */}
                             </Marker>
                         )}
                     )}
@@ -385,6 +421,7 @@ const MapFunctional = ()=>{
                {!loading?
                 <SnapCarousel
                         data={locationDataArray}
+                        updateIndex={this.updateSelectedIndex}
                 />:null}
 
                 <Animated.View style={[styles.buttonContainer,{opacity:mapOpacity}]}>

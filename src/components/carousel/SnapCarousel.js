@@ -23,7 +23,7 @@ export default class SnapCarousel extends Component {
 
 
     componentDidMount(){
-        console.log('Carousel Props',this.props)
+        // console.log('Carousel Props',this.props)
     }
 
     _renderItem ({item, index}) {
@@ -49,48 +49,7 @@ export default class SnapCarousel extends Component {
         return <SliderEntry data={item} even={true} />;
     }
 
-    mainExample (number, title) {
-        const { slider1ActiveSlide } = this.state;
-
-        return (
-            <View style={styles.exampleContainer}>
-                <Text style={styles.title}>{`Example ${number}`}</Text>
-                <Text style={styles.subtitle}>{title}</Text>
-                <Carousel
-                  ref={c => this._slider1Ref = c}
-                  data={ENTRIES1}
-                  renderItem={this._renderItemWithParallax}
-                  sliderWidth={sliderWidth}
-                  itemWidth={itemWidth}
-                  hasParallaxImages={true}
-                  firstItem={SLIDER_1_FIRST_ITEM}
-                  inactiveSlideScale={0.94}
-                  inactiveSlideOpacity={0.7}
-                  // inactiveSlideShift={20}
-                  containerCustomStyle={styles.slider}
-                  contentContainerCustomStyle={styles.sliderContentContainer}
-                  loop={true}
-                  loopClonesPerSide={2}
-                  autoplay={false}
-                  autoplayDelay={500}
-                  autoplayInterval={3000}
-                  onSnapToItem={(index) => this.setState({ slider1ActiveSlide: index }) }
-                />
-                <Pagination
-                  dotsLength={ENTRIES1.length}
-                  activeDotIndex={slider1ActiveSlide}
-                  containerStyle={styles.paginationContainer}
-                  dotColor={'rgba(255, 255, 255, 0.92)'}
-                  dotStyle={styles.paginationDot}
-                  inactiveDotColor={colors.black}
-                  inactiveDotOpacity={0.4}
-                  inactiveDotScale={0.6}
-                  carouselRef={this._slider1Ref}
-                  tappableDots={!!this._slider1Ref}
-                />
-            </View>
-        );
-    }
+    
 
     momentumExample (number, title) {
         return (
@@ -118,23 +77,22 @@ export default class SnapCarousel extends Component {
         );
     }
 
+    
+
     layoutExample (number, title, type) {
         return (
             <LinearGradient  colors={['transparent','transparent']}>
                 <View>
-                    <Text style={[styles.title]}>{`Local Soccer Fields`}</Text>
-                    <Text style={[styles.subtitle]}>{`Within 5km Radius`}</Text>
                     <Carousel
-                    //   data={isTinder ? ENTRIES2 : ENTRIES1}
-                    data={this.props.data}
-                    //renderItem={isTinder ? this._renderLightItem : this._renderItem}
-                    renderItem={this._renderDarkItem}
-                    sliderWidth={sliderWidth}
-                    itemWidth={itemWidth}
-                    containerCustomStyle={styles.slider}
-                    contentContainerCustomStyle={styles.sliderContentContainer}
-                    layout={'default'}
-                    loop={true}
+                        data={this.props.data}
+                        renderItem={this._renderDarkItem}
+                        sliderWidth={sliderWidth}
+                        itemWidth={itemWidth}
+                        containerCustomStyle={styles.slider}
+                        contentContainerCustomStyle={styles.sliderContentContainer}
+                        layout={'default'}
+                        loop={true}
+                        onSnapToItem={(index)=>this.props.updateIndex(index)}
                     />
                 </View>
             </LinearGradient>
@@ -168,9 +126,8 @@ export default class SnapCarousel extends Component {
     
 
     render () {
-        const example1 = this.mainExample(1, 'Default layout | Loop | Autoplay | Parallax | Scale | Opacity | Pagination with tappable dots');
-        const example2 = this.momentumExample(2, 'Momentum | Left-aligned | Active animation');
-        const example3 = this.layoutExample(3, '"Stack of cards" layout | Loop', 'stack');
+
+        const carousel = this.layoutExample(3, '"Stack of cards" layout | Loop', 'stack');
         const example4 = this.layoutExample(4, '"Tinder-like" layout | Loop', 'tinder');
         const example5 = this.customExample(5, 'Custom animation 1', 1, this._renderItem);
         const example6 = this.customExample(6, 'Custom animation 2', 2, this._renderLightItem);
@@ -179,7 +136,7 @@ export default class SnapCarousel extends Component {
 
         return (
                 <View style={styles.container}>
-                    { example3 }
+                    { carousel }
                 </View>
         );
     }

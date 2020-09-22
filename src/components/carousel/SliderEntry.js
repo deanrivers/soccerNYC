@@ -22,6 +22,10 @@ export default class SliderEntry extends Component {
         }
     }
 
+    componentDidMount(){
+        // console.log('Slide Props',this.props)
+    }
+
     get image () {
         const { data: { illustration }, parallax, parallaxProps, even } = this.props;
 
@@ -80,11 +84,15 @@ export default class SliderEntry extends Component {
         ) : false;
 
         return ([
-            <TouchableOpacity
-              activeOpacity={1}
+            <View
               style={styles.slideInnerContainer}
-              onPress={()=>this.setState({dialogVisible:true})}
               >
+                <TouchableOpacity 
+                    style={styles.directionButton}
+                    onPress={()=>this.setState({dialogVisible:true})}
+                >
+                    <Text style={{color:'white'}}>Directions</Text>
+                </TouchableOpacity>
                 <View style={styles.shadow} />
                 <View style={[styles.imageContainer, even ? styles.imageContainerEven : {}]}>
                     { this.image }
@@ -93,30 +101,29 @@ export default class SliderEntry extends Component {
                 <View style={[styles.textContainer, even ? styles.textContainerEven : {}]}>
                     { uppercaseTitle }
                     <Text
-                      style={[styles.subtitle, even ? styles.subtitleEven : {}]}
+                      style={[styles.subtitle,styles.subtitleEven]}
                       numberOfLines={2}
                     >
                         { subtitle }
                     </Text>
                 </View>
-            </TouchableOpacity>,
-
+            </View>,
 
             // directions dialog box
-            // <View style={{flex:1,position:'absolute',zIndex:100000}}>
-            //     <Dialog.Container 
-            //         visible={this.state.dialogVisible}
-            //         // blurComponentIOS={blurComponentIOS}
+            <View style={{flex:1,position:'absolute',zIndex:100000}}>
+                <Dialog.Container 
+                    visible={this.state.dialogVisible}
+                    // blurComponentIOS={blurComponentIOS}
                     
-            //         >
-            //         <Dialog.Title>Open Apple Maps?</Dialog.Title>
-            //         <Dialog.Description>
-            //             Are you sure you want to get directions to this field?
-            //         </Dialog.Description>
-            //         <Dialog.Button label="Cancel" onPress={()=>{this.setState({dialogVisible:false})}}/>
-            //         <Dialog.Button label="Yes" onPress={()=>this.handleYes()}/>
-            //     </Dialog.Container>
-            // </View>,
+                    >
+                    <Dialog.Title>Open Apple Maps?</Dialog.Title>
+                    <Dialog.Description>
+                        {`Are you sure you want to get directions to "${title}"?`}
+                    </Dialog.Description>
+                    <Dialog.Button label="Cancel" onPress={()=>{this.setState({dialogVisible:false})}}/>
+                    <Dialog.Button label="Yes" onPress={()=>this.handleYes()}/>
+                </Dialog.Container>
+            </View>,
         ]);
     }
 }
