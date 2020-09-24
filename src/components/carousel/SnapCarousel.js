@@ -12,129 +12,31 @@ import { scrollInterpolators, animatedStyles } from '../../utils/animations';
 const IS_ANDROID = Platform.OS === 'android';
 const SLIDER_1_FIRST_ITEM = 1;
 
-export default class SnapCarousel extends Component {
+const SnapCarousel = (props) => {
 
-    constructor (props) {
-        super(props);
-        this.state = {
-            slider1ActiveSlide: SLIDER_1_FIRST_ITEM
-        };
+    _renderDarkItem = ({item,index}) => {
+        return <SliderEntry userLocation={props.location} data={item}/>;
     }
 
-
-
-    _renderItem ({item, index}) {
-        return <SliderEntry data={item} even={(index + 1) % 2 === 0} />;
-    }
-
-    _renderItemWithParallax ({item, index}, parallaxProps) {
-        return (
-            <SliderEntry
-              data={item}
-              even={(index + 1) % 2 === 0}
-              parallax={true}
-              parallaxProps={parallaxProps}
-            />
-        );
-    }
-
-    _renderLightItem ({item, index}) {
-        return <SliderEntry data={item} even={false} />;
-    }
-
-    _renderDarkItem ({item, index}) {
-        return <SliderEntry data={item} even={true} />;
-    }
-
-    
-
-    momentumExample (number, title) {
-        return (
-            <View style={styles.exampleContainer}>
-                <Text style={styles.title}>{`Example ${number}`}</Text>
-                <Text style={styles.subtitle}>{title}</Text>
-                <Carousel
-                  data={ENTRIES2}
-                  renderItem={this._renderItem}
-                  sliderWidth={sliderWidth}
-                  itemWidth={itemWidth}
-                  inactiveSlideScale={0.95}
-                  inactiveSlideOpacity={1}
-                  enableMomentum={true}
-                  activeSlideAlignment={'start'}
-                  containerCustomStyle={styles.slider}
-                  contentContainerCustomStyle={styles.sliderContentContainer}
-                  activeAnimationType={'spring'}
-                  activeAnimationOptions={{
-                      friction: 4,
-                      tension: 40
-                  }}
-                />
-            </View>
-        );
-    }
-
-    
-
-    layoutExample (number, title, type) {
-        return (
-            <LinearGradient  colors={['transparent','transparent']}>
+    return (
+        <View style={styles.container}>
+            <LinearGradient colors={['transparent','transparent']}>
                 <View>
                     <Carousel
-                        data={this.props.data}
-                        renderItem={this._renderDarkItem}
+                        data={props.data}
+                        renderItem={_renderDarkItem}
                         sliderWidth={sliderWidth}
                         itemWidth={itemWidth}
                         containerCustomStyle={styles.slider}
                         contentContainerCustomStyle={styles.sliderContentContainer}
                         layout={'default'}
                         loop={true}
-                        onSnapToItem={(index)=>this.props.updateIndex(index)}
+                        onSnapToItem={(index)=>props.updateIndex(index)}
                     />
                 </View>
             </LinearGradient>
-        );
-    }
-
-    customExample (number, title, refNumber, renderItemFunc) {
-        const isEven = refNumber % 2 === 0;
-
-        // Do not render examples on Android; because of the zIndex bug, they won't work as is
-        return !IS_ANDROID ? (
-            <View style={[styles.exampleContainer, isEven ? styles.exampleContainerDark : styles.exampleContainerLight]}>
-                <Text style={[styles.title, isEven ? {} : styles.titleDark]}>{`Example ${number}`}</Text>
-                <Text style={[styles.subtitle, isEven ? {} : styles.titleDark]}>{title}</Text>
-                <Carousel
-                  data={isEven ? ENTRIES2 : ENTRIES1}
-                  renderItem={renderItemFunc}
-                  sliderWidth={sliderWidth}
-                  itemWidth={itemWidth}
-                  containerCustomStyle={styles.slider}
-                  contentContainerCustomStyle={styles.sliderContentContainer}
-                  scrollInterpolator={scrollInterpolators[`scrollInterpolator${refNumber}`]}
-                  
-                  slideInterpolatedStyle={animatedStyles[`animatedStyles${refNumber}`]}
-                  useScrollView={true}
-                />
-            </View>
-        ) : false;
-    }
-
-    
-
-    render () {
-
-        const carousel = this.layoutExample(3, '"Stack of cards" layout | Loop', 'stack');
-        const example4 = this.layoutExample(4, '"Tinder-like" layout | Loop', 'tinder');
-        const example5 = this.customExample(5, 'Custom animation 1', 1, this._renderItem);
-        const example6 = this.customExample(6, 'Custom animation 2', 2, this._renderLightItem);
-        const example7 = this.customExample(7, 'Custom animation 3', 3, this._renderDarkItem);
-        const example8 = this.customExample(8, 'Custom animation 4', 4, this._renderLightItem);
-
-        return (
-                <View style={styles.container}>
-                    { carousel }
-                </View>
-        );
-    }
+        </View>
+    );
 }
+
+export default SnapCarousel

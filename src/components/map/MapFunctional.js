@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { SafeAreaView,StyleSheet,Text,View,Dimensions,Image,Animated,Easing,ScrollView, Platform,Alert } from 'react-native'
 import MapView, {Marker,Circle,Callout, PROVIDER_GOOGLE, Polygon} from 'react-native-maps'
 import GetLocation from 'react-native-get-location'
@@ -57,6 +57,7 @@ const MapFunctional = ()=>{
             updateLoading(true)
 
             console.log(loading)
+
 
             //find places
             hitPlaceAPI(location)
@@ -184,8 +185,6 @@ const MapFunctional = ()=>{
 
     //component did mount
     useEffect(()=>{
-        _requestLocation()
-
         //animtae map opacity
         Animated.timing(mapOpacity,{
             toValue:1,
@@ -194,7 +193,25 @@ const MapFunctional = ()=>{
             easing: Easing.linear,
             useNativeDriver:true
         }).start()
+
+        setTimeout(()=>{
+            _requestLocation()
+        },1000)
     },[])
+
+    //listen to loading
+    // useEffect(()=>{
+    //     const fadeAnim = useRef(new Animated.Value(0)).current;
+
+        
+    //     Animated.timing(fadeAnim,{
+    //         toValue:1,
+    //         duration:1000,
+    //         delay:3000,
+    //         easing: Easing.linear,
+    //         useNativeDriver:true
+    //     }).start()
+    // },[loading])
 
     //listen to map change
     let mapIndex = 0;
@@ -355,7 +372,7 @@ const MapFunctional = ()=>{
                                         longitude:marker.longitude
                                     }}
                                     // style={springSlideMarkers}
-                                    
+                                    style={{opacity:1}}
                                     // onPress={(e)=>onMarkerPress(e)}
                                     
                                     title={marker.title}
@@ -382,52 +399,11 @@ const MapFunctional = ()=>{
             
             <LinearGradient colors={['transparent','black']} style={{width:'100%'}}>
                 {loaderRender}
-                {/* old carousel */}
-                {/* <Animated.ScrollView
-                    ref={_scrollView}
-                    style={[styles.scrollView,{opacity:carouselOpacity,bottom:0}]}
-                    horizontal
-                    scrollEventThrottle={10}
-                    showsHorizontalScrollIndicator={false}
-                    pagingEnabled
-                    decelerationRate="fast"
-                    snapToInterval={CARD_WIDTH+20}
-                    snapToAlignment='center'
-                    contentInset={{
-                        top:0,
-                        left:SPACING_FOR_CARD_INSET,
-                        bottom:0,
-                        right:SPACING_FOR_CARD_INSET
-                    }}
-                    contentContainerStyle={{
-                        paddingHorizontal: Platform.OS === 'android'?SPACING_FOR_CARD_INSET:0
-                    }}
-                    onScroll={Animated.event(
-                        [
-                            {
-                                nativeEvent:{
-                                    contentOffset:{
-                                        x:mapAnimation
-                                    }
-                                }
-                            }
-                        ],
-                        {useNativeDriver: true}
-                    )}
-                >
-                    
-                    {coordinates.map((item,index)=>{
-                        return(
-                            <Slide data={item} key={index}/>
-                        )
-                    })}
-                </Animated.ScrollView> */}
-
-
 
                {/* new carousel */}
                {!loading?
                 <SnapCarousel
+                    location={location}
                         data={locationDataArray}
                         updateIndex={this.updateSelectedIndex}
                 />:null}

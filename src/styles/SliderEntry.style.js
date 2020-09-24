@@ -30,10 +30,10 @@ export default StyleSheet.create({
     interactionButton:{
         flex:1,
         flexDirection:'column',
-        justifyContent:'flex-start',
+        justifyContent:'center',
         alignContent:'center',
         alignItems:'center',
-        paddingTop:10,
+        // paddingTop:10,
         zIndex:100,
         borderRadius:0,
         
@@ -104,19 +104,16 @@ export default StyleSheet.create({
         overflow:'hidden',
         backgroundColor:'rgba(0,0,0,0.3)',
         borderColor:'#0bf4dd',
-        borderWidth:2,
-        
+        borderWidth:1,
         borderRadius: entryBorderRadius,
-        
         // borderBottomRightRadius: entryBorderRadius
-        
-        
     },
     newTextInnerContainer:{
         flex:4,
         justifyContent:'center',
-        // height:'25%',
-        // backgroundColor:'#0bf4dd'
+        
+        height:'100%',
+        // backgroundColor:'orange'
     }, 
     topBar:{
         flex:1,

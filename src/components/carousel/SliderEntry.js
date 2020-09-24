@@ -1,5 +1,5 @@
-import React, { Component,useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity,StyleSheet } from 'react-native';
+import React, { Component,useEffect, useState, useRef } from 'react';
+import { View, Text, Image, TouchableOpacity,StyleSheet, Alert, Animated } from 'react-native';
 import PropTypes from 'prop-types';
 import { ParallaxImage } from 'react-native-snap-carousel';
 import styles from '../../styles/SliderEntry.style';
@@ -9,25 +9,40 @@ import { BlurView } from "@react-native-community/blur";
 import {animated,useSpring} from 'react-spring'
 
 import interfaceImage from '../../assets/icons/interface.png'
+import { Easing } from 'react-native-reanimated';
 
 const SliderEntry = (props) => {
 
-    // useEffect(()=>{
-    //     console.log('PROPS',props)
-    // },[])
+    //native animations
+    const fadeAnim = useRef(new Animated.Value(0)).current;
 
+    useEffect(()=>{
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 2000,
+            easing:Easing.linear
+        }).start();
+    },[])
 
     const [dialogVisible,updateDialogVisible] = useState(false)
+    
 
     //react spring
     const springSlide = useSpring({opacity: 1, from: {opacity: 0}})
     const AnimatedView = animated(View)
     const AnimatedText = animated(Text)
-    
+
+
+
+    // const fadein = () =>{
+    //     Animated.timing(fadeAnim, {
+    //         toValue: 1,
+    //         duration: 5000
+    //       }).start();
+    // }
     handleYes = ()=> {
         locationPressed(props.data)
         updateDialogVisible(false)
-        // this.setState({dialogVisible:false})
     }
 
     onCancel = () => {
@@ -35,13 +50,23 @@ const SliderEntry = (props) => {
     }
 
     locationPressed = (data) => {
+
+        let latitudeStr = JSON.stringify(data.latitude)
+        let longitudeStr = JSON.stringify(data.longitude)
+        let userLocationLatStr = JSON.stringify(props.userLocation.latitude)
+        let userLocationLngStr = JSON.stringify(props.userLocation.longitude)
+
         openMap({
-            latitude:data.latitude,
-            longitude:data.longitude,
+            // latitude:data.latitude,
+            // longitude:data.longitude,  
             travelType:'drive',
-            navigate_mode:'preview',
+            navigate_mode:'navigate',
             query:data.title,
             provider:'apple',
+            start:`${userLocationLatStr},${userLocationLngStr}`,
+            end:`${latitudeStr},${longitudeStr}`,
+            
+            
         })
     }
 
@@ -49,21 +74,13 @@ const SliderEntry = (props) => {
         onBackdropPress: this.onCancel,
     };
 
-    
-    //react spring
-    // const spring = useSpring({opacity: 1, from: {opacity: 0}})
-
-
-    
-
-
     const { data: { title, subtitle }, even } = props;
     
 
     return ([
         
-        <View
-            style={[styles.slideInnerContainer]}
+        <Animated.View
+            style={[{opacity:fadeAnim},styles.slideInnerContainer]}
             >
             
             <View style={styles.shadow} />
@@ -77,17 +94,21 @@ const SliderEntry = (props) => {
                         <Text style={[styles.newTitle]}>{title}</Text>
                     </View>
 
-
-
-                    <TouchableOpacity 
-                    style={styles.interactionButton}
-                    onPress={()=>updateDialogVisible(true)}
-                >
-                    <Image  
-                        style={{width:30,height:30,borderRadius:20}}
-                        source={interfaceImage}
-                    />
-                </TouchableOpacity>
+                    <View 
+                        style={styles.interactionButton}
+                    >  
+                        <TouchableOpacity
+                            onPress={()=>updateDialogVisible(true)}
+                            activeOpacity={0.8}
+                        >
+                            <Image  
+                                style={{width:40,height:40,borderRadius:20}}
+                                source={interfaceImage}
+                                onPress={()=>updateDialogVisible(true)}
+                            />
+                        </TouchableOpacity>
+                        
+                </View>
                 </View>
 
                 
@@ -113,7 +134,7 @@ const SliderEntry = (props) => {
                     { subtitle }
                 </Text>
             </View> */}
-        </View>,
+        </Animated.View>,
 
         // directions dialog box
         <View style={{flex:1,position:'absolute',zIndex:100000}}>
