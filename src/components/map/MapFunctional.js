@@ -8,6 +8,7 @@ import config from '../../../config'
 import LinearGradient from 'react-native-linear-gradient';
 import loaderImage from '../../assets/icons/mag.gif'
 import Slide from '../carousel/Slide'
+import {useSpring,animated} from 'react-spring'
 
 // import Carousel from 'react-native-snap-carousel'
 // import SliderEntry from '../carousel/SliderEntry'
@@ -20,6 +21,8 @@ const CARD_HEIGHT = 220;
 const CARD_WIDTH = width * 0.8;
 const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
 const customMapStyle = require('../../styles/customMapStyle.json')
+
+
 
 
 const MapFunctional = ()=>{
@@ -344,22 +347,27 @@ const MapFunctional = ()=>{
                         }
 
                        return (
-                            <Marker
-                                key={index}
-                                coordinate={{
-                                    latitude:marker.latitude,
-                                    longitude:marker.longitude
-                                }}
-                                // onPress={(e)=>onMarkerPress(e)}
-                                
-                                title={marker.title}
-                                //pinColor={this.state.selectedMarkerIndex===index?'red':'black'}
-                                pinColor='orange'
-                            >
-                                {/* <Animated.View style={[styles.markerWrap,opacityStyle]}>
-                                    <Animated.View style={[styles.ring,scaleStyle]}/>
-                                </Animated.View> */}
-                            </Marker>
+                            
+                                <Marker
+                                    key={index}
+                                    coordinate={{
+                                        latitude:marker.latitude,
+                                        longitude:marker.longitude
+                                    }}
+                                    // style={springSlideMarkers}
+                                    
+                                    // onPress={(e)=>onMarkerPress(e)}
+                                    
+                                    title={marker.title}
+                                    //pinColor={this.state.selectedMarkerIndex===index?'red':'black'}
+                                    pinColor='#F40B22'
+                                    pinColor='#0bf4dd'
+                                >
+                                    {/* <Animated.View style={[styles.markerWrap,opacityStyle]}>
+                                        <Animated.View style={[styles.ring,scaleStyle]}/>
+                                    </Animated.View> */}
+                                </Marker>
+                            
                         )}
                     )}
                 </MapView>
@@ -499,6 +507,7 @@ const styles = StyleSheet.create({
         fontFamily:'AvenirNext-UltraLight',
         fontFamily:'DamascusLight',
         fontSize:70,
+        fontWeight:'bold',
         textAlign:'center',
         width:'100%',
     },

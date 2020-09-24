@@ -22,9 +22,6 @@ export default class SnapCarousel extends Component {
     }
 
 
-    componentDidMount(){
-        // console.log('Carousel Props',this.props)
-    }
 
     _renderItem ({item, index}) {
         return <SliderEntry data={item} even={(index + 1) % 2 === 0} />;

@@ -10,6 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/blur": "^3.6.0",
     "logkitty": ">=0.7.1",
     "react": "16.11.0",
     "react-native": "0.62.2",
@@ -28,7 +29,8 @@
     "react-native-screens": "^2.7.0",
     "react-native-snap-carousel": "^3.9.0",
     "react-native-splash-screen": "^3.2.0",
-    "react-native-textinput-effects": "^0.6.1"
+    "react-native-textinput-effects": "^0.6.1",
+    "react-spring": "^8.0.27"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",

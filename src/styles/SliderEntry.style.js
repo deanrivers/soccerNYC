@@ -22,25 +22,22 @@ export default StyleSheet.create({
     slideInnerContainer: {
         width: itemWidth,
         height: slideHeight,
-        // paddingHorizontal: itemHorizontalMargin,
         paddingBottom: 0, // needed for shadow
         flex:1,
         justifyContent:'center',
-        // alignItems:'center'
-    },
 
-    directionButton:{
-        position:'absolute',
-        top:0,
-        right:0,
-        backgroundColor:'red',
+    },
+    interactionButton:{
+        flex:1,
+        flexDirection:'column',
+        justifyContent:'flex-start',
+        alignContent:'center',
+        alignItems:'center',
+        paddingTop:10,
         zIndex:100,
         borderRadius:0,
-        padding:20,
-        backgroundColor:colors.black,
-        borderTopEndRadius:entryBorderRadius,
-        paddingHorizontal: itemHorizontalMargin,
-    
+        
+        // backgroundColor:'red'
     },
     shadow: {
         position: 'absolute',
@@ -56,19 +53,22 @@ export default StyleSheet.create({
     },
     imageContainer: {
         flex: 1,
+        
         marginBottom: IS_IOS ? 0 : -1, // Prevent a random Android rendering issue
         borderTopLeftRadius: entryBorderRadius,
         borderTopRightRadius: entryBorderRadius,
     },
     imageContainerEven: {
-        backgroundColor: colors.black
+        backgroundColor: colors.black,
+        
     },
     image: {
         ...StyleSheet.absoluteFillObject,
         resizeMode: 'cover',
         borderRadius: IS_IOS ? entryBorderRadius : 0,
         borderTopLeftRadius: entryBorderRadius,
-        borderTopRightRadius: entryBorderRadius
+        borderTopRightRadius: entryBorderRadius,
+        
     },
     // image's border radius is buggy on iOS; let's hack it!
     radiusMask: {
@@ -77,10 +77,10 @@ export default StyleSheet.create({
         left: 0,
         right: 0,
         height: entryBorderRadius,
-        backgroundColor: 'white'
+        // backgroundColor: 'white'
     },
     radiusMaskEven: {
-        backgroundColor: colors.black
+        // backgroundColor: colors.black
     },
     textContainer: {
         justifyContent: 'center',
@@ -91,6 +91,51 @@ export default StyleSheet.create({
         borderBottomLeftRadius: entryBorderRadius,
         borderBottomRightRadius: entryBorderRadius
     },
+
+    newTextContainer:{
+        position:'absolute',
+        justifyContent:'center',
+        flex:1,
+        flexDirection:'row',
+        top:0,
+        zIndex:10,
+        width:'100%',
+        height:'100%',
+        overflow:'hidden',
+        backgroundColor:'rgba(0,0,0,0.3)',
+        borderColor:'#0bf4dd',
+        borderWidth:2,
+        
+        borderRadius: entryBorderRadius,
+        
+        // borderBottomRightRadius: entryBorderRadius
+        
+        
+    },
+    newTextInnerContainer:{
+        flex:4,
+        justifyContent:'center',
+        // height:'25%',
+        // backgroundColor:'#0bf4dd'
+    }, 
+    topBar:{
+        flex:1,
+        flexDirection:'row',
+        height:'30%',
+        backgroundColor:'#0bf4dd'
+    } ,
+    newTitle:{
+        fontFamily:'DamascusLight',
+        color:'black',
+        fontSize:20,
+        fontWeight:'bold',
+        paddingHorizontal: 16,
+        // paddingVertical:0,
+        borderRadius: entryBorderRadius,
+
+    },
+
+
     textContainerEven: {
         backgroundColor: colors.black
     },

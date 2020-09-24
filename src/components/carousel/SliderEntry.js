@@ -1,59 +1,40 @@
-import React, { Component } from 'react';
+import React, { Component,useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity,StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { ParallaxImage } from 'react-native-snap-carousel';
 import styles from '../../styles/SliderEntry.style';
-import Dialog, {BlurView} from 'react-native-dialog'
+import Dialog from 'react-native-dialog'
 import openMap from 'react-native-open-maps'
+import { BlurView } from "@react-native-community/blur";
+import {animated,useSpring} from 'react-spring'
 
-export default class SliderEntry extends Component {
+import interfaceImage from '../../assets/icons/interface.png'
 
-    static propTypes = {
-        data: PropTypes.object.isRequired,
-        even: PropTypes.bool,
-        parallax: PropTypes.bool,
-        parallaxProps: PropTypes.object,
-    };
+const SliderEntry = (props) => {
 
-    constructor(props){
-        super(props)
-        this.state={
-            dialogVisible:false
-        }
+    // useEffect(()=>{
+    //     console.log('PROPS',props)
+    // },[])
+
+
+    const [dialogVisible,updateDialogVisible] = useState(false)
+
+    //react spring
+    const springSlide = useSpring({opacity: 1, from: {opacity: 0}})
+    const AnimatedView = animated(View)
+    const AnimatedText = animated(Text)
+    
+    handleYes = ()=> {
+        locationPressed(props.data)
+        updateDialogVisible(false)
+        // this.setState({dialogVisible:false})
     }
 
-    componentDidMount(){
-        // console.log('Slide Props',this.props)
+    onCancel = () => {
+        updateDialogVisible(false)
     }
 
-    get image () {
-        const { data: { illustration }, parallax, parallaxProps, even } = this.props;
-
-        return parallax ? (
-            <ParallaxImage
-              source={{ uri: illustration }}
-              containerStyle={[styles.imageContainer, even ? styles.imageContainerEven : {}]}
-              style={styles.image}
-              parallaxFactor={0.35}
-              showSpinner={true}
-              spinnerColor={even ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.25)'}
-              {...parallaxProps}
-            />
-        ) : (
-                
-            <Image
-              source={{ uri: illustration }}
-              style={styles.image}
-            />
-        );
-    }
-
-    handleYes(){
-        this.locationPressed(this.props.data)
-        this.setState({dialogVisible:false})
-    }
-
-    locationPressed(data){
+    locationPressed = (data) => {
         openMap({
             latitude:data.latitude,
             longitude:data.longitude,
@@ -64,68 +45,95 @@ export default class SliderEntry extends Component {
         })
     }
 
-    render () {
-        const blurComponentIOS = (
-            <BlurView
-              style={StyleSheet.absoluteFill}
-              blurType="xlight"
-              blurAmount={50}
-            />
-          )
+    const reactNativeModalProps = {
+        onBackdropPress: this.onCancel,
+    };
 
-        const { data: { title, subtitle }, even } = this.props;
-        const uppercaseTitle = title ? (
-            <Text
-              style={[styles.title, even ? styles.titleEven : {}]}
-              numberOfLines={2}
+    
+    //react spring
+    // const spring = useSpring({opacity: 1, from: {opacity: 0}})
+
+
+    
+
+
+    const { data: { title, subtitle }, even } = props;
+    
+
+    return ([
+        
+        <View
+            style={[styles.slideInnerContainer]}
             >
-                { title.toUpperCase() }
-            </Text>
-        ) : false;
+            
+            <View style={styles.shadow} />
 
-        return ([
-            <View
-              style={styles.slideInnerContainer}
-              >
-                <TouchableOpacity 
-                    style={styles.directionButton}
-                    onPress={()=>this.setState({dialogVisible:true})}
+            {/* new text container */}
+            <View style={styles.newTextContainer}>
+                
+
+                <View style={styles.topBar}>
+                    <View style={styles.newTextInnerContainer}>
+                        <Text style={[styles.newTitle]}>{title}</Text>
+                    </View>
+
+
+
+                    <TouchableOpacity 
+                    style={styles.interactionButton}
+                    onPress={()=>updateDialogVisible(true)}
                 >
-                    <Text style={{color:'white'}}>Directions</Text>
+                    <Image  
+                        style={{width:30,height:30,borderRadius:20}}
+                        source={interfaceImage}
+                    />
                 </TouchableOpacity>
-                <View style={styles.shadow} />
-                <View style={[styles.imageContainer, even ? styles.imageContainerEven : {}]}>
-                    { this.image }
-                    <View style={[styles.radiusMask, even ? styles.radiusMaskEven : {}]} />
                 </View>
-                <View style={[styles.textContainer, even ? styles.textContainerEven : {}]}>
-                    { uppercaseTitle }
-                    <Text
-                      style={[styles.subtitle,styles.subtitleEven]}
-                      numberOfLines={2}
-                    >
-                        { subtitle }
-                    </Text>
-                </View>
-            </View>,
 
-            // directions dialog box
-            <View style={{flex:1,position:'absolute',zIndex:100000}}>
-                <Dialog.Container 
-                    visible={this.state.dialogVisible}
-                    // blurComponentIOS={blurComponentIOS}
-                    
-                    >
-                    <Dialog.Title>Open Apple Maps?</Dialog.Title>
-                    <Dialog.Description>
-                        {`Are you sure you want to get directions to "${title}"?`}
-                    </Dialog.Description>
-                    <Dialog.Button label="Cancel" onPress={()=>{this.setState({dialogVisible:false})}}/>
-                    <Dialog.Button label="Yes" onPress={()=>this.handleYes()}/>
-                </Dialog.Container>
-            </View>,
-        ]);
-    }
+                
+                
+            </View>
+
+            <View style={[styles.imageContainer]}>
+                <Image
+                    source={{ uri: props.data.illustration }}
+                    style={styles.image}
+                />
+                <View style={[styles.radiusMask,styles.radiusMaskEven]} />
+            </View>
+
+
+            {/* old text container */}
+            {/* <View style={[styles.textContainer,styles.textContainerEven]}>
+                { uppercaseTitle }
+                <Text
+                    style={[styles.subtitle,styles.subtitleEven]}
+                    numberOfLines={2}
+                >
+                    { subtitle }
+                </Text>
+            </View> */}
+        </View>,
+
+        // directions dialog box
+        <View style={{flex:1,position:'absolute',zIndex:100000}}>
+            <Dialog.Container 
+                visible={dialogVisible}
+                // blurComponentIOS={blurComponentIOS}
+                {...reactNativeModalProps}
+                >
+                <Dialog.Title>Open Apple Maps?</Dialog.Title>
+                <Dialog.Description>
+                    <Text>Test</Text>
+                    {`Are you sure you want to get directions to "${title}"?`}
+                </Dialog.Description>
+                <Dialog.Button color="red" label="Cancel" onPress={()=>onCancel()}/>
+                <Dialog.Button color="black" label="Yes" onPress={()=>handleYes()}/>
+            </Dialog.Container>
+        </View>,
+    ]);
+    
 }
 
 
+export default SliderEntry

@@ -3,6 +3,7 @@ import React, {Component} from 'react'
 import { Text,View,Image,StyleSheet,TouchableOpacity, SafeAreaView,Animated,Easing,Dimensions }from 'react-native'
 
 import {Actions, Reducer} from 'react-native-router-flux'
+import {useSpring,animated} from 'react-spring'
 
 import logoImage from '../assets/icons/logo.png'
 
@@ -195,6 +196,8 @@ class Main extends Component{
     console.log('main unmounteddd')
     }
 
+
+
     render(){
         return(
             <SafeAreaView style={styles.main}>
@@ -207,7 +210,7 @@ class Main extends Component{
                     <Text></Text>
                     <Text style={styles.subHeaderText}>Built to serve the worldwide football community.</Text>
                     <Text></Text>
-                    <Text style={styles.subHeaderText}>In association with Jogalavida.</Text>
+                    <Text style={styles.subHeaderText}>In association with JLV.</Text>
                 </Animated.View>
                 
                 <Animated.View style={{flex:1,justifyContent:'center',alignItems:'flex-end',backgroundColor:'',opacity:this.state.fadeValue}}>
@@ -256,6 +259,7 @@ const styles = StyleSheet.create({
     },
     headerText:{
         fontSize:70,
+        fontWeight:'bold',
         fontFamily:'Helvetica',
         fontFamily:'AppleSDGothicNeo-UltraLight',
         fontFamily:'AvenirNext-UltraLight',
@@ -270,6 +274,7 @@ const styles = StyleSheet.create({
     },
     subHeaderText:{
         fontSize:18,
+        fontWeight:'bold',
         fontFamily:'HelveticaNeue-Italic',
         fontFamily:'AvenirNext-Regular',
         fontFamily:'DamascusLight',
