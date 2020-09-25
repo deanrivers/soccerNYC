@@ -14,6 +14,10 @@ export default StyleSheet.create({
     },
     container: {
         flex: 1,
+        // backgroundColor:'red',
+        marginBottom:40
+        
+
         // backgroundColor: colors.background1
     },
     gradient: {

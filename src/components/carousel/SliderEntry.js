@@ -102,7 +102,7 @@ const SliderEntry = (props) => {
                             activeOpacity={0.8}
                         >
                             <Image  
-                                style={{width:40,height:40,borderRadius:20}}
+                                style={{width:30,height:30,borderRadius:20,backgroundColor:'#0bf4dd'}}
                                 source={interfaceImage}
                                 onPress={()=>updateDialogVisible(true)}
                             />

@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions, Platform } from 'react-native';
-import { colors } from './index.style';
+import { colors } from './Carousel.style';
 
 const IS_IOS = Platform.OS === 'ios';
 const { width: viewportWidth, height: viewportHeight } = Dimensions.get('window');
@@ -104,6 +104,7 @@ export default StyleSheet.create({
         overflow:'hidden',
         backgroundColor:'rgba(0,0,0,0.3)',
         borderColor:'#0bf4dd',
+        borderColor:'black',
         borderWidth:1,
         borderRadius: entryBorderRadius,
         // borderBottomRightRadius: entryBorderRadius
@@ -119,11 +120,14 @@ export default StyleSheet.create({
         flex:1,
         flexDirection:'row',
         height:'30%',
-        backgroundColor:'#0bf4dd'
+        // backgroundColor:'#0bf4dd',
+        backgroundColor:'black',
+        // borderBottomEndRadius:10,
+        // borderBottomStartRadius:10
     } ,
     newTitle:{
         fontFamily:'DamascusLight',
-        color:'black',
+        color:'#0bf4dd',
         fontSize:20,
         fontWeight:'bold',
         paddingHorizontal: 16,

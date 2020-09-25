@@ -15,6 +15,11 @@ import {useSpring,animated} from 'react-spring'
 
 import SnapCarousel from '../carousel/SnapCarousel'
 
+import imageBack from '../../assets/icons/back2.png'
+import imageCenterLocation from '../../assets/icons/target.png'
+import imageFilter from '../../assets/icons/filter.png'
+import imageMarker from '../../assets/icons/marker.png'
+
 
 const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = 220;
@@ -185,6 +190,10 @@ const MapFunctional = ()=>{
 
     //component did mount
     useEffect(()=>{
+
+        //set loading to true on load
+        updateLoading(true)
+
         //animtae map opacity
         Animated.timing(mapOpacity,{
             toValue:1,
@@ -266,6 +275,16 @@ const MapFunctional = ()=>{
         // updateSelectedMarkerIndex(index)
     }
 
+    //handle location center press
+    centerMap = () =>{
+        _map.current.animateToRegion({
+            latitude:location.latitude,
+            longitude:location.longitude,
+            latitudeDelta:  0.0922,
+            longitudeDelta: 0.0421,
+        },350);
+    }
+
     //listen to marker index change
     // useEffect(()=>{
     //     if(locationDataArray.length!==0){
@@ -335,6 +354,111 @@ const MapFunctional = ()=>{
     return([
         <View style={[styles.main,{opacity:1}]}>
             <Animated.View style={[styles.mapContainer,{opacity:mapOpacity}]}>
+                <View
+                    style={{
+                        position:'absolute',
+                        top:15,
+                        left:15,
+                        zIndex:100,
+                        backgroundColor:'black',
+                        borderRadius:100,
+                        padding:5
+                    }}
+                >
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={()=>Actions.pop()}
+                    >
+                        <Image 
+                            source={imageBack}
+                            style={{
+                                width:30,
+                                height:30,
+                                right:2
+                            }}
+                        />
+                    </TouchableOpacity>
+
+                </View>
+
+
+                <View
+                    style={{
+                        flex:1,
+                        position:'absolute',
+                        top:20,
+                        right:20,
+                        zIndex:100,
+                        borderRadius:10,
+                        backgroundColor:'black',
+                        justifyContent:'space-evenly',
+                        // paddingHorizontal:5,
+                        // paddingVertical:5,
+                        padding:6
+                    }}
+                >
+                    <View
+                        style={{
+                            flex:1,
+                            justifyContent:'center',
+                            alignItems:'center',
+                            marginVertical:10,
+                        }}
+                    >
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={()=>Alert.alert('Filter Pressed')}
+                        >
+                            <Image 
+                                source={imageFilter} 
+                                style={{
+                                    width:20,
+                                    height:20,
+                                    
+                                }}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    
+                    <View
+                        style={{
+                            flex:1,
+                            backgroundColor:'white',
+                            height:1
+                        }}
+                    />
+                    
+                    <View
+                        style={{
+                            flex:1,
+                            justifyContent:'center',
+                            alignItems:'center',
+                            marginVertical:10,
+                            backgroundColor:'black',
+                        }}
+                    >
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={()=>centerMap()}
+                        >
+                            <Image 
+                                source={imageCenterLocation} 
+                                style={{
+                                    width:25,
+                                    height:25,
+                                    
+                                }}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    
+                    
+                </View>
+
+
+
+
+
                 <MapView
                     provider={PROVIDER_GOOGLE}
                     mapPadding={{top: 0, left: 0, right: 0, bottom:300}}
@@ -372,13 +496,14 @@ const MapFunctional = ()=>{
                                         longitude:marker.longitude
                                     }}
                                     // style={springSlideMarkers}
-                                    style={{opacity:1}}
+                                    
                                     // onPress={(e)=>onMarkerPress(e)}
                                     
                                     title={marker.title}
                                     //pinColor={this.state.selectedMarkerIndex===index?'red':'black'}
                                     pinColor='#F40B22'
                                     pinColor='#0bf4dd'
+                                    // image={imageMarker}
                                 >
                                     {/* <Animated.View style={[styles.markerWrap,opacityStyle]}>
                                         <Animated.View style={[styles.ring,scaleStyle]}/>
@@ -399,9 +524,7 @@ const MapFunctional = ()=>{
             
             <LinearGradient colors={['transparent','black']} style={{width:'100%'}}>
                 {loaderRender}
-
-               {/* new carousel */}
-               {!loading?
+                {!loading?
                 <SnapCarousel
                     location={location}
                         data={locationDataArray}
@@ -410,9 +533,9 @@ const MapFunctional = ()=>{
 
                 <Animated.View style={[styles.buttonContainer,{opacity:mapOpacity}]}>
                     {/* <View style={{height:5,backgroundColor:'white',paddingTop:0,paddingBottom:0}}/> */}
-                    <TouchableOpacity style={[styles.backButton,{justifyContent:'flex-end'}]} onPress={()=>Actions.pop()}>
-                        <Animated.Text style={[styles.backButtonText]}>&lt; Go Back.</Animated.Text>
-                    </TouchableOpacity>
+                    {/* <TouchableOpacity style={[styles.backButton,{justifyContent:'flex-end'}]} onPress={()=>Actions.pop()}>
+                        <Animated.Text style={[styles.backButtonText]}>Go Back</Animated.Text>
+                    </TouchableOpacity> */}
                 </Animated.View>
             </LinearGradient>
         </View>,
