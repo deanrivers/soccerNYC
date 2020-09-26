@@ -488,28 +488,31 @@ const MapFunctional = ()=>{
                         }
 
                        return (
-                            
-                                <Marker
-                                    key={index}
-                                    coordinate={{
-                                        latitude:marker.latitude,
-                                        longitude:marker.longitude
-                                    }}
-                                    // style={springSlideMarkers}
-                                    
-                                    // onPress={(e)=>onMarkerPress(e)}
-                                    
-                                    title={marker.title}
-                                    //pinColor={this.state.selectedMarkerIndex===index?'red':'black'}
-                                    pinColor='#F40B22'
-                                    pinColor='#0bf4dd'
-                                    // image={imageMarker}
-                                >
-                                    {/* <Animated.View style={[styles.markerWrap,opacityStyle]}>
-                                        <Animated.View style={[styles.ring,scaleStyle]}/>
-                                    </Animated.View> */}
-                                </Marker>
-                            
+                            <Marker
+                                key={index}
+                                coordinate={{
+                                    latitude:marker.latitude,
+                                    longitude:marker.longitude
+                                }}
+                                // style={springSlideMarkers}
+                                image={imageMarker}
+
+
+                                style={{width: 26, height: 28}}
+                                resizeMode="contain"
+                                
+                                // onPress={(e)=>onMarkerPress(e)}
+                                
+                                title={marker.title}
+                                //pinColor={this.state.selectedMarkerIndex===index?'red':'black'}
+                                pinColor='#F40B22'
+                                pinColor='#0bf4dd'
+                                // image={imageMarker}
+                            >
+                                {/* <Animated.View style={[styles.markerWrap,opacityStyle]}>
+                                    <Animated.View style={[styles.ring,scaleStyle]}/>
+                                </Animated.View> */}
+                            </Marker>
                         )}
                     )}
                 </MapView>

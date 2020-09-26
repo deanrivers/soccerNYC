@@ -226,7 +226,7 @@ class Main extends Component{
                     <Animated.View style={{marginBottom:this.state.marginBottomValue,height:1,borderWidth:1,borderTopColor:'transparent',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue10,opacity:0.1}}/>
                 </Animated.View>
                 
-                <TouchableOpacity style={{flex:1,justifyContent:'flex-end',alignItems:'flex-end',backgroundColor:''}} onPress={()=>Actions.map()}>
+                <TouchableOpacity activeOpacity={0.8} style={{flex:1,justifyContent:'flex-end',alignItems:'flex-end',backgroundColor:''}} onPress={()=>Actions.map()}>
                     <Animated.Text style={[styles.headerText,{opacity:this.state.discoverOpacity}]}>Discover {this.state.textInserts[this.state.globalCounter]}</Animated.Text>
                 </TouchableOpacity>
 
