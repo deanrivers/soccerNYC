@@ -1,8 +1,9 @@
 import { StyleSheet } from 'react-native';
 
 export const colors = {
-    black: '#1a1917',
+    black: '#151515',
     gray: '#888888',
+    white:'#eaeade',
     background1: '#B721FF',
     background2: '#21D4FD'
 };

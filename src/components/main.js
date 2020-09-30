@@ -6,6 +6,7 @@ import {Actions, Reducer} from 'react-native-router-flux'
 import {useSpring,animated} from 'react-spring'
 
 import logoImage from '../assets/icons/logo.png'
+import {colors} from './common/styles'
 
 class Main extends Component{
     constructor(props){
@@ -214,16 +215,16 @@ class Main extends Component{
                 </Animated.View>
                 
                 <Animated.View style={{flex:1,justifyContent:'center',alignItems:'flex-end',backgroundColor:'',opacity:this.state.fadeValue}}>
-                    <Animated.View style={{marginBottom:this.state.marginBottomValue,height:89,borderWidth:1,borderTopColor:'transparent',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue1,opacity:1}}/>
-                    <Animated.View style={{marginBottom:this.state.marginBottomValue,height:55,borderWidth:1,borderTopColor:'transparent',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue2,opacity:0.9}}/>
-                    <Animated.View style={{marginBottom:this.state.marginBottomValue,height:34,borderWidth:1,borderTopColor:'transparent',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue3,opacity:0.8}}/>
-                    <Animated.View style={{marginBottom:this.state.marginBottomValue,height:13,borderWidth:1,borderTopColor:'transparent',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue4,opacity:0.7}}/>
-                    <Animated.View style={{marginBottom:this.state.marginBottomValue,height:8,borderWidth:1,borderTopColor:'transparent',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue5,opacity:0.6}}/>
-                    <Animated.View style={{marginBottom:this.state.marginBottomValue,height:5,borderWidth:1,borderTopColor:'transparent',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue6,opacity:0.5}}/>
-                    <Animated.View style={{marginBottom:this.state.marginBottomValue,height:3,borderWidth:1,borderTopColor:'transparent',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue7,opacity:0.4}}/>
-                    <Animated.View style={{marginBottom:this.state.marginBottomValue,height:2,borderWidth:1,borderTopColor:'transparent',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue8,opacity:0.43}}/>
-                    <Animated.View style={{marginBottom:this.state.marginBottomValue,height:1,borderWidth:1,borderTopColor:'transparent',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue9,opacity:0.2}}/>
-                    <Animated.View style={{marginBottom:this.state.marginBottomValue,height:1,borderWidth:1,borderTopColor:'transparent',borderColor:'white',backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue10,opacity:0.1}}/>
+                    <Animated.View style={{marginBottom:this.state.marginBottomValue,height:89,borderWidth:1,borderTopColor:'transparent',borderColor:colors.white,backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue1,opacity:1}}/>
+                    <Animated.View style={{marginBottom:this.state.marginBottomValue,height:55,borderWidth:1,borderTopColor:'transparent',borderColor:colors.white,backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue2,opacity:0.9}}/>
+                    <Animated.View style={{marginBottom:this.state.marginBottomValue,height:34,borderWidth:1,borderTopColor:'transparent',borderColor:colors.white,backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue3,opacity:0.8}}/>
+                    <Animated.View style={{marginBottom:this.state.marginBottomValue,height:13,borderWidth:1,borderTopColor:'transparent',borderColor:colors.white,backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue4,opacity:0.7}}/>
+                    <Animated.View style={{marginBottom:this.state.marginBottomValue,height:8,borderWidth:1,borderTopColor:'transparent',borderColor:colors.white,backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue5,opacity:0.6}}/>
+                    <Animated.View style={{marginBottom:this.state.marginBottomValue,height:5,borderWidth:1,borderTopColor:'transparent',borderColor:colors.white,backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue6,opacity:0.5}}/>
+                    <Animated.View style={{marginBottom:this.state.marginBottomValue,height:3,borderWidth:1,borderTopColor:'transparent',borderColor:colors.white,backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue7,opacity:0.4}}/>
+                    <Animated.View style={{marginBottom:this.state.marginBottomValue,height:2,borderWidth:1,borderTopColor:'transparent',borderColor:colors.white,backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue8,opacity:0.43}}/>
+                    <Animated.View style={{marginBottom:this.state.marginBottomValue,height:1,borderWidth:1,borderTopColor:'transparent',borderColor:colors.white,backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue9,opacity:0.2}}/>
+                    <Animated.View style={{marginBottom:this.state.marginBottomValue,height:1,borderWidth:1,borderTopColor:'transparent',borderColor:colors.white,backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue10,opacity:0.1}}/>
                 </Animated.View>
                 
                 <TouchableOpacity activeOpacity={0.8} style={{flex:1,justifyContent:'flex-end',alignItems:'flex-end',backgroundColor:''}} onPress={()=>Actions.map()}>
@@ -269,7 +270,7 @@ const styles = StyleSheet.create({
         paddingTop:20,
         bottom:0,
         textAlign:'right',
-        color:'white',
+        color:colors.white,
         backgroundColor:'black'
     },
     subHeaderText:{
@@ -282,16 +283,16 @@ const styles = StyleSheet.create({
         alignItems:'flex-start',
         flexWrap:'wrap',
         width:'60%',
-        color:'white',
+        color:colors.white,
         paddingLeft:5,
     },
     locationText:{
-        color:'white',
+        color:colors.white,
         fontFamily:'Arial',
     },
     getLocationButton:{
         borderWidth:1,
-        borderColor:'white',
+        borderColor:colors.white,
         justifyContent:'center',
         alignItems:'center',
         height:50,
@@ -306,7 +307,7 @@ const styles = StyleSheet.create({
         justifyContent:'center',
     },
     description:{
-        color:'white'
+        color:colors.white
     }
 })
 

@@ -13,7 +13,7 @@ import {Router, Scene, Stack,Actions} from 'react-native-router-flux'
 import SplashScreen from 'react-native-splash-screen'
 
 import Main from './components/main'
-import CardView from './components/carousel/cardsView'
+
 import MapFunctional from './components/map/MapFunctional'
 
 import {dimensions} from './styles/dimensions'
@@ -27,7 +27,7 @@ class App extends Component{
 
     //get pixel ration
     // console.log('Ratio',Ratio)
-    console.log('Screen Dimensions',dimensions)
+    // console.log('Screen Dimensions',dimensions)
   }
   
   render(){
@@ -37,7 +37,6 @@ class App extends Component{
           <Router>
               <Stack key="root">
                 <Scene key="main" component={Main} initial title="Main" hideNavBar initial/>
-                <Scene key="cards" component={CardView} title="Cards" hideNavBar/>
                 <Scene key="map" component={MapFunctional} title="Map" hideNavBar/>
               </Stack>
           </Router>

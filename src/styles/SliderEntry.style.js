@@ -53,7 +53,7 @@ export default StyleSheet.create({
     },
     imageContainer: {
         flex: 1,
-        
+        backgroundColor: colors.black,
         marginBottom: IS_IOS ? 0 : -1, // Prevent a random Android rendering issue
         borderTopLeftRadius: entryBorderRadius,
         borderTopRightRadius: entryBorderRadius,
@@ -102,9 +102,8 @@ export default StyleSheet.create({
         width:'100%',
         height:'100%',
         overflow:'hidden',
-        backgroundColor:'rgba(0,0,0,0.3)',
-        borderColor:'#0bf4dd',
-        borderColor:'black',
+        backgroundColor:'rgba(0,0,0,0.1)',
+        borderColor:colors.black,
         borderWidth:1,
         borderRadius: entryBorderRadius,
         // borderBottomRightRadius: entryBorderRadius
@@ -121,7 +120,7 @@ export default StyleSheet.create({
         flexDirection:'row',
         height:'30%',
         // backgroundColor:'#0bf4dd',
-        backgroundColor:'black',
+        backgroundColor:colors.black,
         // borderBottomEndRadius:10,
         // borderBottomStartRadius:10
     } ,

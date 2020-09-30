@@ -7,18 +7,20 @@ import { Actions } from 'react-native-router-flux'
 import config from '../../../config'
 import LinearGradient from 'react-native-linear-gradient';
 import loaderImage from '../../assets/icons/mag.gif'
-import Slide from '../carousel/Slide'
+
 import {useSpring,animated} from 'react-spring'
 
 // import Carousel from 'react-native-snap-carousel'
 // import SliderEntry from '../carousel/SliderEntry'
 
 import SnapCarousel from '../carousel/SnapCarousel'
+import FilterView from './filterView'
 
 import imageBack from '../../assets/icons/back2.png'
 import imageCenterLocation from '../../assets/icons/target.png'
 import imageFilter from '../../assets/icons/filter.png'
 import imageMarker from '../../assets/icons/marker.png'
+import imageUselectedMarker from '../../assets/icons/unselected_marker.png'
 
 
 const { width, height } = Dimensions.get("window");
@@ -27,42 +29,28 @@ const CARD_WIDTH = width * 0.8;
 const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
 const customMapStyle = require('../../styles/customMapStyle.json')
 
-
-
-
 const MapFunctional = ()=>{
-
-    const {width,height} = Dimensions.get('window')
 
     //declare states
     const [loading,updateLoading] = useState(false)
     const [location,updateLocation] = useState({})
-    const [currentRegion,updateCurrentRegion] = useState(null)
     const [locationDataArray,updateLocationDataArray] = useState([])
-    const [circleCenter,updateCircleCenter] = useState({})
-    const [dialogVisible,updateDialogVisible] = useState(false)
-    const [carouselYValue,updateCarouselYValue] = useState(new Animated.Value(height))
     const [carouselOpacity,updateCarouselOpacity] = useState(new Animated.Value(0))
-    const [markerOpacity,updateMarkerOpacity] = useState(new Animated.Value(1))
-    const [mainOpacity,updateMainOpacity] = useState(1)
     const [mapOpacity,updateMapOpacity] = useState(new Animated.Value(0))
     const [selectedMarkerIndex,updateSelectedMarkerIndex] = useState(0)
-    const [markerLocation,updateMarkerLocation] = useState(new Animated.Value(10))
+    const [filterActive,updateFilterActive] = useState(false)
+    const [currentMarkerLocation,updateCurrentMarkerLocation] = useState(null)
 
-    
+    //location work
     _requestLocation = () => {
         GetLocation.getCurrentPosition({
             enableHighAccuracy: true,
             timeout: 150000,
-        },()=>console.log('triggered'))
+        })
         .then(location => {
             //update states
             updateLocation(location)
-            updateCurrentRegion(location)
             updateLoading(true)
-
-            console.log(loading)
-
 
             //find places
             hitPlaceAPI(location)
@@ -83,41 +71,33 @@ const MapFunctional = ()=>{
             if (code === 'UNAUTHORIZED') {
                 Alert.alert('Authorization denied');
             }
-    
             updateLocation(null)
             updateLoading(false)
-            // this.setState({
-            //     location: null,
-            //     loading: false,
-            // });
         });
     }
-
-    hitPlaceAPI = async (location)=>{
+    
+    hitPlaceAPI = async (userLocation)=>{
         console.log('hit place')
         const API_KEY = config.GOOGLE_PLACES_API_KEY
         const searchTerm = 'soccer%20field'
         const baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
         const radius ='5000'
-        const parameters = "location=" + location.latitude + "," + location.longitude +
+        const parameters = "location=" + userLocation.latitude + "," + userLocation.longitude +
         "&radius="+radius+"&keyword="+searchTerm + "&key=" + API_KEY
         
         const url = baseUrl + parameters
         const response = await fetch(url)
         const data = await response.json()
-        //console.log('Data coming in:',data)
-        
-
-        var location
-        var locationDataArray = []
-        var obj = {}
+        let location
+        let locationDataArray = []
+        let obj = {}
 
         if(data.status = 'OK'){
-            for(var i = 0;i<data.results.length-1;i++){
+            for(let i = 0;i<data.results.length-1;i++){
 
             //set variable for name and imageLink
-            var name = data.results[i].name.toLowerCase()
-            var imageLink = ''
+            let name = data.results[i].name.toLowerCase()
+            let imageLink = ''
 
             //try to upddate imageLink if it exists
             try{
@@ -127,9 +107,7 @@ const MapFunctional = ()=>{
             }
 
             //only process if it has an image link and the name is not just "soccer field"
-            if(name !== 'soccer field' && imageLink){
-                console.log('Valid information!!!!--->',name,imageLink)
-                
+            if(name !== 'soccer field' && imageLink){                
                 obj = {}
                 location = data.results[i]
                 obj['title'] = data.results[i].name
@@ -154,24 +132,23 @@ const MapFunctional = ()=>{
                 locationDataArray[i]['illustration'] = await hitPhotoAPI(complete_photo_url)
             }
 
-            console.log('STATE COORDINATES',locationDataArray)
+            //set state for all fetched locations
             updateLocationDataArray(locationDataArray)
-            updateLoading(false)
 
-            //animate markers
-            Animated.timing(markerLocation,{
-                toValue:0,
-                duration:1000,
-                delay:500,
-                easing: Easing.linear
-            }).start()
+            //set state for the first marker location
+            updateCurrentMarkerLocation(locationDataArray[0])
+            console.log('Current Marker Location',currentMarkerLocation)
+            
+            //update loading gif to dissapear
+            updateLoading(false)
 
             //animate carousel pop up
             Animated.timing(carouselOpacity,{
                 toValue:1,
                 duration:1000,
                 delay:500,
-                easing: Easing.linear
+                easing: Easing.linear,
+                useNativeDriver:true
             }).start()
         }
     }
@@ -179,18 +156,14 @@ const MapFunctional = ()=>{
     hitPhotoAPI = async (url) => {
         try{
             const response = await fetch(url);
-
             return response.url
         } catch(error){
             console.log(error)
         }
     }
 
-
-
     //component did mount
     useEffect(()=>{
-
         //set loading to true on load
         updateLoading(true)
 
@@ -208,71 +181,18 @@ const MapFunctional = ()=>{
         },1000)
     },[])
 
-    //listen to loading
-    // useEffect(()=>{
-    //     const fadeAnim = useRef(new Animated.Value(0)).current;
-
-        
-    //     Animated.timing(fadeAnim,{
-    //         toValue:1,
-    //         duration:1000,
-    //         delay:3000,
-    //         easing: Easing.linear,
-    //         useNativeDriver:true
-    //     }).start()
-    // },[loading])
-
-    //listen to map change
-    let mapIndex = 0;
-    let mapAnimation = new Animated.Value(0);
-
-
-    // useEffect(()=>{
-
-    //     console.log('Listener triggered')
-    //     mapAnimation.addListener(({ value }) => {
-    //         // console.log(locationDataArray)
-    //         let index = Math.floor(value / CARD_WIDTH + 0.3);
-    //         console.log(index) // animate 30% away from landing on the next item
-    //         if (index >= locationDataArray.length) {
-    //           index = locationDataArray.length - 1;
-    //         }
-    //         if (index <= 0) {
-    //           index = 0;
-    //         }
-    //         clearTimeout(regionTimeout);
-    //         const regionTimeout = setTimeout(() => {
-    //           if( mapIndex !== index ) {
-    //             mapIndex = index;
-    //             const coordinate = locationDataArray[index];
-    //             console.log('carousel cooridinate',coordinate)
-
-    //             _map.current.animateToRegion(
-    //               {
-    //                 latitude:coordinate.latitude,
-    //                 longitude:coordinate.longitude,
-    //                 latitudeDelta:  0.0922,
-    //                 longitudeDelta: 0.0421,
-    //               },
-    //               350
-    //             );
-    //           }
-    //         }, 10);
-    //       },()=>updateSelectedMarkerIndex(index));
-    // },[selectedMarkerIndex])
+    let mapAnimation = new Animated.Value(0)
 
     //update index from Carousel
-    updateSelectedIndex = (index)=>{
-        console.log('index',index)
-        //animate map
+    updateSelectedIndex = (index) => {
+        updateSelectedMarkerIndex(index)
+        console.log('Index from function',index)
         _map.current.animateToRegion({
             latitude:locationDataArray[index].latitude,
             longitude:locationDataArray[index].longitude,
             latitudeDelta:  0.0922,
             longitudeDelta: 0.0421,
         },350);
-        
-        // updateSelectedMarkerIndex(index)
     }
 
     //handle location center press
@@ -285,50 +205,93 @@ const MapFunctional = ()=>{
         },350);
     }
 
-    //listen to marker index change
-    // useEffect(()=>{
-    //     if(locationDataArray.length!==0){
-    //         console.log('Selected Index',selectedMarkerIndex)
-    //         _map.current.animateToRegion({
-    //             latitude:locationDataArray[selectedMarkerIndex].latitude,
-    //             longitude:locationDataArray[selectedMarkerIndex].longitude,
-    //             latitudeDelta:  0.0922,
-    //             longitudeDelta: 0.0421,
-    //         },350);
-    //     }
+    //function to render marker based on current selected marker index
+    markerRender = (marker,index) =>{
+        let render
+
+        if(selectedMarkerIndex===index){
+            render = <Marker
+            key={index}
+            coordinate={{
+                latitude:marker.latitude,
+                longitude:marker.longitude
+            }}
+            // style={springSlideMarkers}
+            // image={imageMarker}                                
+            // onPress={()=>Alert.alert('hey')}
+            title={marker.title}
+            pinColor={'#F40B22'}
+            pinColor={'#0bf4dd'}
+            pinColor={'black'}
+        >
+            <Image
+                source={imageMarker}
+                style={{
+                    width:45,
+                    height:45,
+                    resizeMode:'contain'
+                    
+                }}
+            />
+        </Marker>
+        } else{
+            render = <Marker
+            key={index}
+            coordinate={{
+                latitude:marker.latitude,
+                longitude:marker.longitude
+            }}
+            // style={springSlideMarkers}
+            // image={imageMarker}                                
+            // onPress={()=>Alert.alert('hey')}
+            title={marker.title}
+            pinColor={'#F40B22'}
+            pinColor={'#0bf4dd'}
+            pinColor={'black'}
+        >
+            <Image
+                source={imageUselectedMarker}
+                style={{
+                    width:45,
+                    height:45,
+                    resizeMode:'contain'
+                    
+                }}
+            />
+        </Marker>
+        }
+
+        return render
+    }
+
+    // const filterOpacity = new Animated.Value(filterActive ? 0 : 1)
+
+    //filter pressed
+    filterPressed = () =>{
 
 
-    // },[selectedMarkerIndex])
+        updateFilterActive(!filterActive)        
+        //open filter view
+        
+    }
 
-    //these interpolations give the markers the effect of increasing and decreasing size
-    //along with the change in carousel
-    const interpolations = locationDataArray.map((marker, index) => {
-        // const inputRange = [
-        //     ((index - 1) * CARD_WIDTH),
-        //     ((index) * CARD_WIDTH),
-        //     ((index + 1) * CARD_WIDTH),
-        // ]
+    //listen to filter press
+    useEffect(()=>{
+        console.log('Filter Active',filterActive)
+        
 
-        const inputRange = [10,30,50]
+        if(filterActive){
+            Animated.timing(filterWidth,{
+                toValue:100,
+                duration:1000,
+                delay:0,
+                easing: Easing.linear,
+                useNativeDriver:true
+            }).start()
+        } 
 
-        const barWidth = mapAnimation.interpolate({
-            inputRange:[0,locationDataArray.length],
-            outputRange:[0,100]
-        })
-    
-        const scale = mapAnimation.interpolate({
-            inputRange,
-            outputRange: [1, 3,1],
-            extrapolate: "clamp"
-        });
+    },[filterActive])
 
-        const opacity = mapAnimation.interpolate({
-            inputRange,
-            outputRange: [.3,1,.3],
-            extrapolate: "clamp"
-        })
-        return {scale,opacity,barWidth} ;
-      });
 
     //scroll to card when marker is selected
     const onMarkerPress = (mapEventData) => {
@@ -342,189 +305,171 @@ const MapFunctional = ()=>{
         _scrollView.current.scrollTo({x: x, y: 0, animated: true});
     }
 
+
     const _map = React.useRef(null)
     const _scrollView = React.useRef(null)
+
+    //animations
+    let filterWidth = new Animated.Value(10)
+    const AnimatedView = new animated(View)
+    
     
     //load icon
-    var loaderRender = (loading)?
+    let loaderRender = (loading)?
     <View style={{flex:1,justifyContent:'center',alignItems:'center',zIndex:100000,height:'100%',backgroundColor:'',top:0,paddingBottom:'33%'}}>
         <Image style={{flex:1,justifyContent:'center',alignItems:'center',width:60,height:60}}source={loaderImage}/>
     </View>:null
 
+    //map render
+    let mapRender = <MapView
+                        provider={PROVIDER_GOOGLE}
+                        mapPadding={{top: 0, left: 0, right: 0, bottom:300}}
+                        ref={_map}
+                        showsUserLocation={true}
+                        style={styles.map}
+                        initialRegion={{
+                            latitude: location.latitude,
+                            longitude: location.longitude,
+                            latitudeDelta: 0.0922,
+                            longitudeDelta: 0.0421,
+                        }}
+                        customMapStyle={customMapStyle}
+                        // onRegionChangeComplete={()=>console.log('THE REGION CHANGED')}
+                    >
+                        {locationDataArray.map( (marker,index)=>{return markerRender(marker,index)})}
+                    </MapView>
+
+    let backButtonRender = <View
+                                style={{
+                                    position:'absolute',
+                                    top:15,
+                                    left:15,
+                                    zIndex:100,
+                                    backgroundColor:'black',
+                                    borderRadius:100,
+                                    padding:5
+                                }}
+                            >
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={()=>Actions.pop()}
+                                >
+                                    <Image 
+                                        source={imageBack}
+                                        style={{
+                                            width:30,
+                                            height:30,
+                                            right:2
+                                        }}
+                                    />
+                                </TouchableOpacity>
+
+                            </View>
+
+    let controlsRender = <View
+                            style={{
+                                flex:1,
+                                position:'absolute',
+                                top:20,
+                                right:20,
+                                zIndex:100,
+                                borderRadius:10,
+                                backgroundColor:'black',
+                                justifyContent:'space-evenly',
+                                // paddingHorizontal:5,
+                                // paddingVertical:5,
+                                padding:6
+                            }}
+                        >
+                            <View
+                                style={{
+                                    flex:1,
+                                    justifyContent:'center',
+                                    alignItems:'center',
+                                    marginVertical:10,
+                                    zIndex:200,
+                                }}
+                            >
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={()=>updateFilterActive(!filterActive)}
+                                >
+                                    <Image 
+                                        source={imageFilter} 
+                                        style={{
+                                            width:20,
+                                            height:20,
+                                            
+                                        }}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            
+                            <View
+                                style={{
+                                    flex:1,
+                                    backgroundColor:'white',
+                                    height:1
+                                }}
+                            />
+                            
+                            <View
+                                style={{
+                                    flex:1,
+                                    justifyContent:'center',
+                                    alignItems:'center',
+                                    marginVertical:10,
+                                    backgroundColor:'black',
+                                }}
+                            >
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={()=>centerMap()}
+                                >
+                                    <Image 
+                                        source={imageCenterLocation} 
+                                        style={{
+                                            width:25,
+                                            height:25,
+                                            
+                                        }}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+    
     return([
+
+        // first element in array
+        // loading screen
+        
+
+        // second element in array
+        // filter element
+        filterActive?<FilterView closeFilter={()=>filterPressed()} text={`${filterActive}`}/>:null,
+
+        // third element in array
+        // back button
+        [backButtonRender],
+
+        // fourth element in array
+        // filter and target controls
+        [controlsRender],
+        
+        // fourth element in array
+        // main map and carousel view
         <View style={[styles.main,{opacity:1}]}>
             <Animated.View style={[styles.mapContainer,{opacity:mapOpacity}]}>
-                <View
-                    style={{
-                        position:'absolute',
-                        top:15,
-                        left:15,
-                        zIndex:100,
-                        backgroundColor:'black',
-                        borderRadius:100,
-                        padding:5
-                    }}
-                >
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        onPress={()=>Actions.pop()}
-                    >
-                        <Image 
-                            source={imageBack}
-                            style={{
-                                width:30,
-                                height:30,
-                                right:2
-                            }}
-                        />
-                    </TouchableOpacity>
 
-                </View>
+                {/* map render */}
+                {mapRender}
 
-
-                <View
-                    style={{
-                        flex:1,
-                        position:'absolute',
-                        top:20,
-                        right:20,
-                        zIndex:100,
-                        borderRadius:10,
-                        backgroundColor:'black',
-                        justifyContent:'space-evenly',
-                        // paddingHorizontal:5,
-                        // paddingVertical:5,
-                        padding:6
-                    }}
-                >
-                    <View
-                        style={{
-                            flex:1,
-                            justifyContent:'center',
-                            alignItems:'center',
-                            marginVertical:10,
-                        }}
-                    >
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            onPress={()=>Alert.alert('Filter Pressed')}
-                        >
-                            <Image 
-                                source={imageFilter} 
-                                style={{
-                                    width:20,
-                                    height:20,
-                                    
-                                }}
-                            />
-                        </TouchableOpacity>
-                    </View>
-                    
-                    <View
-                        style={{
-                            flex:1,
-                            backgroundColor:'white',
-                            height:1
-                        }}
-                    />
-                    
-                    <View
-                        style={{
-                            flex:1,
-                            justifyContent:'center',
-                            alignItems:'center',
-                            marginVertical:10,
-                            backgroundColor:'black',
-                        }}
-                    >
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            onPress={()=>centerMap()}
-                        >
-                            <Image 
-                                source={imageCenterLocation} 
-                                style={{
-                                    width:25,
-                                    height:25,
-                                    
-                                }}
-                            />
-                        </TouchableOpacity>
-                    </View>
-                    
-                    
-                </View>
-
-
-
-
-
-                <MapView
-                    provider={PROVIDER_GOOGLE}
-                    mapPadding={{top: 0, left: 0, right: 0, bottom:300}}
-                    ref={_map}
-                    showsUserLocation={true}
-                    style={styles.map}
-                    region={{
-                        latitude: location.latitude,
-                        longitude: location.longitude,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
-                    }}
-                    customMapStyle={customMapStyle}
-                    onRegionChangeComplete={()=>console.log('THE REGION CHANGED')}
-                >
-                    {locationDataArray.map( (marker,index)=>{
-                        const scaleStyle = {
-                            transform:[
-                                {
-                                    scale: interpolations[index].scale
-                                }
-                            ],
-                        }
-
-                        const opacityStyle = {
-                            opacity: interpolations[index].opacity
-                        }
-
-                       return (
-                            <Marker
-                                key={index}
-                                coordinate={{
-                                    latitude:marker.latitude,
-                                    longitude:marker.longitude
-                                }}
-                                // style={springSlideMarkers}
-                                image={imageMarker}
-
-
-                                style={{width: 26, height: 28}}
-                                resizeMode="contain"
-                                
-                                // onPress={(e)=>onMarkerPress(e)}
-                                
-                                title={marker.title}
-                                //pinColor={this.state.selectedMarkerIndex===index?'red':'black'}
-                                pinColor='#F40B22'
-                                pinColor='#0bf4dd'
-                                // image={imageMarker}
-                            >
-                                {/* <Animated.View style={[styles.markerWrap,opacityStyle]}>
-                                    <Animated.View style={[styles.ring,scaleStyle]}/>
-                                </Animated.View> */}
-                            </Marker>
-                        )}
-                    )}
-                </MapView>
             </Animated.View>
         </View>,
+        
 
-        // <View style={{backgroundColor:'#0C120C',zIndex:0,position:'absolute',height:'50%',width:'100%',bottom:0,borderTopLeftRadius:0}}/>
-        //,
-
+        //carousel render
         <View style={[styles.bottomContainer,{flex:1}]}>
-
-            
             <LinearGradient colors={['transparent','black']} style={{width:'100%'}}>
                 {loaderRender}
                 {!loading?
@@ -533,13 +478,6 @@ const MapFunctional = ()=>{
                         data={locationDataArray}
                         updateIndex={this.updateSelectedIndex}
                 />:null}
-
-                <Animated.View style={[styles.buttonContainer,{opacity:mapOpacity}]}>
-                    {/* <View style={{height:5,backgroundColor:'white',paddingTop:0,paddingBottom:0}}/> */}
-                    {/* <TouchableOpacity style={[styles.backButton,{justifyContent:'flex-end'}]} onPress={()=>Actions.pop()}>
-                        <Animated.Text style={[styles.backButtonText]}>Go Back</Animated.Text>
-                    </TouchableOpacity> */}
-                </Animated.View>
             </LinearGradient>
         </View>,
     ])
