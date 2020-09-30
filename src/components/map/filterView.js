@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import {View,Text,TouchableOpacity,Image,Animated,Easing,Dimensions} from 'react-native'
+import {View,Text,TouchableOpacity,Image,Animated,Easing,Dimensions, Alert} from 'react-native'
+import Slider from '@react-native-community/slider';
+
+
+import {colors,fonts} from '../../styles/styles'
 
 import imageCancel from '../../assets/icons/cancel.png'
 
@@ -8,6 +12,7 @@ const FilterView = (props) => {
     const {width,height} = Dimensions.get('window')
 
     const [isActive,updateIsActive] = useState(true)
+    const [sliderValue,updateSliderValue] = useState(0)
     
     let slideIn = new Animated.Value(width)
     let slideOut = new Animated.Value(0)
@@ -46,6 +51,12 @@ const FilterView = (props) => {
 
     },[isActive])
 
+
+    confirmButtonPressd = () =>{
+        Alert.alert('Confirmed!')
+    }
+    
+
     let cancelButton = <View
                         style={{
                             flex:1,
@@ -70,6 +81,35 @@ const FilterView = (props) => {
                         </TouchableOpacity>
                     </View>
 
+    let confirmButton = <View
+                            style={{
+                                flex:1,
+                                justifyContent:'flex-start',
+                                alignItems:'center',
+                                
+                                
+                            }}
+                        >
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={{
+                                    backgroundColor:colors.white,
+                                    padding:20,
+                                    borderRadius:100
+                                }}
+                                onPress={()=>confirmButtonPressd()}
+                                
+                            >
+                                <Text 
+                                    style={{
+                                        fontFamily:fonts.mainFont,
+                                        fontSize:20,
+                                        fontWeight:"bold",
+                                        color:colors.black
+                                    }}
+                                >Confirm Changes</Text>
+                            </TouchableOpacity>
+                        </View>
     return(
         <Animated.View
             style={{
@@ -86,8 +126,34 @@ const FilterView = (props) => {
             }}
         >
             {cancelButton}
-            
-            
+
+            <View style={{
+                flex:3,
+                justifyContent:'center',
+                alignItems:'center',
+                // backgroundColor:'orange'
+            }}>
+                <Text style={{
+                    color:colors.white,
+                    fontFamily:fonts.mainFont,
+                    fontSize:18,
+                    fontWeight:'normal'
+                }}
+                >Search Radius - {sliderValue}
+                
+                </Text>
+                <Slider
+                    style={{width: 200, height: 40}}
+                    value={0}
+                    step={1}
+                    minimumValue={0}
+                    maximumValue={5}
+                    minimumTrackTintColor={colors.white}
+                    maximumTrackTintColor="#000000"
+                    onSlidingComplete={(value)=>updateSliderValue(value)}
+                />
+            </View>
+            {confirmButton}
         </Animated.View>
     )
 }

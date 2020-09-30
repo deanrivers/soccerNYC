@@ -6,7 +6,6 @@ import styles from '../../styles/SliderEntry.style';
 import Dialog from 'react-native-dialog'
 import openMap from 'react-native-open-maps'
 import { BlurView } from "@react-native-community/blur";
-import {animated,useSpring} from 'react-spring'
 
 import interfaceImage from '../../assets/icons/interface.png'
 import { Easing } from 'react-native-reanimated';
@@ -20,26 +19,13 @@ const SliderEntry = (props) => {
         Animated.timing(fadeAnim, {
             toValue: 1,
             duration: 2000,
-            easing:Easing.linear
+            easing:Easing.linear,
+            useNativeDriver:true
         }).start();
     },[])
 
     const [dialogVisible,updateDialogVisible] = useState(false)
-    
 
-    //react spring
-    const springSlide = useSpring({opacity: 1, from: {opacity: 0}})
-    const AnimatedView = animated(View)
-    const AnimatedText = animated(Text)
-
-
-
-    // const fadein = () =>{
-    //     Animated.timing(fadeAnim, {
-    //         toValue: 1,
-    //         duration: 5000
-    //       }).start();
-    // }
     handleYes = ()=> {
         locationPressed(props.data)
         updateDialogVisible(false)

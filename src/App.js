@@ -37,7 +37,7 @@ class App extends Component{
           <Router>
               <Stack key="root">
                 <Scene key="main" component={Main} initial title="Main" hideNavBar initial/>
-                <Scene key="map" component={MapFunctional} title="Map" hideNavBar/>
+                <Scene key="map" component={MapFunctional} title="Map" hideNavBar gesturesEnabled={false} panHandlers={null}/>
               </Stack>
           </Router>
     ]);

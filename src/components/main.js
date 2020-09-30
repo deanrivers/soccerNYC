@@ -6,7 +6,7 @@ import {Actions, Reducer} from 'react-native-router-flux'
 import {useSpring,animated} from 'react-spring'
 
 import logoImage from '../assets/icons/logo.png'
-import {colors} from './common/styles'
+import {colors} from '../styles/styles'
 
 class Main extends Component{
     constructor(props){
