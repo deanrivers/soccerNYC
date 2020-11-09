@@ -13,8 +13,10 @@ import {Router, Scene, Stack,Actions} from 'react-native-router-flux'
 import SplashScreen from 'react-native-splash-screen'
 
 import Main from './components/main'
-
+import Login from './components/login'
+import SignUp from './components/signup'
 import MapFunctional from './components/map/MapFunctional'
+
 
 import {dimensions} from './styles/dimensions'
 
@@ -36,7 +38,9 @@ class App extends Component{
       <StatusBar hidden/>,
           <Router>
               <Stack key="root">
-                <Scene key="main" component={Main} initial title="Main" hideNavBar initial/>
+                <Scene key="login" component={Login} title="Login" hideNavBar  />
+                <Scene key="signup" component={SignUp} title="Sign Up" hideNavBar/>
+                <Scene key="main" component={Main} title="Main" hideNavBar initial/>
                 <Scene key="map" component={MapFunctional} title="Map" hideNavBar gesturesEnabled={false} panHandlers={null}/>
               </Stack>
           </Router>

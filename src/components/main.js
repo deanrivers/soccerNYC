@@ -193,8 +193,8 @@ class Main extends Component{
     }
 
     componentWillUnmount() {
-    clearInterval(this.interval);
-    console.log('main unmounteddd')
+        clearInterval(this.interval);
+        console.log('main unmounteddd')
     }
 
 

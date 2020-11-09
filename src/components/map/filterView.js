@@ -22,7 +22,6 @@ const FilterView = (props) => {
     useEffect(()=>{
 
         console.log('is active',isActive)
-
         if(!isActive){ //animate out
             Animated.timing(slideOut,{
                 toValue:width,
