@@ -60,3 +60,6 @@ buck-out/
 
 # Environment variables
 .env
+
+# google firebase creds
+/ios/GoogleService-Info.plist
