@@ -26,12 +26,12 @@ const SliderEntry = (props) => {
 
     const [dialogVisible,updateDialogVisible] = useState(false)
 
-    handleYes = ()=> {
+    const handleYes = () => {
         locationPressed(props.data)
         updateDialogVisible(false)
     }
 
-    onCancel = () => {
+    const onCancel = () => {
         updateDialogVisible(false)
     }
 
@@ -57,7 +57,7 @@ const SliderEntry = (props) => {
     }
 
     const reactNativeModalProps = {
-        onBackdropPress: this.onCancel,
+        onBackdropPress: ()=>onCancel(),
     };
 
     const { data: { title, subtitle }, even } = props;
@@ -94,11 +94,9 @@ const SliderEntry = (props) => {
                             />
                         </TouchableOpacity>
                         
-                </View>
+                    </View>
                 </View>
 
-                
-                
             </View>
 
             <View style={[styles.imageContainer]}>
@@ -108,18 +106,6 @@ const SliderEntry = (props) => {
                 />
                 <View style={[styles.radiusMask,styles.radiusMaskEven]} />
             </View>
-
-
-            {/* old text container */}
-            {/* <View style={[styles.textContainer,styles.textContainerEven]}>
-                { uppercaseTitle }
-                <Text
-                    style={[styles.subtitle,styles.subtitleEven]}
-                    numberOfLines={2}
-                >
-                    { subtitle }
-                </Text>
-            </View> */}
         </Animated.View>,
 
         // directions dialog box

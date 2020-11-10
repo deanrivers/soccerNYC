@@ -38,9 +38,9 @@ class App extends Component{
       <StatusBar hidden/>,
           <Router>
               <Stack key="root">
-                <Scene key="login" component={Login} title="Login" hideNavBar  />
-                <Scene key="signup" component={SignUp} title="Sign Up" hideNavBar/>
-                <Scene key="main" component={Main} title="Main" hideNavBar initial/>
+                <Scene key="login" component={Login} title="Login" hideNavBar  initial gesturesEnabled={false} panHandlers={null}/>
+                <Scene key="signup" component={SignUp} title="Sign Up" hideNavBar gesturesEnabled={false} panHandlers={null}/>
+                <Scene key="main" component={Main} title="Main" hideNavBar  gesturesEnabled={false} panHandlers={null}/>
                 <Scene key="map" component={MapFunctional} title="Map" hideNavBar gesturesEnabled={false} panHandlers={null}/>
               </Stack>
           </Router>

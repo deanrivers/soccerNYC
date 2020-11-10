@@ -7,6 +7,9 @@ import { Actions } from 'react-native-router-flux'
 import config from '../../../config'
 import LinearGradient from 'react-native-linear-gradient';
 import loaderImage from '../../assets/icons/mag.gif'
+import Dialog from 'react-native-dialog'
+import auth from '@react-native-firebase/auth';
+import { colors } from '../../styles/Carousel.style';
 
 import {useSpring,animated} from 'react-spring'
 
@@ -21,6 +24,7 @@ import imageCenterLocation from '../../assets/icons/target.png'
 import imageFilter from '../../assets/icons/filter.png'
 import imageMarker from '../../assets/icons/marker.png'
 import imageUselectedMarker from '../../assets/icons/unselected_marker.png'
+import imageLogout from '../../assets/icons/logout.png'
 
 
 const { width, height } = Dimensions.get("window");
@@ -40,6 +44,9 @@ const MapFunctional = ()=>{
     const [selectedMarkerIndex,updateSelectedMarkerIndex] = useState(0)
     const [filterActive,updateFilterActive] = useState(false)
     const [currentMarkerLocation,updateCurrentMarkerLocation] = useState(null)
+    const [dialogVisible,updateDialogVisible] = useState(false)
+    const [user, setUser] = useState();
+    const [initializing, setInitializing] = useState(true);
 
     //location work
     _requestLocation = () => {
@@ -292,6 +299,18 @@ const MapFunctional = ()=>{
 
     },[filterActive])
 
+    const onAuthStateChanged = user =>{
+
+        setUser(user);
+        if (initializing) setInitializing(false);
+    }
+
+    useEffect(() => {
+        const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+        console.log('sub',subscriber)
+        return subscriber; // unsubscribe on unmount
+    }, [])
+
 
     //scroll to card when marker is selected
     const onMarkerPress = (mapEventData) => {
@@ -305,6 +324,22 @@ const MapFunctional = ()=>{
         _scrollView.current.scrollTo({x: x, y: 0, animated: true});
     }
 
+    const logout = () =>{
+        
+        auth().signOut().then(() => {
+            console.log('User signed out!')
+            updateDialogVisible(false)
+            Actions.login()
+        });
+    }
+    const onCancel = () =>{
+        updateDialogVisible(false)
+    }
+
+
+    const reactNativeModalProps = {
+        onBackdropPress: ()=>onCancel(),
+    };
 
     const _map = React.useRef(null)
     const _scrollView = React.useRef(null)
@@ -345,7 +380,7 @@ const MapFunctional = ()=>{
                                     top:15,
                                     left:15,
                                     zIndex:100,
-                                    backgroundColor:'black',
+                                    backgroundColor:colors.black,
                                     borderRadius:100,
                                     padding:5
                                 }}
@@ -374,7 +409,7 @@ const MapFunctional = ()=>{
                                 right:20,
                                 zIndex:100,
                                 borderRadius:10,
-                                backgroundColor:'black',
+                                backgroundColor:colors.black,
                                 justifyContent:'space-evenly',
                                 // paddingHorizontal:5,
                                 // paddingVertical:5,
@@ -409,9 +444,11 @@ const MapFunctional = ()=>{
                                 style={{
                                     flex:1,
                                     backgroundColor:'white',
-                                    height:1
+                                    height:1,
+                                    marginVertical:10
                                 }}
                             />
+                            
                             
                             <View
                                 style={{
@@ -419,7 +456,7 @@ const MapFunctional = ()=>{
                                     justifyContent:'center',
                                     alignItems:'center',
                                     marginVertical:10,
-                                    backgroundColor:'black',
+                                     
                                 }}
                             >
                                 <TouchableOpacity
@@ -428,6 +465,37 @@ const MapFunctional = ()=>{
                                 >
                                     <Image 
                                         source={imageCenterLocation} 
+                                        style={{
+                                            width:25,
+                                            height:25,
+                                            
+                                        }}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View
+                                style={{
+                                    flex:1,
+                                    backgroundColor:'white',
+                                    height:1,
+                                    marginVertical:10
+                                }}
+                            />
+                            <View
+                                style={{
+                                    flex:1,
+                                    justifyContent:'center',
+                                    alignItems:'center',
+                                    marginVertical:10,
+                                    
+                                }}
+                            >
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={()=>updateDialogVisible(true)}
+                                >
+                                    <Image 
+                                        source={imageLogout} 
                                         style={{
                                             width:25,
                                             height:25,
@@ -480,6 +548,21 @@ const MapFunctional = ()=>{
                 />:null}
             </LinearGradient>
         </View>,
+
+        <View style={{flex:1,position:'absolute',zIndex:100000}}>
+        <Dialog.Container 
+            visible={dialogVisible}
+            // blurComponentIOS={blurComponentIOS}
+            {...reactNativeModalProps}
+            >
+            <Dialog.Title>Log Out</Dialog.Title>
+            <Dialog.Description>
+                Are you sure you want to logout?
+            </Dialog.Description>
+            <Dialog.Button color="red" label="Cancel" onPress={()=>onCancel()}/>
+            <Dialog.Button color="black" label="Yes" onPress={()=>logout()}/>
+        </Dialog.Container>
+        </View>
     ])
 }
 

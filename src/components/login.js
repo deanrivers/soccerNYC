@@ -52,7 +52,8 @@ const Login = () =>{
         auth()
         .signInWithEmailAndPassword(email, password)
         .then(() => {
-          console.log('User account created & signed in!');
+          console.log('User has signed in!');
+          Actions.main()
         })
         .catch(error => {
           if (error.code === 'auth/email-already-in-use') {
@@ -66,11 +67,7 @@ const Login = () =>{
         });
     }
 
-    const logoutPressed = () =>{
-        auth()
-            .signOut()
-            .then(() => console.log('User signed out!'));
-    }
+
 
     useEffect(() => {
         const subscriber = auth().onAuthStateChanged(onAuthStateChanged);

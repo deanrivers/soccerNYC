@@ -60,6 +60,7 @@ const SignUp = () =>{
             .createUserWithEmailAndPassword(email, password)
             .then(() => {
               console.log('User account created & signed in!');
+              Actions.main()
             })
             .catch(error => {
               if (error.code === 'auth/email-already-in-use') {
@@ -78,6 +79,8 @@ const SignUp = () =>{
         console.log(password,passwordValid)
 
     }
+
+
 
     const onAuthStateChanged = user =>{
         setUser(user);
@@ -190,9 +193,7 @@ const SignUp = () =>{
 
  </View>
 
- let render = user?<TouchableOpacity style={styles.button} onPress={()=>logoutPressed()}>
- <Text>LOGOUT</Text>
-</TouchableOpacity>:signUpRender
+ let render = signUpRender
 
  return(
      <View style={styles.loginContainer}>
