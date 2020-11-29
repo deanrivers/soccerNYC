@@ -186,7 +186,23 @@ const MapFunctional = ()=>{
         setTimeout(()=>{
             _requestLocation()
         },1000)
+
     },[])
+
+    //********HACK********
+    //********HACK********
+    //********HACK********
+    //Animate to first location entry.
+    useEffect(()=>{
+        if(locationDataArray.length !== 0){
+            _map.current.animateToRegion({
+                latitude:locationDataArray[0].latitude,
+                longitude:locationDataArray[0].longitude,
+                latitudeDelta:  0.0922,
+                longitudeDelta: 0.0421,
+            },350);
+        }
+    },[locationDataArray])
 
     let mapAnimation = new Animated.Value(0)
 
@@ -311,6 +327,10 @@ const MapFunctional = ()=>{
         return subscriber; // unsubscribe on unmount
     }, [])
 
+    useEffect(()=>{
+        console.log('This is the users location',location)
+    },[location])
+
 
     //scroll to card when marker is selected
     const onMarkerPress = (mapEventData) => {
@@ -365,9 +385,17 @@ const MapFunctional = ()=>{
                         initialRegion={{
                             latitude: location.latitude,
                             longitude: location.longitude,
+                            // latitude: location.latitude?location.latitude:37.33233141,
+                            // longitude: location.longitude?location.longitude:-122.0312186,
                             latitudeDelta: 0.0922,
                             longitudeDelta: 0.0421,
                         }}
+                        // region={{
+                        //     latitude: location.latitude,
+                        //     longitude: location.longitude,
+                        //     latitudeDelta: 0.0922,
+                        //     longitudeDelta: 0.0421,
+                        // }}
                         customMapStyle={customMapStyle}
                         // onRegionChangeComplete={()=>console.log('THE REGION CHANGED')}
                     >
@@ -530,6 +558,7 @@ const MapFunctional = ()=>{
             <Animated.View style={[styles.mapContainer,{opacity:mapOpacity}]}>
 
                 {/* map render */}
+  
                 {mapRender}
 
             </Animated.View>
@@ -543,8 +572,8 @@ const MapFunctional = ()=>{
                 {!loading?
                 <SnapCarousel
                     location={location}
-                        data={locationDataArray}
-                        updateIndex={this.updateSelectedIndex}
+                    data={locationDataArray}
+                    updateIndex={this.updateSelectedIndex}
                 />:null}
             </LinearGradient>
         </View>,
