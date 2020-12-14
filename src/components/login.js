@@ -13,7 +13,9 @@ const Login = () =>{
     const [initializing, setInitializing] = useState(true);
     const [user, setUser] = useState();
     const [email,updateEmail] = useState('')
+    const [emailValid,updateEmailValid] = useState(true)
     const [password,updatePassword] = useState('')
+    const [passwordValid,updatePasswordValid] = useState(true)
 
     const [displaySignUpScreen,updateDisplaySignUpScreen] = useState(false)
 
@@ -26,45 +28,55 @@ const Login = () =>{
 
     //listen to email
     const onEmailChange = (e) =>{
-        // let current
-    }
-
-    //listen to submit
-    const signUpPressed = () =>{
-        // auth()
-        // .createUserWithEmailAndPassword(email, password)
-        // .then(() => {
-        //   console.log('User account created & signed in!');
-        // })
-        // .catch(error => {
-        //   if (error.code === 'auth/email-already-in-use') {
-        //     console.log('That email address is already in use!');
-        //   }
-      
-        //   if (error.code === 'auth/invalid-email') {
-        //     console.log('That email address is invalid!');
-        //   }
-        //   console.error(error);
-        // });
+        
     }
 
     const loginPressed = () =>{
-        auth()
-        .signInWithEmailAndPassword(email, password)
-        .then(() => {
-          console.log('User has signed in!');
-          Actions.main()
-        })
-        .catch(error => {
-          if (error.code === 'auth/email-already-in-use') {
-            console.log('That email address is already in use!');
-          }
-      
-          if (error.code === 'auth/invalid-email') {
-            console.log('That email address is invalid!');
-          }
-          console.error(error);
-        });
+
+
+        //check if email and password is valid
+
+
+
+        //there must be an email and password value
+        if(email == '' || email == ' ') updateEmailValid(false)
+        else updateEmailValid(true)
+        if(password == '' || password == ' ') updatePasswordValid(false)
+        else updatePasswordValid(true)
+
+        //if email and password have a value...try and sign in to firebase
+        if(emailValid && passwordValid){
+            auth()
+            .signInWithEmailAndPassword(email, password)
+            .then(() => {
+                console.log('User has signed in!');
+                Actions.main()
+            })
+            .catch(error => {
+                if (error.code === 'auth/email-already-in-use') {
+                    console.log('That email address is already in use!');
+                    updateEmailValid(false)
+                }
+            
+                if (error.code === 'auth/invalid-email') {
+                    console.log('That email address is invalid!');
+                    updateEmailValid(false)
+                }
+                //password
+                if(error.code == 'auth/user-not-found'){
+                    console.log('auth/user-not-found')
+                    updatePasswordValid(false)
+                }
+                if(error.code == 'auth/wrong-password'){
+                    console.log('auth/user-not-found')
+                    updatePasswordValid(false)
+                }
+                alert(error.code)
+                console.error(error);
+            });
+        } 
+
+        
     }
 
 
@@ -76,7 +88,7 @@ const Login = () =>{
     }, [])
 
     useEffect(()=>{
-        console.log(email,password)
+        console.log('Listening to email and pw => ',email,password)
     },[email,password])
 
     let emailLogin = 
@@ -99,9 +111,10 @@ const Login = () =>{
                     style={styles.subHeaders}
                 >Email</Text>
                 <TextInput
-                    style={styles.textFields}
+                    style={[styles.textFields,{borderColor:emailValid?colors.white:'red'}]}
                     maxLength={40}
                     onChangeText={text=>updateEmail(text)}
+                    autoCapitaliz='none'
                 />
             </View>
             
@@ -110,9 +123,12 @@ const Login = () =>{
                     style={styles.subHeaders}
                 >Password</Text>
                 <TextInput
-                    style={styles.textFields}
+                    style={[styles.textFields,{borderColor:passwordValid?colors.white:'red'}]}
                     maxLength={40}
                     onChangeText={text=>updatePassword(text)}
+                    password={true}
+                    password
+                    secureTextEntry={true}
                 />
             </View>
             

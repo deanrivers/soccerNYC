@@ -41,7 +41,7 @@ const SignUp = () =>{
         if(regEmail.test(email)&&email!==''&&email!==' ') emailValid= true
         else emailValid = false
 
-        if(regPassword.test(password)&&password!==''&&password!==' ') passwordValid= true
+        if(regPassword.test(password)&&password!==''&&password!==' ') passwordValid = true
         else passwordValid = false
 
         //adjust states
@@ -81,7 +81,7 @@ const SignUp = () =>{
     }
 
 
-
+    //functions
     const onAuthStateChanged = user =>{
         setUser(user);
         if (initializing) setInitializing(false);
@@ -92,6 +92,8 @@ const SignUp = () =>{
         console.log('sub',subscriber)
         return subscriber; // unsubscribe on unmount
     }, [])
+
+
 
     
 
