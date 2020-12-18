@@ -88,7 +88,7 @@ const SliderEntry = (props) => {
                             activeOpacity={0.8}
                         >
                             <Image  
-                                style={{width:30,height:30,borderRadius:20,backgroundColor:'#0bf4dd'}}
+                                style={{width:30,height:31,}}
                                 source={interfaceImage}
                                 onPress={()=>updateDialogVisible(true)}
                             />
@@ -117,7 +117,6 @@ const SliderEntry = (props) => {
                 >
                 <Dialog.Title>Open Apple Maps?</Dialog.Title>
                 <Dialog.Description>
-                    <Text>Test</Text>
                     {`Are you sure you want to get directions to "${title}"?`}
                 </Dialog.Description>
                 <Dialog.Button color="red" label="Cancel" onPress={()=>onCancel()}/>

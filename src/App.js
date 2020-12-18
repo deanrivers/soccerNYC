@@ -16,7 +16,7 @@ import Main from './components/main'
 import Login from './components/login'
 import SignUp from './components/signup'
 import MapFunctional from './components/map/MapFunctional'
-
+import Donation from './components/common/donation'
 
 import {dimensions} from './styles/dimensions'
 
@@ -38,10 +38,11 @@ class App extends Component{
       <StatusBar hidden/>,
           <Router>
               <Stack key="root">
-                <Scene key="login" component={Login} title="Login" hideNavBar  initial gesturesEnabled={false} panHandlers={null}/>
+                <Scene key="login" component={Login} title="Login" hideNavBar initial gesturesEnabled={false} panHandlers={null}/>
                 <Scene key="signup" component={SignUp} title="Sign Up" hideNavBar gesturesEnabled={false} panHandlers={null}/>
                 <Scene key="main" component={Main} title="Main" hideNavBar  gesturesEnabled={false} panHandlers={null}/>
-                <Scene key="map" component={MapFunctional} title="Map" hideNavBar gesturesEnabled={false} panHandlers={null}/>
+                <Scene key="map" component={MapFunctional} title="Map" hideNavBar   gesturesEnabled={false} panHandlers={null}/>
+                <Scene key="donation" component={Donation} title="Map" hideNavBar gesturesEnabled={false} panHandlers={null}/>
               </Stack>
           </Router>
     ]);

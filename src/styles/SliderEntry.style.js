@@ -25,6 +25,7 @@ export default StyleSheet.create({
         paddingBottom: 0, // needed for shadow
         flex:1,
         justifyContent:'center',
+        
 
     },
     interactionButton:{

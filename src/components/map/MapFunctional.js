@@ -25,6 +25,7 @@ import imageFilter from '../../assets/icons/filter.png'
 import imageMarker from '../../assets/icons/marker.png'
 import imageUselectedMarker from '../../assets/icons/unselected_marker.png'
 import imageLogout from '../../assets/icons/logout.png'
+import imageInformation from '../../assets/icons/information.png'
 
 
 const { width, height } = Dimensions.get("window");
@@ -291,18 +292,12 @@ const MapFunctional = ()=>{
 
     //filter pressed
     filterPressed = () =>{
-
-
-        updateFilterActive(!filterActive)        
-        //open filter view
-        
+        updateFilterActive(!filterActive)
     }
 
     //listen to filter press
     useEffect(()=>{
         console.log('Filter Active',filterActive)
-        
-
         if(filterActive){
             Animated.timing(filterWidth,{
                 toValue:100,
@@ -443,8 +438,9 @@ const MapFunctional = ()=>{
                                 // paddingVertical:5,
                                 padding:6
                             }}
-                        >
-                            <View
+                        >   
+                            {/* filter button */}
+                            {/* <View
                                 style={{
                                     flex:1,
                                     justifyContent:'center',
@@ -468,6 +464,45 @@ const MapFunctional = ()=>{
                                 </TouchableOpacity>
                             </View>
                             
+                            
+                            <View
+                                style={{
+                                    flex:1,
+                                    backgroundColor:'white',
+                                    height:1,
+                                    marginVertical:10
+                                }}
+                            /> */}
+
+                            
+                            {/* information button */}
+                            <View
+                                style={{
+                                    flex:1,
+                                    justifyContent:'center',
+                                    alignItems:'center',
+                                    marginVertical:5,
+                                     
+                                }}
+                            >
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    
+                                    
+                                    onPress={()=>Actions.donation()}
+                                >
+                                    <Image 
+                                        source={imageInformation} 
+                                        style={{
+                                            width:25,
+                                            height:28,
+                                            
+                                        }}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+
+
                             <View
                                 style={{
                                     flex:1,
@@ -476,8 +511,8 @@ const MapFunctional = ()=>{
                                     marginVertical:10
                                 }}
                             />
-                            
-                            
+
+                            {/* center to user button */}
                             <View
                                 style={{
                                     flex:1,
@@ -501,6 +536,7 @@ const MapFunctional = ()=>{
                                     />
                                 </TouchableOpacity>
                             </View>
+
                             <View
                                 style={{
                                     flex:1,

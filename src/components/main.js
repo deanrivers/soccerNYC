@@ -8,6 +8,7 @@ import {useSpring,animated} from 'react-spring'
 import logoImage from '../assets/icons/logo.png'
 import {colors} from '../styles/styles'
 
+
 class Main extends Component{
     constructor(props){
         const {width,height} = Dimensions.get('window')
@@ -212,7 +213,9 @@ class Main extends Component{
                     <Text style={styles.subHeaderText}>Built to serve the worldwide football community.</Text>
                     <Text></Text>
                     <Text style={styles.subHeaderText}>In association with JLV.</Text>
+
                 </Animated.View>
+                
                 
                 <Animated.View style={{flex:1,justifyContent:'center',alignItems:'flex-end',backgroundColor:'',opacity:this.state.fadeValue}}>
                     <Animated.View style={{marginBottom:this.state.marginBottomValue,height:89,borderWidth:1,borderTopColor:'transparent',borderColor:colors.white,backgroundColor:'',borderLeftColor:'black',borderRightColor:'black',width:this.state.xValue1,opacity:1}}/>

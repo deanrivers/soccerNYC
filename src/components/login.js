@@ -16,27 +16,28 @@ const Login = () =>{
     const [emailValid,updateEmailValid] = useState(true)
     const [password,updatePassword] = useState('')
     const [passwordValid,updatePasswordValid] = useState(true)
+    const [loginButtonPressed,updateLoginButtonPressed] = useState(false)
 
     const [displaySignUpScreen,updateDisplaySignUpScreen] = useState(false)
 
     // Handle user state changes
     const onAuthStateChanged = user =>{
-
         setUser(user);
         if (initializing) setInitializing(false);
     }
 
-    //listen to email
-    const onEmailChange = (e) =>{
-        
+    const onEmailChange = e =>{
+        console.log('Email change ->',e)
+        updateEmail(e.toLowerCase())
+    }
+
+    const onPasswordChange = e =>{
+        console.log('Password change ->',e)
     }
 
     const loginPressed = () =>{
 
-
-        //check if email and password is valid
-
-
+        updateLoginButtonPressed(true)
 
         //there must be an email and password value
         if(email == '' || email == ' ') updateEmailValid(false)
@@ -89,7 +90,44 @@ const Login = () =>{
 
     useEffect(()=>{
         console.log('Listening to email and pw => ',email,password)
+        if(email) updateEmailValid(true)
+        else updateEmailValid(false)
+        if(password) updatePasswordValid(true)
+        else updatePasswordValid(false)
     },[email,password])
+
+
+
+    //determine if the login button has been pressed at least once.
+    // if not....the borders should not be red
+    let emailInput = loginButtonPressed?<TextInput
+                                            style={[styles.textFields,{borderColor:emailValid?colors.white:'red'}]}
+                                            maxLength={40}
+                                            onChangeText={(e)=>onEmailChange(e)}
+                                            autoCapitaliz='none'
+                                            value={email}
+                                        />:<TextInput
+                                        style={[styles.textFields,{borderColor:colors.white}]}
+                                        maxLength={40}
+                                        onChangeText={(e)=>onEmailChange(e)}
+                                        autoCapitaliz='none'
+                                        value={email}
+                                    />
+
+    let passwordInput = loginButtonPressed?<TextInput
+                                                style={[styles.textFields,{borderColor:passwordValid?colors.white:'red'}]}
+                                                maxLength={40}
+                                                onChangeText={text=>updatePassword(text)}
+                                                password={true}
+                                                secureTextEntry={true}
+                                            />:<TextInput
+                                                style={[styles.textFields,{borderColor:colors.white}]}
+                                                maxLength={40}
+                                                onChangeText={text=>updatePassword(text)}
+                                                password={true}
+                                                secureTextEntry={true}
+                                            />
+
 
     let emailLogin = 
     <View style={styles.emailLogin}>
@@ -110,26 +148,14 @@ const Login = () =>{
                 <Text
                     style={styles.subHeaders}
                 >Email</Text>
-                <TextInput
-                    style={[styles.textFields,{borderColor:emailValid?colors.white:'red'}]}
-                    maxLength={40}
-                    onChangeText={text=>updateEmail(text)}
-                    autoCapitaliz='none'
-                />
+                {emailInput}
             </View>
             
             <View>
                 <Text
                     style={styles.subHeaders}
                 >Password</Text>
-                <TextInput
-                    style={[styles.textFields,{borderColor:passwordValid?colors.white:'red'}]}
-                    maxLength={40}
-                    onChangeText={text=>updatePassword(text)}
-                    password={true}
-                    password
-                    secureTextEntry={true}
-                />
+                {passwordInput}
             </View>
             
         </View>
@@ -140,33 +166,14 @@ const Login = () =>{
             <TouchableOpacity style={styles.button} onPress={()=>loginPressed()}>
                 <Text>SIGN IN</Text>
             </TouchableOpacity>
-            {/* <TouchableOpacity style={styles.signUpButton} onPress={()=>signUpPressed()}>
-                <Text style={{
-                    color:colors.white,
-                }}>SIGN UP</Text>
-            </TouchableOpacity> */}
             <View style={{
                 flex:1,
-                // backgroundColor:'red',
                 justifyContent:'center',
                 alignItems:'center'
             }}>
                 <Text style={{color:colors.white}}>Don't have an account? </Text>
                 <TouchableOpacity onPress={()=>Actions.signup()}><Text style={{color:colors.white,textDecorationLine:'underline',fontWeight:'bold'}}>Sign Up</Text></TouchableOpacity>
-                            
-                            
-                
             </View>
-            
-            {/* <Button 
-                title="Sign Up"
-                style={{
-                    fontSize:23,
-                    
-                }}
-                color={colors.white}
-                accessibilityLabel="Sign Up Button"
-            /> */}
         </View>
 
     </View>
@@ -201,7 +208,6 @@ const styles = StyleSheet.create({
         justifyContent:'center',
         alignItems:'center',
         backgroundColor:'black'
-        
     },  
     mainRender:{
 
